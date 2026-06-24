@@ -14,6 +14,11 @@ config/name="TSR Saga"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+Switchboard_auto="*res://daLoneDrau-GDEng-ECS/services/switchboard.gd"
+DiceTower_auto="*res://daLoneDrau-GDEng-ECS/services/dice_tower.gd"
+
 [display]
 
 window/stretch/mode="canvas_items"
