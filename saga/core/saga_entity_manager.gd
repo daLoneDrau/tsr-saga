@@ -39,7 +39,7 @@ func kill_spells_on(e_id: String) -> void:
 ## Send initialization script event (placeholder for future scripting)
 func send_init_script_event(entity: Entity) -> void:
 	# TODO: Implement scripting system if needed
-	print("WarlockEntityManager: Script event for entity %s (not implemented)" % entity.id)
+	print("SagaEntityManager: Script event for entity %s (not implemented)" % entity.id)
 
 
 ## Unequip an item from a player's inventory

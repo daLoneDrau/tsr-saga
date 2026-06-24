@@ -18,6 +18,8 @@ config/icon="res://icon.svg"
 
 Switchboard_auto="*res://daLoneDrau-GDEng-ECS/services/switchboard.gd"
 DiceTower_auto="*res://daLoneDrau-GDEng-ECS/services/dice_tower.gd"
+SagaGameEngine_auto="*res://saga/core/saga_game_engine.gd"
+SagaEntityManager_auto="*res://saga/core/saga_enity_manager.gd"
 
 [display]
 
