@@ -4,7 +4,10 @@ extends EntityManager
 
 ## Entity tags for Warlock-specific entities
 const TAG_PLAYER: int = 1 << 0
+const TAG_MONSTER: int = 1 << 1
 const TAG_ITEM: int = 1 << 2
+const TAG_JARL: int = 1 << 3
+const TAG_LAND: int = 1 << 4
 const TAG_UNIQUE: int = 1 << 8
 const TAG_EQUIPPED: int = 1 << 9
 
