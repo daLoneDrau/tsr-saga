@@ -63,7 +63,7 @@ func unequip_from_inventory(player_entity: Entity, item_entity: Entity) -> bool:
 				item_entity.tags.remove(TAG_EQUIPPED)
 
 				# Remove modifiers from player
-				var stats_comp: WarlockStatsComponent = player_entity.get_component("WarlockStatsComponent") as WarlockStatsComponent
+				var stats_comp: SagaStatsComponent = player_entity.get_component("SagaStatsComponent") as SagaStatsComponent
 				if stats_comp and item_comp.modifiers:
 					item_comp.modifiers.remove_stat_modifiers(stats_comp, item_entity.id)
 
@@ -75,7 +75,7 @@ func unequip_from_inventory(player_entity: Entity, item_entity: Entity) -> bool:
 				item_entity.tags.remove(TAG_EQUIPPED)
 
 				# Remove modifiers from player
-				var stats_comp: WarlockStatsComponent = player_entity.get_component("WarlockStatsComponent") as WarlockStatsComponent
+				var stats_comp: SagaStatsComponent = player_entity.get_component("SagaStatsComponent") as SagaStatsComponent
 				if stats_comp and item_comp.modifiers:
 					item_comp.modifiers.remove_stat_modifiers(stats_comp, item_entity.id)
 
