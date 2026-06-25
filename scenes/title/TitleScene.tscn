@@ -2,15 +2,6 @@
 
 [ext_resource type="Shader" uid="uid://dt4e4ii68kktg" path="res://shaders/ctr_scanlines.gdshader" id="1_08fpw"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rbr1p"]
-bg_color = Color(0.42352942, 0.3882353, 0.8392157, 1)
-border_width_left = 10
-border_width_top = 10
-border_width_right = 10
-border_width_bottom = 10
-border_color = Color(0.42352942, 0.3882353, 0.8392157, 1)
-corner_detail = 3
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vr2d1"]
 bg_color = Color(0, 0, 0, 1)
 border_width_left = 10
@@ -100,7 +91,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_rbr1p")
+theme_type_variation = &"WindowBorder"
 
 [node name="Content" type="VBoxContainer" parent="UI/Main" unique_id=44545003]
 layout_mode = 2
@@ -129,9 +120,10 @@ text = "© 1981 TSR"
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="Spacer2" type="Control" parent="UI/Main/Content" unique_id=2107467089]
+[node name="Spacer2" type="ColorRect" parent="UI/Main/Content" unique_id=334601687]
 custom_minimum_size = Vector2(0, 2)
 layout_mode = 2
+color = Color(0.42352942, 0.3882353, 0.8392157, 1)
 
 [node name="CenterRow" type="PanelContainer" parent="UI/Main/Content" unique_id=398684206]
 layout_mode = 2
@@ -349,9 +341,10 @@ layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.8862745, 0.2901961, 1)
 theme_override_font_sizes/font_size = 16
 
-[node name="Spacer" type="Control" parent="UI/Main/Content" unique_id=385907007]
+[node name="Spacer" type="ColorRect" parent="UI/Main/Content" unique_id=1811296970]
 custom_minimum_size = Vector2(0, 2)
 layout_mode = 2
+color = Color(0.42352942, 0.3882353, 0.8392157, 1)
 
 [node name="BottomRow" type="PanelContainer" parent="UI/Main/Content" unique_id=1070575686]
 custom_minimum_size = Vector2(0, 44)
