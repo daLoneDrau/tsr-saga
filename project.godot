@@ -20,12 +20,18 @@ config/icon="res://icon.svg"
 Switchboard_auto="*res://daLoneDrau-GDEng-ECS/services/switchboard.gd"
 DiceTower_auto="*res://daLoneDrau-GDEng-ECS/services/dice_tower.gd"
 SagaGameEngine_auto="*res://saga/core/saga_game_engine.gd"
-SagaEntityManager_auto="*res://saga/core/saga_enity_manager.gd"
+SagaEntityManager_auto="*res://saga/core/saga_entity_manager.gd"
 
 [display]
 
+window/size/viewport_width=640
+window/size/viewport_height=480
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
+
+[gui]
+
+theme/custom="uid://keeb65md1grm"
 
 [physics]
 

@@ -1,0 +1,502 @@
+[gd_scene format=3 uid="uid://qpysxroofp13"]
+
+[ext_resource type="Shader" uid="uid://dt4e4ii68kktg" path="res://shaders/ctr_scanlines.gdshader" id="1_08fpw"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rbr1p"]
+bg_color = Color(0.42352942, 0.3882353, 0.8392157, 1)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(0.42352942, 0.3882353, 0.8392157, 1)
+corner_detail = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vr2d1"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 10
+border_width_top = 2
+border_width_right = 10
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rbr1p"]
+content_margin_top = 18.0
+content_margin_bottom = 14.0
+
+[sub_resource type="StyleBoxFlat" id="MenuActive"]
+content_margin_left = 12.0
+content_margin_top = 5.0
+content_margin_right = 12.0
+content_margin_bottom = 5.0
+bg_color = Color(0.424, 0.388, 0.839, 0.55)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.886, 0.286, 1)
+
+[sub_resource type="StyleBoxFlat" id="MenuIdle"]
+content_margin_left = 12.0
+content_margin_top = 5.0
+content_margin_right = 12.0
+content_margin_bottom = 5.0
+bg_color = Color(0.063, 0.071, 0.18, 0.5)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.424, 0.388, 0.839, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l4kmf"]
+content_margin_left = 12.0
+content_margin_top = 5.0
+content_margin_right = 12.0
+content_margin_bottom = 5.0
+bg_color = Color(0.42352942, 0.3882353, 0.8392157, 0.54901963)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.8862745, 0.2901961, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hkbnd"]
+content_margin_left = 12.0
+content_margin_top = 5.0
+content_margin_right = 12.0
+content_margin_bottom = 5.0
+bg_color = Color(0.0627451, 0.07058824, 0.18039216, 0.5019608)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.42352942, 0.3882353, 0.8392157, 1)
+
+[sub_resource type="ShaderMaterial" id="MatCRT"]
+shader = ExtResource("1_08fpw")
+shader_parameter/line_strength = 0.22
+shader_parameter/line_period = 3.0
+shader_parameter/vignette = 0.5
+
+[node name="TitleScene" type="Node3D" unique_id=1116528967]
+editor_description = "Once the Blender diorama is instanced under Diorama, point the `sun` and `ship` exports at the sun + longship-waterline-pivot nodes inside it (or drive ambient motion within the imported asset)."
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=451383397]
+transform = Transform3D(1, 0, 0, 0, 0.99, -0.139, 0, 0.139, 0.99, 0, 1.8, 10)
+projection = 1
+size = 7.0
+far = 100.0
+
+[node name="SunLight" type="DirectionalLight3D" parent="." unique_id=1775701]
+transform = Transform3D(0.866, -0.25, 0.433, 0, 0.866, 0.5, -0.5, -0.433, 0.75, 0, 0, 0)
+
+[node name="Diorama" type="Node3D" parent="." unique_id=102978674]
+editor_description = "PLACEHOLDER — leave empty in source control. Instance the external Blender diorama here (e.g. res://art/title/title_diorama.glb or .tscn): sea, sun + halo, sun-glint water facets, longship, mead hall + pennant, mountains. Do NOT rebuild these as Godot BoxMesh/PrismMesh/QuadMesh primitives — all 3D assets are authored in Blender and imported. The water-glint and banner-flag shaders in this folder are for materials on that imported asset."
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=39147016]
+
+[node name="Main" type="PanelContainer" parent="UI" unique_id=1266887724]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_rbr1p")
+
+[node name="Content" type="VBoxContainer" parent="UI/Main" unique_id=44545003]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="TopRow" type="PanelContainer" parent="UI/Main/Content" unique_id=694564137]
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_vr2d1")
+
+[node name="Column" type="HBoxContainer" parent="UI/Main/Content/TopRow" unique_id=1746451381]
+layout_mode = 2
+
+[node name="BannerLeft" type="Label" parent="UI/Main/Content/TopRow/Column" unique_id=1598085975]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
+text = "SAGA — AGE OF HEROES"
+vertical_alignment = 1
+
+[node name="BannerRight" type="Label" parent="UI/Main/Content/TopRow/Column" unique_id=1741537983]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"Status"
+text = "© 1981 TSR"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Spacer2" type="Control" parent="UI/Main/Content" unique_id=2107467089]
+custom_minimum_size = Vector2(0, 2)
+layout_mode = 2
+
+[node name="CenterRow" type="PanelContainer" parent="UI/Main/Content" unique_id=398684206]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_rbr1p")
+
+[node name="Column" type="VBoxContainer" parent="UI/Main/Content/CenterRow" unique_id=352094811]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Logo" type="Label" parent="UI/Main/Content/CenterRow/Column" unique_id=1028192826]
+layout_mode = 2
+theme_type_variation = &"HeroTitle"
+text = "SAGA"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Spacer" type="Control" parent="UI/Main/Content/CenterRow/Column" unique_id=1981266887]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="Subtitle" type="Label" parent="UI/Main/Content/CenterRow/Column" unique_id=182432146]
+layout_mode = 2
+theme_type_variation = &"HeroSubtitle"
+text = "AGE OF HEROES"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Spacer2" type="Control" parent="UI/Main/Content/CenterRow/Column" unique_id=516076725]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+
+[node name="Tagline" type="Label" parent="UI/Main/Content/CenterRow/Column" unique_id=485425599]
+layout_mode = 2
+theme_type_variation = &"Tagline"
+text = "exploration in an age of heroes"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Spacer3" type="Control" parent="UI/Main/Content/CenterRow/Column" unique_id=1291770180]
+custom_minimum_size = Vector2(0, 108)
+layout_mode = 2
+
+[node name="MenuRow" type="HBoxContainer" parent="UI/Main/Content/CenterRow/Column" unique_id=243175265]
+layout_mode = 2
+alignment = 1
+
+[node name="Menu" type="VBoxContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow" unique_id=759191672]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="NewSaga" type="Button" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu" unique_id=583598332]
+visible = false
+layout_mode = 2
+theme_type_variation = &"MenuItem"
+theme_override_styles/normal = SubResource("MenuActive")
+theme_override_styles/pressed = SubResource("MenuActive")
+theme_override_styles/hover = SubResource("MenuActive")
+theme_override_styles/focus = SubResource("MenuActive")
+text = "▶ NEW SAGA"
+
+[node name="HowToPlay" type="Button" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu" unique_id=122238578]
+visible = false
+layout_mode = 2
+theme_type_variation = &"MenuItem"
+theme_override_styles/normal = SubResource("MenuIdle")
+theme_override_styles/pressed = SubResource("MenuIdle")
+theme_override_styles/hover = SubResource("MenuIdle")
+theme_override_styles/focus = SubResource("MenuIdle")
+text = "HOW TO PLAY"
+
+[node name="Settings" type="Button" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu" unique_id=32914640]
+visible = false
+layout_mode = 2
+theme_type_variation = &"MenuItem"
+theme_override_styles/normal = SubResource("MenuIdle")
+theme_override_styles/pressed = SubResource("MenuIdle")
+theme_override_styles/hover = SubResource("MenuIdle")
+theme_override_styles/focus = SubResource("MenuIdle")
+text = "SETTINGS"
+
+[node name="Credits" type="Button" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu" unique_id=633752562]
+visible = false
+layout_mode = 2
+theme_type_variation = &"MenuItem"
+theme_override_styles/normal = SubResource("MenuIdle")
+theme_override_styles/pressed = SubResource("MenuIdle")
+theme_override_styles/hover = SubResource("MenuIdle")
+theme_override_styles/focus = SubResource("MenuIdle")
+text = "CREDITS"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu" unique_id=1982681145]
+layout_mode = 2
+alignment = 1
+
+[node name="Button" type="PanelContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer" unique_id=1357688865]
+layout_mode = 2
+theme_type_variation = &"MenuItem"
+theme_override_styles/panel = SubResource("StyleBoxFlat_l4kmf")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer/Button" unique_id=1236391421]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Label" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer/Button/HBoxContainer" unique_id=243734492]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8862745, 0.2901961, 1)
+theme_override_font_sizes/font_size = 16
+text = "▶"
+
+[node name="Label2" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer/Button/HBoxContainer" unique_id=854496449]
+custom_minimum_size = Vector2(198, 0)
+layout_mode = 2
+text = "NEW SAGA"
+horizontal_alignment = 1
+
+[node name="Blank" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer/Button/HBoxContainer" unique_id=2058926213]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8862745, 0.2901961, 1)
+theme_override_font_sizes/font_size = 16
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu" unique_id=811956285]
+layout_mode = 2
+alignment = 1
+
+[node name="Button" type="PanelContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer2" unique_id=1364948407]
+layout_mode = 2
+theme_type_variation = &"MenuItem"
+theme_override_styles/panel = SubResource("StyleBoxFlat_hkbnd")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer2/Button" unique_id=1531698278]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Label" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer2/Button/HBoxContainer" unique_id=1135151576]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8862745, 0.2901961, 1)
+theme_override_font_sizes/font_size = 16
+
+[node name="Label2" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer2/Button/HBoxContainer" unique_id=1397582985]
+custom_minimum_size = Vector2(198, 0)
+layout_mode = 2
+text = "HOW TO PLAY"
+horizontal_alignment = 1
+
+[node name="Blank" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer2/Button/HBoxContainer" unique_id=1607915697]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8862745, 0.2901961, 1)
+theme_override_font_sizes/font_size = 16
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu" unique_id=814165114]
+layout_mode = 2
+alignment = 1
+
+[node name="Button" type="PanelContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer3" unique_id=1946615730]
+layout_mode = 2
+theme_type_variation = &"MenuItem"
+theme_override_styles/panel = SubResource("StyleBoxFlat_hkbnd")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer3/Button" unique_id=2026806370]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Label" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer3/Button/HBoxContainer" unique_id=863993456]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8862745, 0.2901961, 1)
+theme_override_font_sizes/font_size = 16
+
+[node name="Label2" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer3/Button/HBoxContainer" unique_id=1533937579]
+custom_minimum_size = Vector2(198, 0)
+layout_mode = 2
+text = "SETTINGS"
+horizontal_alignment = 1
+
+[node name="Blank" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer3/Button/HBoxContainer" unique_id=75258020]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8862745, 0.2901961, 1)
+theme_override_font_sizes/font_size = 16
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu" unique_id=1550547662]
+layout_mode = 2
+alignment = 1
+
+[node name="Button" type="PanelContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer4" unique_id=201730156]
+layout_mode = 2
+theme_type_variation = &"MenuItem"
+theme_override_styles/panel = SubResource("StyleBoxFlat_hkbnd")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer4/Button" unique_id=1769291579]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Label" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer4/Button/HBoxContainer" unique_id=1188683619]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8862745, 0.2901961, 1)
+theme_override_font_sizes/font_size = 16
+
+[node name="Label2" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer4/Button/HBoxContainer" unique_id=653261521]
+custom_minimum_size = Vector2(198, 0)
+layout_mode = 2
+text = "CREDITS"
+horizontal_alignment = 1
+
+[node name="Blank" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer4/Button/HBoxContainer" unique_id=68679999]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8862745, 0.2901961, 1)
+theme_override_font_sizes/font_size = 16
+
+[node name="Spacer" type="Control" parent="UI/Main/Content" unique_id=385907007]
+custom_minimum_size = Vector2(0, 2)
+layout_mode = 2
+
+[node name="BottomRow" type="PanelContainer" parent="UI/Main/Content" unique_id=1070575686]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_vr2d1")
+
+[node name="Column" type="VBoxContainer" parent="UI/Main/Content/BottomRow" unique_id=1701328588]
+layout_mode = 2
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="Msg1" type="Label" parent="UI/Main/Content/BottomRow/Column" unique_id=1391519504]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 13
+text = "A NORSE MICRO-SAGA OF GLORY AND RUIN."
+vertical_alignment = 1
+
+[node name="Msg2" type="Label" parent="UI/Main/Content/BottomRow/Column" unique_id=68943653]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"Status"
+text = "CHOOSE NEW SAGA TO BEGIN."
+vertical_alignment = 1
+
+[node name="TopBar" type="ColorRect" parent="UI" unique_id=766148913]
+visible = false
+offset_left = 10.0
+offset_top = 40.0
+offset_right = 1142.0
+offset_bottom = 40.0
+color = Color(0, 0, 0, 1)
+
+[node name="Border" type="ColorRect" parent="UI/TopBar" unique_id=1006654386]
+layout_mode = 0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -2.0
+color = Color(0.424, 0.388, 0.839, 1)
+
+[node name="BannerLeft" type="Label" parent="UI/TopBar" unique_id=1678932620]
+layout_mode = 0
+offset_top = -2.0
+offset_right = 280.0
+offset_bottom = 13.0
+theme_override_font_sizes/font_size = 14
+text = "SAGA — AGE OF HEROES"
+vertical_alignment = 1
+
+[node name="BannerRight" type="Label" parent="UI/TopBar" unique_id=338720720]
+layout_mode = 0
+offset_top = -2.0
+offset_right = 140.0
+offset_bottom = 13.0
+theme_type_variation = &"Status"
+text = "© 1981 TSR"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Logo" type="Label" parent="UI" unique_id=1113151364]
+visible = false
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 46.0
+offset_bottom = 118.0
+theme_type_variation = &"HeroTitle"
+text = "SAGA"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Subtitle" type="Label" parent="UI" unique_id=440453749]
+visible = false
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 124.0
+offset_bottom = 148.0
+theme_type_variation = &"HeroSubtitle"
+text = "AGE OF HEROES"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Tagline" type="Label" parent="UI" unique_id=1403103558]
+visible = false
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 152.0
+offset_bottom = 178.0
+theme_type_variation = &"Tagline"
+text = "exploration in an age of heroes"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Menu" type="VBoxContainer" parent="UI" unique_id=483627163]
+visible = false
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -118.0
+offset_top = -204.0
+offset_right = 118.0
+offset_bottom = -58.0
+grow_horizontal = 2
+theme_override_constants/separation = 6
+
+[node name="NewSaga" type="Button" parent="UI/Menu" unique_id=1729405977]
+layout_mode = 2
+theme_type_variation = &"MenuItem"
+theme_override_styles/normal = SubResource("MenuActive")
+theme_override_styles/pressed = SubResource("MenuActive")
+theme_override_styles/hover = SubResource("MenuActive")
+theme_override_styles/focus = SubResource("MenuActive")
+text = "> NEW SAGA"
+
+[node name="HowToPlay" type="Button" parent="UI/Menu" unique_id=311172380]
+layout_mode = 2
+theme_type_variation = &"MenuItem"
+theme_override_styles/normal = SubResource("MenuIdle")
+theme_override_styles/pressed = SubResource("MenuIdle")
+theme_override_styles/hover = SubResource("MenuIdle")
+theme_override_styles/focus = SubResource("MenuIdle")
+text = "HOW TO PLAY"
+
+[node name="Settings" type="Button" parent="UI/Menu" unique_id=956247942]
+layout_mode = 2
+theme_type_variation = &"MenuItem"
+theme_override_styles/normal = SubResource("MenuIdle")
+theme_override_styles/pressed = SubResource("MenuIdle")
+theme_override_styles/hover = SubResource("MenuIdle")
+theme_override_styles/focus = SubResource("MenuIdle")
+text = "SETTINGS"
+
+[node name="Credits" type="Button" parent="UI/Menu" unique_id=2137218870]
+layout_mode = 2
+theme_type_variation = &"MenuItem"
+theme_override_styles/normal = SubResource("MenuIdle")
+theme_override_styles/pressed = SubResource("MenuIdle")
+theme_override_styles/hover = SubResource("MenuIdle")
+theme_override_styles/focus = SubResource("MenuIdle")
+text = "CREDITS"
+
+[node name="Scanlines" type="ColorRect" parent="UI" unique_id=1403640354]
+material = SubResource("MatCRT")
+offset_right = 640.0
+offset_bottom = 480.0
+mouse_filter = 2

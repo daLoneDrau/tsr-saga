@@ -6,6 +6,7 @@ extends GameEngine
 func _ready() -> void:
 	super._ready()
 	print("SagaGameEngine._ready()")
+	run()
 
 
 ## Initialize Saga-specific systems
@@ -57,10 +58,10 @@ func _start_game() -> void:
 	print("SagaGameEngine: Starting game...")
 
 	# Register scenes
-	# register_scene("title", "res://scenes/title_scene.tscn")
+	register_scene("TitleScene", "res://scenes/title/TitleScene.tscn")
 
 	# Change to title scene
-	# change_scene("title")
+	change_scene("TitleScene")
 
 
 ## Load core game resources (fonts, UI, sounds)
