@@ -15,30 +15,6 @@ border_color = Color(0, 0, 0, 1)
 content_margin_top = 18.0
 content_margin_bottom = 14.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l4kmf"]
-content_margin_left = 12.0
-content_margin_top = 5.0
-content_margin_right = 12.0
-content_margin_bottom = 5.0
-bg_color = Color(0.42352942, 0.3882353, 0.8392157, 0.54901963)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(1, 0.8862745, 0.2901961, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hkbnd"]
-content_margin_left = 12.0
-content_margin_top = 5.0
-content_margin_right = 12.0
-content_margin_bottom = 5.0
-bg_color = Color(0.0627451, 0.07058824, 0.18039216, 0.5019608)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.42352942, 0.3882353, 0.8392157, 1)
-
 [sub_resource type="ShaderMaterial" id="MatCRT"]
 shader = ExtResource("1_08fpw")
 shader_parameter/line_strength = 0.22
@@ -142,7 +118,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="Spacer3" type="Control" parent="UI/Main/Content/CenterRow/Column" unique_id=1291770180]
+[node name="Spacer4" type="Control" parent="UI/Main/Content/CenterRow/Column" unique_id=1075521965]
 custom_minimum_size = Vector2(0, 108)
 layout_mode = 2
 
@@ -160,29 +136,29 @@ alignment = 1
 layout_mode = 2
 alignment = 1
 
-[node name="Button" type="PanelContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer" unique_id=1357688865]
+[node name="NewSaga" type="PanelContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer" unique_id=1357688865]
 layout_mode = 2
-theme_type_variation = &"MenuItem"
-theme_override_styles/panel = SubResource("StyleBoxFlat_l4kmf")
+theme_type_variation = &"MenuItemSelected"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer/Button" unique_id=1236391421]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer/NewSaga" unique_id=1236391421]
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="Label" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer/Button/HBoxContainer" unique_id=243734492]
+[node name="Label" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer/NewSaga/HBoxContainer" unique_id=243734492]
 custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.8862745, 0.2901961, 1)
 theme_override_font_sizes/font_size = 16
 text = "▶"
 
-[node name="Label2" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer/Button/HBoxContainer" unique_id=854496449]
+[node name="Label2" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer/NewSaga/HBoxContainer" unique_id=854496449]
 custom_minimum_size = Vector2(198, 0)
 layout_mode = 2
+theme_type_variation = &"MenuItem"
 text = "NEW SAGA"
 horizontal_alignment = 1
 
-[node name="Blank" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer/Button/HBoxContainer" unique_id=2058926213]
+[node name="Blank" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer/NewSaga/HBoxContainer" unique_id=2058926213]
 custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.8862745, 0.2901961, 1)
@@ -192,28 +168,28 @@ theme_override_font_sizes/font_size = 16
 layout_mode = 2
 alignment = 1
 
-[node name="Button" type="PanelContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer2" unique_id=1364948407]
+[node name="HowToPlay" type="PanelContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer2" unique_id=1364948407]
 layout_mode = 2
-theme_type_variation = &"MenuItem"
-theme_override_styles/panel = SubResource("StyleBoxFlat_hkbnd")
+theme_type_variation = &"MenuItemUnselected"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer2/Button" unique_id=1531698278]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer2/HowToPlay" unique_id=1531698278]
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="Label" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer2/Button/HBoxContainer" unique_id=1135151576]
+[node name="Label" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer2/HowToPlay/HBoxContainer" unique_id=1135151576]
 custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.8862745, 0.2901961, 1)
 theme_override_font_sizes/font_size = 16
 
-[node name="Label2" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer2/Button/HBoxContainer" unique_id=1397582985]
+[node name="Label2" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer2/HowToPlay/HBoxContainer" unique_id=1397582985]
 custom_minimum_size = Vector2(198, 0)
 layout_mode = 2
+theme_type_variation = &"MenuItem"
 text = "HOW TO PLAY"
 horizontal_alignment = 1
 
-[node name="Blank" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer2/Button/HBoxContainer" unique_id=1607915697]
+[node name="Blank" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer2/HowToPlay/HBoxContainer" unique_id=1607915697]
 custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.8862745, 0.2901961, 1)
@@ -225,8 +201,7 @@ alignment = 1
 
 [node name="Button" type="PanelContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer3" unique_id=1946615730]
 layout_mode = 2
-theme_type_variation = &"MenuItem"
-theme_override_styles/panel = SubResource("StyleBoxFlat_hkbnd")
+theme_type_variation = &"MenuItemUnselected"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer3/Button" unique_id=2026806370]
 layout_mode = 2
@@ -241,6 +216,7 @@ theme_override_font_sizes/font_size = 16
 [node name="Label2" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer3/Button/HBoxContainer" unique_id=1533937579]
 custom_minimum_size = Vector2(198, 0)
 layout_mode = 2
+theme_type_variation = &"MenuItem"
 text = "SETTINGS"
 horizontal_alignment = 1
 
@@ -256,8 +232,7 @@ alignment = 1
 
 [node name="Button" type="PanelContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer4" unique_id=201730156]
 layout_mode = 2
-theme_type_variation = &"MenuItem"
-theme_override_styles/panel = SubResource("StyleBoxFlat_hkbnd")
+theme_type_variation = &"MenuItemUnselected"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer4/Button" unique_id=1769291579]
 layout_mode = 2
@@ -272,6 +247,7 @@ theme_override_font_sizes/font_size = 16
 [node name="Label2" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer4/Button/HBoxContainer" unique_id=653261521]
 custom_minimum_size = Vector2(198, 0)
 layout_mode = 2
+theme_type_variation = &"MenuItem"
 text = "CREDITS"
 horizontal_alignment = 1
 
@@ -281,6 +257,10 @@ layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.8862745, 0.2901961, 1)
 theme_override_font_sizes/font_size = 16
 
+[node name="Spacer3" type="Control" parent="UI/Main/Content/CenterRow/Column" unique_id=1291770180]
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+
 [node name="Spacer" type="ColorRect" parent="UI/Main/Content" unique_id=1811296970]
 custom_minimum_size = Vector2(0, 2)
 layout_mode = 2
@@ -289,7 +269,7 @@ color = Color(0.42352942, 0.3882353, 0.8392157, 1)
 [node name="BottomRow" type="PanelContainer" parent="UI/Main/Content" unique_id=1070575686]
 custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_vr2d1")
+theme_type_variation = &"MenuItemUnselected"
 
 [node name="Column" type="VBoxContainer" parent="UI/Main/Content/BottomRow" unique_id=1701328588]
 layout_mode = 2

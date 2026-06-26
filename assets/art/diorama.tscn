@@ -18,7 +18,7 @@ script = ExtResource("3_oqaq3")
 amplitude_degrees = 0.5
 
 [node name="house" parent="." index="5" unique_id=916144913]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.3810425, 0.40481567, 0.36645508)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.15398383, 0.13477838, 0.36645508)
 surface_material_override/6 = ExtResource("3_ttw6p")
 
 [node name="sun" parent="." index="6" unique_id=857524237]
