@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://qpysxroofp13"]
 
+[ext_resource type="Script" uid="uid://hbyjxy245p48" path="res://scenes/title/title_scene.gd" id="1_3n4rx"]
 [ext_resource type="Shader" uid="uid://dt4e4ii68kktg" path="res://shaders/ctr_scanlines.gdshader" id="1_08fpw"]
 [ext_resource type="PackedScene" uid="uid://cg88p3m8nmunv" path="res://assets/art/diorama.tscn" id="1_hkbnd"]
 
@@ -23,6 +24,7 @@ shader_parameter/vignette = 0.5
 
 [node name="TitleScene" type="Node3D" unique_id=1116528967]
 editor_description = "Once the Blender diorama is instanced under Diorama, point the `sun` and `ship` exports at the sun + longship-waterline-pivot nodes inside it (or drive ambient motion within the imported asset)."
+script = ExtResource("1_3n4rx")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=451383397]
 transform = Transform3D(1, 0, 0, 0, 0.98586595, 0.16753595, 0, -0.16753595, 0.98586595, 0, 1.4185002, 10.6718855)
@@ -138,6 +140,7 @@ alignment = 1
 
 [node name="NewSaga" type="PanelContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer" unique_id=1357688865]
 layout_mode = 2
+mouse_default_cursor_shape = 2
 theme_type_variation = &"MenuItemSelected"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer/NewSaga" unique_id=1236391421]
@@ -170,6 +173,7 @@ alignment = 1
 
 [node name="HowToPlay" type="PanelContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer2" unique_id=1364948407]
 layout_mode = 2
+mouse_default_cursor_shape = 2
 theme_type_variation = &"MenuItemUnselected"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer2/HowToPlay" unique_id=1531698278]
@@ -199,28 +203,29 @@ theme_override_font_sizes/font_size = 16
 layout_mode = 2
 alignment = 1
 
-[node name="Button" type="PanelContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer3" unique_id=1946615730]
+[node name="Settings" type="PanelContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer3" unique_id=1946615730]
 layout_mode = 2
+mouse_default_cursor_shape = 2
 theme_type_variation = &"MenuItemUnselected"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer3/Button" unique_id=2026806370]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer3/Settings" unique_id=2026806370]
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="Label" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer3/Button/HBoxContainer" unique_id=863993456]
+[node name="Label" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer3/Settings/HBoxContainer" unique_id=863993456]
 custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.8862745, 0.2901961, 1)
 theme_override_font_sizes/font_size = 16
 
-[node name="Label2" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer3/Button/HBoxContainer" unique_id=1533937579]
+[node name="Label2" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer3/Settings/HBoxContainer" unique_id=1533937579]
 custom_minimum_size = Vector2(198, 0)
 layout_mode = 2
 theme_type_variation = &"MenuItem"
 text = "SETTINGS"
 horizontal_alignment = 1
 
-[node name="Blank" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer3/Button/HBoxContainer" unique_id=75258020]
+[node name="Blank" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer3/Settings/HBoxContainer" unique_id=75258020]
 custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.8862745, 0.2901961, 1)
@@ -230,28 +235,29 @@ theme_override_font_sizes/font_size = 16
 layout_mode = 2
 alignment = 1
 
-[node name="Button" type="PanelContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer4" unique_id=201730156]
+[node name="Credits" type="PanelContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer4" unique_id=201730156]
 layout_mode = 2
+mouse_default_cursor_shape = 2
 theme_type_variation = &"MenuItemUnselected"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer4/Button" unique_id=1769291579]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer4/Credits" unique_id=1769291579]
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="Label" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer4/Button/HBoxContainer" unique_id=1188683619]
+[node name="Label" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer4/Credits/HBoxContainer" unique_id=1188683619]
 custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.8862745, 0.2901961, 1)
 theme_override_font_sizes/font_size = 16
 
-[node name="Label2" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer4/Button/HBoxContainer" unique_id=653261521]
+[node name="Label2" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer4/Credits/HBoxContainer" unique_id=653261521]
 custom_minimum_size = Vector2(198, 0)
 layout_mode = 2
 theme_type_variation = &"MenuItem"
 text = "CREDITS"
 horizontal_alignment = 1
 
-[node name="Blank" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer4/Button/HBoxContainer" unique_id=68679999]
+[node name="Blank" type="Label" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu/HBoxContainer4/Credits/HBoxContainer" unique_id=68679999]
 custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.8862745, 0.2901961, 1)
@@ -269,7 +275,7 @@ color = Color(0.42352942, 0.3882353, 0.8392157, 1)
 [node name="BottomRow" type="PanelContainer" parent="UI/Main/Content" unique_id=1070575686]
 custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
-theme_type_variation = &"MenuItemUnselected"
+theme_override_styles/panel = SubResource("StyleBoxFlat_vr2d1")
 
 [node name="Column" type="VBoxContainer" parent="UI/Main/Content/BottomRow" unique_id=1701328588]
 layout_mode = 2
