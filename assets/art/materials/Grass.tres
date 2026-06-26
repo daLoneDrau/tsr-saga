@@ -1,0 +1,6 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://c6bavpa482cel"]
+
+[resource]
+resource_name = "Grass"
+cull_mode = 2
+albedo_color = Color(0.3921569, 0.6509805, 0.26666668, 1)

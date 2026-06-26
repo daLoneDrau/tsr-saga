@@ -1,0 +1,6 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://dj7sj4o218k0f"]
+
+[resource]
+resource_name = "Water"
+cull_mode = 2
+albedo_color = Color(0.29019615, 0.20392163, 0.5254903, 1)

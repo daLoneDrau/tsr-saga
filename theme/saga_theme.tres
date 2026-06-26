@@ -48,6 +48,6 @@ Tagline/colors/font_color = Color(1, 0.8392, 0.902, 1)
 Tagline/colors/font_shadow_color = Color(0.3529, 0.0549, 0.2039, 1)
 Tagline/constants/shadow_offset_x = 1
 Tagline/constants/shadow_offset_y = 1
-Tagline/font_sizes/font_size = 16
+Tagline/font_sizes/font_size = 13
 WindowBorder/base_type = &"PanelContainer"
 WindowBorder/styles/panel = SubResource("StyleBoxEmpty_7y10m")

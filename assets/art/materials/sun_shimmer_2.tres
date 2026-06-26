@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://8oo7h3lpdpy8"]
+
+[ext_resource type="Shader" uid="uid://ddikhawf7l3x" path="res://shaders/sun_shimmer.gdshader" id="1_h4dq1"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_h4dq1")
+shader_parameter/base_color = Color(1, 0.6901961, 0.78431374, 1)
+shader_parameter/period = 2.8
+shader_parameter/min_opacity = 0.8

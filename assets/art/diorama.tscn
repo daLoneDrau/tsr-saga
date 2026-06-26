@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://cg88p3m8nmunv"]
+
+[ext_resource type="PackedScene" uid="uid://vdyw7p4n2lj7" path="res://assets/art/diorama.glb" id="1_hibi8"]
+[ext_resource type="Material" uid="uid://d1gwxkj7eas1n" path="res://assets/art/materials/Water.tres" id="2_ux75i"]
+[ext_resource type="Script" uid="uid://1bty2bqjo4fx" path="res://assets/art/scripts/longship_rock.gd" id="3_oqaq3"]
+[ext_resource type="Material" uid="uid://buyaf6nnp7jxm" path="res://assets/art/materials/banner_flag.tres" id="3_ttw6p"]
+[ext_resource type="Material" uid="uid://0atfk67rv8dr" path="res://assets/art/materials/sun_shimmer.tres" id="5_js86e"]
+[ext_resource type="Script" uid="uid://clwf5bupm7fbf" path="res://assets/art/scripts/sun_bob.gd" id="5_x83ln"]
+[ext_resource type="Material" uid="uid://8oo7h3lpdpy8" path="res://assets/art/materials/sun_shimmer_2.tres" id="6_yb8cl"]
+
+[node name="diorama" unique_id=1060459225 instance=ExtResource("1_hibi8")]
+
+[node name="terrain" parent="." index="3" unique_id=650311773]
+surface_material_override/0 = ExtResource("2_ux75i")
+
+[node name="longship" parent="." index="4" unique_id=803215872]
+script = ExtResource("3_oqaq3")
+amplitude_degrees = 0.5
+
+[node name="house" parent="." index="5" unique_id=916144913]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.3810425, 0.40481567, 0.36645508)
+surface_material_override/6 = ExtResource("3_ttw6p")
+
+[node name="sun" parent="." index="6" unique_id=857524237]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.16102982, 0.10738182, -0.0048828125)
+surface_material_override/2 = ExtResource("5_js86e")
+surface_material_override/3 = ExtResource("6_yb8cl")
+script = ExtResource("5_x83ln")

@@ -1,0 +1,7 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://cd1ify2i2rof6"]
+
+[resource]
+resource_name = "snow"
+cull_mode = 2
+albedo_color = Color(0.9411766, 0.8392158, 0.90980405, 1)
+roughness = 0.5

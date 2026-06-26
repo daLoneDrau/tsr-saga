@@ -1,0 +1,6 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://bejorwf1kgdrs"]
+
+[resource]
+resource_name = "mountain.003"
+cull_mode = 2
+albedo_color = Color(0.30588245, 0.14901963, 0.34117657, 1)

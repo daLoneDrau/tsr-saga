@@ -1,0 +1,12 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://buyaf6nnp7jxm"]
+
+[ext_resource type="Shader" uid="uid://cxbt8xckp8hj7" path="res://shaders/banner_flag.gdshader" id="1_23kft"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_23kft")
+shader_parameter/cloth_color = Color(0.824, 0.29, 0.227, 1)
+shader_parameter/period = 1.8
+shader_parameter/steps = 3.0
+shader_parameter/sway = 0.06
+shader_parameter/ripple = 0.03

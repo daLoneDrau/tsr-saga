@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://qpysxroofp13"]
 
 [ext_resource type="Shader" uid="uid://dt4e4ii68kktg" path="res://shaders/ctr_scanlines.gdshader" id="1_08fpw"]
+[ext_resource type="PackedScene" uid="uid://cg88p3m8nmunv" path="res://assets/art/diorama.tscn" id="1_hkbnd"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vr2d1"]
 bg_color = Color(0, 0, 0, 1)
@@ -72,9 +73,9 @@ shader_parameter/vignette = 0.5
 editor_description = "Once the Blender diorama is instanced under Diorama, point the `sun` and `ship` exports at the sun + longship-waterline-pivot nodes inside it (or drive ambient motion within the imported asset)."
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=451383397]
-transform = Transform3D(1, 0, 0, 0, 0.99, -0.139, 0, 0.139, 0.99, 0, 1.8, 10)
+transform = Transform3D(1, 0, 0, 0, 0.98586595, 0.16753595, 0, -0.16753595, 0.98586595, 0, 1.4185002, 10.6718855)
 projection = 1
-size = 7.0
+size = 7.3
 far = 100.0
 
 [node name="SunLight" type="DirectionalLight3D" parent="." unique_id=1775701]
@@ -82,6 +83,8 @@ transform = Transform3D(0.866, -0.25, 0.433, 0, 0.866, 0.5, -0.5, -0.433, 0.75, 
 
 [node name="Diorama" type="Node3D" parent="." unique_id=102978674]
 editor_description = "PLACEHOLDER — leave empty in source control. Instance the external Blender diorama here (e.g. res://art/title/title_diorama.glb or .tscn): sea, sun + halo, sun-glint water facets, longship, mead hall + pennant, mountains. Do NOT rebuild these as Godot BoxMesh/PrismMesh/QuadMesh primitives — all 3D assets are authored in Blender and imported. The water-glint and banner-flag shaders in this folder are for materials on that imported asset."
+
+[node name="diorama" parent="Diorama" unique_id=1060459225 instance=ExtResource("1_hkbnd")]
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=39147016]
 
@@ -158,9 +161,10 @@ layout_mode = 2
 [node name="Tagline" type="Label" parent="UI/Main/Content/CenterRow/Column" unique_id=485425599]
 layout_mode = 2
 theme_type_variation = &"Tagline"
-text = "exploration in an age of heroes"
+text = "Danger lurks in the frozen wastes of the north"
 horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 2
 
 [node name="Spacer3" type="Control" parent="UI/Main/Content/CenterRow/Column" unique_id=1291770180]
 custom_minimum_size = Vector2(0, 108)

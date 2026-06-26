@@ -9,7 +9,7 @@ render_mode unshaded;
 //
 // Prototype: brightness 0.45 -> 1.0, 2.4s, steps(2), alternate.
 
-uniform vec3 base_color : source_color = vec3(0.776, 0.435, 0.659);
+uniform vec3 base_color : source_color = vec3(0.29, 0.204, 0.525);
 uniform float period = 2.4;
 uniform float steps = 2.0;
 uniform float min_level = 0.45;
