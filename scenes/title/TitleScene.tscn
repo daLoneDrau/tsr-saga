@@ -15,30 +15,6 @@ border_color = Color(0, 0, 0, 1)
 content_margin_top = 18.0
 content_margin_bottom = 14.0
 
-[sub_resource type="StyleBoxFlat" id="MenuActive"]
-content_margin_left = 12.0
-content_margin_top = 5.0
-content_margin_right = 12.0
-content_margin_bottom = 5.0
-bg_color = Color(0.424, 0.388, 0.839, 0.55)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(1, 0.886, 0.286, 1)
-
-[sub_resource type="StyleBoxFlat" id="MenuIdle"]
-content_margin_left = 12.0
-content_margin_top = 5.0
-content_margin_right = 12.0
-content_margin_bottom = 5.0
-bg_color = Color(0.063, 0.071, 0.18, 0.5)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.424, 0.388, 0.839, 1)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l4kmf"]
 content_margin_left = 12.0
 content_margin_top = 5.0
@@ -179,46 +155,6 @@ custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_constants/separation = 6
 alignment = 1
-
-[node name="NewSaga" type="Button" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu" unique_id=583598332]
-visible = false
-layout_mode = 2
-theme_type_variation = &"MenuItem"
-theme_override_styles/normal = SubResource("MenuActive")
-theme_override_styles/pressed = SubResource("MenuActive")
-theme_override_styles/hover = SubResource("MenuActive")
-theme_override_styles/focus = SubResource("MenuActive")
-text = "▶ NEW SAGA"
-
-[node name="HowToPlay" type="Button" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu" unique_id=122238578]
-visible = false
-layout_mode = 2
-theme_type_variation = &"MenuItem"
-theme_override_styles/normal = SubResource("MenuIdle")
-theme_override_styles/pressed = SubResource("MenuIdle")
-theme_override_styles/hover = SubResource("MenuIdle")
-theme_override_styles/focus = SubResource("MenuIdle")
-text = "HOW TO PLAY"
-
-[node name="Settings" type="Button" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu" unique_id=32914640]
-visible = false
-layout_mode = 2
-theme_type_variation = &"MenuItem"
-theme_override_styles/normal = SubResource("MenuIdle")
-theme_override_styles/pressed = SubResource("MenuIdle")
-theme_override_styles/hover = SubResource("MenuIdle")
-theme_override_styles/focus = SubResource("MenuIdle")
-text = "SETTINGS"
-
-[node name="Credits" type="Button" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu" unique_id=633752562]
-visible = false
-layout_mode = 2
-theme_type_variation = &"MenuItem"
-theme_override_styles/normal = SubResource("MenuIdle")
-theme_override_styles/pressed = SubResource("MenuIdle")
-theme_override_styles/hover = SubResource("MenuIdle")
-theme_override_styles/focus = SubResource("MenuIdle")
-text = "CREDITS"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UI/Main/Content/CenterRow/Column/MenuRow/Menu" unique_id=1982681145]
 layout_mode = 2
