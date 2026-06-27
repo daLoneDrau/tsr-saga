@@ -1,24 +1,14 @@
 # saga_hero_component.gd
 # Core instance data for a hero entity.
-# Managed by: CombatSystem (combat_strength, movement_speed, luck, is_wounded),
-#             KingdomSystem (kingdom, home_country),
-#             JarlSystem (jarls),
-#             GlorySystem (glory lives on GloryComponent, not here)
-# Name is stored on NameComponent, not here.
+# Managed by: CombatSystem (is_wounded), KingdomSystem (kingdom, home_country),
+#             JarlSystem (jarls), GlorySystem (glory lives on SagaGloryComponent)
+# Combat stats (combat_strength, movement_speed, luck) live on SagaStatsComponent.
+# Name lives on NameComponent.
 # Pure data — no methods.
 
 class_name SagaHeroComponent
 extends EntityComponent
 
-
-# Core stats — set at game start, never change.
-var combat_strength: int = 0
-var movement_speed: int = 0
-
-# Luck — starts at 3, no maximum.
-# Gained by defeating enemies in combat or gaining the notice of certain gods.
-# Spent during combat. Managed by CombatSystem.
-var luck: int = 0
 
 # Gold — starts at 0, never decreases.
 # Awarded by combat and taxes.

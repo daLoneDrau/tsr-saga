@@ -110,11 +110,15 @@ func create_hero(kind_id: int, is_player: bool) -> String:
 	# Name
 	entity.set_component(NameComponent.new(kind_data["name"]))
 
-	# Hero stats
+	# Combat stats
+	var stats_comp := SagaStatsComponent.new()
+	stats_comp.add_stat(SagaStatsComponent.COMBAT_STRENGTH, kind_data["combat_strength"])
+	stats_comp.add_stat(SagaStatsComponent.MOVEMENT_SPEED,  kind_data["movement_speed"])
+	stats_comp.add_stat(SagaStatsComponent.LUCK,            3)
+	entity.set_component(stats_comp)
+
+	# Hero instance data
 	var hero_comp := SagaHeroComponent.new()
-	hero_comp.combat_strength = kind_data["combat_strength"]
-	hero_comp.movement_speed  = kind_data["movement_speed"]
-	hero_comp.luck            = 3
 	entity.set_component(hero_comp)
 
 	# Glory tracking
@@ -152,10 +156,15 @@ func create_jarl(kind_id: int) -> String:
 	# Name
 	entity.set_component(NameComponent.new(kind_data["name"]))
 
+	# Combat stats
+	var stats_comp := SagaStatsComponent.new()
+	stats_comp.add_stat(SagaStatsComponent.COMBAT_STRENGTH, kind_data["combat_strength"])
+	stats_comp.add_stat(SagaStatsComponent.MOVEMENT_SPEED,  kind_data["movement_speed"])
+	entity.set_component(stats_comp)
+
+	# Jarl instance data
 	var jarl_comp := SagaJarlComponent.new()
-	jarl_comp.kind_id         = kind_id
-	jarl_comp.combat_strength = kind_data["combat_strength"]
-	jarl_comp.movement_speed  = kind_data["movement_speed"]
+	jarl_comp.kind_id = kind_id
 	entity.set_component(jarl_comp)
 
 	# Equipment slot for magic sword (MAIN_HAND, starts empty)
@@ -186,10 +195,15 @@ func create_monster(kind_id: int) -> String:
 	# Name
 	entity.set_component(NameComponent.new(kind_data["name"]))
 
+	# Combat stats
+	var stats_comp := SagaStatsComponent.new()
+	stats_comp.add_stat(SagaStatsComponent.COMBAT_STRENGTH, kind_data["combat_strength"])
+	stats_comp.add_stat(SagaStatsComponent.MOVEMENT_SPEED,  kind_data["movement_speed"])
+	entity.set_component(stats_comp)
+
+	# Monster instance data
 	var monster_comp := SagaMonsterComponent.new()
-	monster_comp.kind             = kind_id
-	monster_comp.combat_strength  = kind_data["combat_strength"]
-	monster_comp.movement_speed   = kind_data["movement_speed"]
+	monster_comp.kind = kind_id
 	entity.set_component(monster_comp)
 
 	entity.tags.add(TAG_MONSTER)
