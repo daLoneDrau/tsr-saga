@@ -8,6 +8,8 @@ const TAG_MONSTER: int = 1 << 1
 const TAG_ITEM: int = 1 << 2
 const TAG_JARL: int = 1 << 3
 const TAG_LAND: int = 1 << 4
+const TAG_SEA: int = 1 << 5
+const TAG_AI: int = 1 << 6
 const TAG_UNIQUE: int = 1 << 8
 const TAG_EQUIPPED: int = 1 << 9
 

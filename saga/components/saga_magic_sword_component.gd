@@ -4,7 +4,8 @@
 #             CombatSystem (reading combat_bonus and ability during combat resolution)
 # Pure data — no methods.
 
-class_name SagaMagicSwordComponent extends EntityComponent
+class_name SagaMagicSwordComponent
+extends EntityComponent
 
 
 # Key into MagicSwordTable. Set at entity creation, never changes.

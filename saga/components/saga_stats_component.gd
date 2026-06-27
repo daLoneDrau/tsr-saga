@@ -1,1 +1,2 @@
-class_name SagaStatsComponent extends StatsComponent
+class_name SagaStatsComponent
+extends StatsComponent
