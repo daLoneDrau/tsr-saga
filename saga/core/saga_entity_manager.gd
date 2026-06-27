@@ -87,3 +87,138 @@ func unequip_from_inventory(player_entity: Entity, item_entity: Entity) -> bool:
 				return true
 
 	return false
+
+
+# ---------------------------------------------------------------------------
+# Entity factories
+# All entity construction goes through these methods so that component layout
+# for each entity type is defined in exactly one place.
+# Each method returns the new entity's ID for immediate use by the caller.
+# ---------------------------------------------------------------------------
+
+## Creates a hero entity from a HeroKindTable entry.
+## is_player: true for the human-controlled hero, false for AI opponents.
+## Stamps: SagaHeroComponent, SagaGloryComponent, SagaEventLogComponent,
+##         SagaEquipmentComponent, InventoryComponent.
+## Tags:   TAG_PLAYER or TAG_AI.
+func create_hero(kind_id: int, is_player: bool) -> String:
+	var kind_data: Dictionary = HeroKindTable.get_hero(kind_id)
+
+	var entity: SagaEntity = SagaEntity.new()
+	entity.id = uuidv4()
+
+	# Name
+	entity.set_component(NameComponent.new(kind_data["name"]))
+
+	# Hero stats
+	var hero_comp := SagaHeroComponent.new()
+	hero_comp.combat_strength = kind_data["combat_strength"]
+	hero_comp.movement_speed  = kind_data["movement_speed"]
+	hero_comp.luck            = 3
+	entity.set_component(hero_comp)
+
+	# Glory tracking
+	entity.set_component(SagaGloryComponent.new())
+
+	# Event log
+	entity.set_component(SagaEventLogComponent.new())
+
+	# Equipment slot for magic sword (MAIN_HAND, starts empty)
+	entity.set_component(SagaEquipmentComponent.new())
+
+	# Inventory for treasure (4 untyped slots)
+	var inv_comp := InventoryComponent.new()
+	inv_comp.capacity = 4
+	inv_comp.slots    = []
+	inv_comp.slots.resize(4)
+	entity.set_component(inv_comp)
+
+	# Tag
+	entity.tags.add(TAG_PLAYER if is_player else TAG_AI)
+
+	add_entity(entity)
+	return entity.id
+
+
+## Creates a jarl entity from a JarlKindTable entry.
+## Stamps: SagaJarlComponent, SagaEquipmentComponent, InventoryComponent.
+## Tags:   TAG_JARL.
+func create_jarl(kind_id: int) -> String:
+	var kind_data: Dictionary = JarlKindTable.get_jarl(kind_id)
+
+	var entity: SagaEntity = SagaEntity.new()
+	entity.id = uuidv4()
+
+	# Name
+	entity.set_component(NameComponent.new(kind_data["name"]))
+
+	var jarl_comp := SagaJarlComponent.new()
+	jarl_comp.kind_id         = kind_id
+	jarl_comp.combat_strength = kind_data["combat_strength"]
+	jarl_comp.movement_speed  = kind_data["movement_speed"]
+	entity.set_component(jarl_comp)
+
+	# Equipment slot for magic sword (MAIN_HAND, starts empty)
+	entity.set_component(SagaEquipmentComponent.new())
+
+	# Inventory for treasure (4 untyped slots)
+	var inv_comp := InventoryComponent.new()
+	inv_comp.capacity = 4
+	inv_comp.slots    = []
+	inv_comp.slots.resize(4)
+	entity.set_component(inv_comp)
+
+	entity.tags.add(TAG_JARL)
+
+	add_entity(entity)
+	return entity.id
+
+
+## Creates a monster entity from a MonsterKindTable entry.
+## Stamps: SagaMonsterComponent.
+## Tags:   TAG_MONSTER.
+func create_monster(kind_id: int) -> String:
+	var kind_data: Dictionary = MonsterKindTable.get_monster(kind_id)
+
+	var entity: SagaEntity = SagaEntity.new()
+	entity.id = uuidv4()
+
+	# Name
+	entity.set_component(NameComponent.new(kind_data["name"]))
+
+	var monster_comp := SagaMonsterComponent.new()
+	monster_comp.kind             = kind_id
+	monster_comp.combat_strength  = kind_data["combat_strength"]
+	monster_comp.movement_speed   = kind_data["movement_speed"]
+	entity.set_component(monster_comp)
+
+	entity.tags.add(TAG_MONSTER)
+
+	add_entity(entity)
+	return entity.id
+
+
+## Creates a magic sword entity from a MagicSwordTable entry.
+## The sword is not equipped by this method — the caller is responsible for
+## placing the returned entity ID into the wielder's SagaEquipmentComponent.
+## Stamps: SagaMagicSwordComponent.
+## Tags:   TAG_ITEM.
+func create_magic_sword(kind_id: int) -> String:
+	var kind_data: Dictionary = MagicSwordTable.get_sword(kind_id)
+
+	var entity: SagaEntity = SagaEntity.new()
+	entity.id = uuidv4()
+
+	# Name
+	entity.set_component(NameComponent.new(kind_data["name"]))
+
+	var sword_comp := SagaMagicSwordComponent.new()
+	sword_comp.kind_id      = kind_id
+	sword_comp.combat_bonus = kind_data["combat_bonus"]
+	sword_comp.ability      = kind_data["ability"]
+	entity.set_component(sword_comp)
+
+	entity.tags.add(TAG_ITEM)
+
+	add_entity(entity)
+	return entity.id

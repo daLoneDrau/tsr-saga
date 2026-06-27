@@ -1,16 +1,15 @@
-# SagaJarlComponent.gd
+# saga_jarl_component.gd
 # Instance data for a jarl entity.
 # Managed by: JarlSystem
+# Name is stored on NameComponent, not here.
 # Pure data — no methods.
 
-class_name SagaJarlComponent extends EntityComponent
+class_name SagaJarlComponent
+extends EntityComponent
 
 
 # Key into JarlKindTable. Set at entity creation, never changes.
 var kind_id: int = 0
-
-# Jarl's name. Set from JarlKindTable at entity creation, never changes.
-var jarl_name: String = ""
 
 # Combat strength. Set from JarlKindTable at entity creation, never changes.
 # Added to the controlling hero's total force when co-located with that hero.
