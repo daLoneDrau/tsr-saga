@@ -137,6 +137,11 @@ func create_hero(kind_id: int, is_player: bool) -> String:
 	inv_comp.slots.resize(4)
 	entity.set_component(inv_comp)
 
+	# Script — handles AI turn decisions
+	var script_comp := SagaScriptComponent.new()
+	script_comp.main_script = HeroEntityScript.new()
+	entity.set_component(script_comp)
+
 	# Tag
 	entity.tags.add(TAG_PLAYER if is_player else TAG_AI)
 
@@ -177,6 +182,11 @@ func create_jarl(kind_id: int) -> String:
 	inv_comp.slots.resize(4)
 	entity.set_component(inv_comp)
 
+	# Script — handles wound and death reactions
+	var script_comp := SagaScriptComponent.new()
+	script_comp.main_script = JarlEntityScript.new()
+	entity.set_component(script_comp)
+
 	entity.tags.add(TAG_JARL)
 
 	add_entity(entity)
@@ -206,6 +216,11 @@ func create_monster(kind_id: int) -> String:
 	monster_comp.kind = kind_id
 	entity.set_component(monster_comp)
 
+	# Script — handles wound and death reactions
+	var script_comp := SagaScriptComponent.new()
+	script_comp.main_script = MonsterEntityScript.new()
+	entity.set_component(script_comp)
+
 	entity.tags.add(TAG_MONSTER)
 
 	add_entity(entity)
@@ -215,7 +230,7 @@ func create_monster(kind_id: int) -> String:
 ## Creates a magic sword entity from a MagicSwordTable entry.
 ## The sword is not equipped by this method — the caller is responsible for
 ## placing the returned entity ID into the wielder's SagaEquipmentComponent.
-## Stamps: SagaMagicSwordComponent.
+## Stamps: SagaMagicSwordComponent, SagaItemComponent.
 ## Tags:   TAG_ITEM.
 func create_magic_sword(kind_id: int) -> String:
 	var kind_data: Dictionary = MagicSwordTable.get_sword(kind_id)
@@ -226,11 +241,30 @@ func create_magic_sword(kind_id: int) -> String:
 	# Name
 	entity.set_component(NameComponent.new(kind_data["name"]))
 
+	# Sword identity and special ability
 	var sword_comp := SagaMagicSwordComponent.new()
-	sword_comp.kind_id      = kind_id
-	sword_comp.combat_bonus = kind_data["combat_bonus"]
-	sword_comp.ability      = kind_data["ability"]
+	sword_comp.kind_id = kind_id
+	sword_comp.ability = kind_data["ability"]
 	entity.set_component(sword_comp)
+
+	# Combat strength modifier — applied to wielder's StatsComponent on equip,
+	# removed on unequip or drop. Managed by CombatSystem.
+	var mod_entry := StatModifierEntry.create(
+						 &"magic_sword",
+						 kind_data["combat_bonus"],
+						 false
+					 )
+	var bundle := ItemModifierBundle.new()
+	bundle.stat_modifiers.append(mod_entry)
+
+	var item_comp := SagaItemComponent.new()
+	item_comp.modifiers = bundle
+	entity.set_component(item_comp)
+
+	# Script — handles equip/unequip modifier application and combat ability triggers
+	var script_comp := SagaScriptComponent.new()
+	script_comp.main_script = SwordEntityScript.new()
+	entity.set_component(script_comp)
 
 	entity.tags.add(TAG_ITEM)
 
