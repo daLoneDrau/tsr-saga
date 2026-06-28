@@ -172,5 +172,5 @@ static func glory_loss_for_fleeing() -> int:
 
 
 ## Handle discrete game events (override in subclass)
-func handle_event(_event_name: String, _payload: Dictionary = {}) -> void:
-	pass
+func handle_event(_event_name: String, _payload: Dictionary = {}) -> bool:
+	return true

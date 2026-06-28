@@ -16,7 +16,7 @@ var gold: int = 0
 
 # The hero's home country. Set once at game start, never changes.
 # Not automatically part of the kingdom — requires a jarl to hold like any other territory.
-var home_country: Entity = null
+var home_country: String = ""
 
 # All countries currently in this hero's kingdom.
 # Managed exclusively by KingdomSystem — never written directly.

@@ -2,6 +2,69 @@ class_name SagaGameEngine
 extends GameEngine
 
 
+# ---------------------------------------------------------------------------
+# Persistent pools — written once by SagaSetupSystem at game start.
+# Consumed during play as monsters/jarls are placed; wounded entities are
+# returned via the return_* methods. All reads and writes go through the
+# methods below — never mutate these arrays directly.
+# ---------------------------------------------------------------------------
+
+## Remaining unplaced monster kind IDs.
+var monster_pool: Array[int] = []
+
+## Remaining unplaced jarl kind IDs.
+var jarl_pool: Array[int] = []
+
+## Remaining undrawn treasure kind IDs.
+var treasure_pool: Array[int] = []
+
+
+# --- Monster pool ---
+
+## Draw the next monster kind ID from the pool.
+## Returns -1 if the pool is empty (caller must handle this).
+func draw_monster() -> int:
+	if monster_pool.is_empty():
+		push_warning("SagaGameEngine.draw_monster: pool is empty")
+		return -1
+	return monster_pool.pop_front()
+
+
+## Return a wounded monster's kind ID to the back of the pool.
+func return_monster(kind_id: int) -> void:
+	monster_pool.append(kind_id)
+
+
+# --- Jarl pool ---
+
+## Draw the next jarl kind ID from the pool.
+## Returns -1 if the pool is empty (caller must handle this).
+func draw_jarl() -> int:
+	if jarl_pool.is_empty():
+		push_warning("SagaGameEngine.draw_jarl: pool is empty")
+		return -1
+	return jarl_pool.pop_front()
+
+
+## Return a wounded jarl's kind ID to the back of the pool.
+func return_jarl(kind_id: int) -> void:
+	jarl_pool.append(kind_id)
+
+
+# --- Treasure pool ---
+
+## Draw the next treasure kind ID from the pool.
+## Returns -1 if the pool is empty (caller must handle this).
+func draw_treasure() -> int:
+	if treasure_pool.is_empty():
+		push_warning("SagaGameEngine.draw_treasure: pool is empty")
+		return -1
+	return treasure_pool.pop_front()
+
+
+## Treasure is never returned to the pool — heroes keep it until the game ends.
+
+
 ## Called when the node enters the scene tree
 func _ready() -> void:
 	super._ready()

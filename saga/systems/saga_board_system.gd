@@ -12,6 +12,12 @@
 #
 # _locations is never written directly. All writes to either dictionary go
 # through _add_to_grid and _remove_from_grid, which keep both in sync atomically.
+#
+# Listens for:
+#   "place_entity"  payload: { entity_id: String, location_id: String }
+#                        OR  { entity_id: String, random_land: true }
+#   "remove_entity" payload: { entity_id: String }
+#   "move_entity"   payload: { entity_id: String, location_id: String }
 
 class_name SagaBoardSystem
 extends GameSystem
@@ -45,8 +51,33 @@ func _on_initialize() -> void:
 func _process_system(_delta: float) -> void:
 	pass
 
-func handle_event(_event_name: String, _payload: Dictionary = {}) -> void:
-	pass
+func handle_event(event_name: String, payload: Dictionary = {}) -> bool:
+	match event_name:
+		"place_entity":
+			var entity_id: String = payload.get("entity_id", "")
+			var loc_id: String
+			if payload.get("random_land", false):
+				loc_id = random_land_location()
+			else:
+				loc_id = payload.get("location_id", "")
+			if entity_id == "" or loc_id == "":
+				return false
+			place_entity(entity_id, loc_id)
+			return true
+		"remove_entity":
+			var entity_id: String = payload.get("entity_id", "")
+			if entity_id == "":
+				return false
+			remove_entity(entity_id)
+			return true
+		"move_entity":
+			var entity_id: String = payload.get("entity_id", "")
+			var loc_id: String = payload.get("location_id", "")
+			if entity_id == "" or loc_id == "":
+				return false
+			move_entity(entity_id, loc_id)
+			return true
+	return true
 
 
 # ---------------------------------------------------------------------------
