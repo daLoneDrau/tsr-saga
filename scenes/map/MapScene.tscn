@@ -1,8 +1,22 @@
 [gd_scene format=3 uid="uid://2f6yuggalb8"]
 
+[sub_resource type="Environment" id="Environment_eg2af"]
+background_mode = 1
+background_color = Color(0.05490196, 0.0627451, 0.14117648, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.6, 0.6392157, 0.8, 1)
+ambient_light_energy = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eg2af"]
+albedo_color = Color(0.39607844, 1, 1, 1)
+
 [sub_resource type="PlaneMesh" id="PlaneMesh_rbr1p"]
+material = SubResource("StandardMaterial3D_eg2af")
 
 [node name="MapScene" type="Node3D" unique_id=1502685633]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=531793074]
+environment = SubResource("Environment_eg2af")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=531994940]
 transform = Transform3D(0.7071053, -7.5865837e-06, -0.7071083, -0.35355264, 0.8660229, -0.35356042, 0.6123746, 0.5000045, 0.6123666, 36.74, 30, 36.74)
