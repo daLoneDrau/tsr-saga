@@ -56,23 +56,31 @@ func handle_event(_event_name: String, _payload: Dictionary = {}) -> bool:
 # Public API
 # ---------------------------------------------------------------------------
 
-## Run the full setup sequence. Call once from SetupScene._ready().
-func run() -> void:
-	var player_count: int = 1  # hardcoded for initial build
+## Run the full setup sequence. Called once by SetupScene after the player
+## has chosen their hero and opponent count.
+##
+## chosen_hero_kind_id — HeroKindTable constant for the human player's hero.
+## total_players       — 1 (human) + N (AI opponents).
+func run(chosen_hero_kind_id: int, total_players: int) -> void:
+	var player_count: int = 1 # hardcoded for initial build
+	# var player_count: int = total_players
 
 	# ------------------------------------------------------------------
-	# 1. Build and shuffle the four pools
+	# 1. Build and shuffle the pools (hero pool excludes the chosen hero)
 	# ------------------------------------------------------------------
-	var hero_pool:     Array = HeroKindTable.all_kinds();    hero_pool.shuffle()
+	var hero_pool:     Array = HeroKindTable.all_kinds()
+	hero_pool.erase(chosen_hero_kind_id)
+	hero_pool.shuffle()
+
 	var sword_pool:    Array = MagicSwordTable.all_kinds();  sword_pool.shuffle()
 	var monster_pool:  Array = MonsterKindTable.all_kinds(); monster_pool.shuffle()
 	var jarl_pool:     Array = JarlKindTable.all_kinds();    jarl_pool.shuffle()
 	var treasure_pool: Array = TreasureTable.all_kinds();    treasure_pool.shuffle()
 
 	# ------------------------------------------------------------------
-	# 2. Create hero
+	# 2. Create human hero (chosen_hero_kind_id, tagged TAG_PLAYER)
 	# ------------------------------------------------------------------
-	var hero_kind_id: int = hero_pool.pop_front()
+	var hero_kind_id: int = chosen_hero_kind_id
 	var hero_id: String = SagaEntityManager_auto.create_hero(hero_kind_id, true)
 
 	# ------------------------------------------------------------------
