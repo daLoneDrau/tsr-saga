@@ -37,3 +37,6 @@ editor_description = "PLACEHOLDER — leave empty in source control. Instance th
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Terrain" unique_id=1182330467]
 transform = Transform3D(20, 0, 0, 0, 20, 0, 0, 0, 20, 0, 0, 0)
 mesh = SubResource("PlaneMesh_rbr1p")
+
+[node name="Camera3D2" type="Camera3D" parent="." unique_id=1970252297]
+transform = Transform3D(1, 6.2947706e-08, 2.4480599e-08, 4.288323e-08, -0.87177676, 0.48990327, 5.2179896e-08, -0.48990327, -0.87177676, 0, 52.221558, -126.16666)
