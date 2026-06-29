@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://2f6yuggalb8"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_rbr1p"]
+
+[node name="MapScene" type="Node3D" unique_id=1502685633]
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=531994940]
+transform = Transform3D(0.7071053, -7.5865837e-06, -0.7071083, -0.35355264, 0.8660229, -0.35356042, 0.6123746, 0.5000045, 0.6123666, 36.74, 30, 36.74)
+keep_aspect = 0
+v_offset = 0.6
+projection = 1
+size = 80.0
+near = 0.1
+far = 1000.0
+
+[node name="SunLight" type="DirectionalLight3D" parent="." unique_id=1987031724]
+transform = Transform3D(-0.5547, 0, 0.8321, 0.6749, 0.5848, 0.4499, -0.4866, 0.8111, -0.3244, 0, 20, 0)
+light_energy = 1.1
+
+[node name="Terrain" type="Node3D" parent="." unique_id=1038050835]
+editor_description = "PLACEHOLDER — leave empty in source control. Instance the external Blender map asset here (e.g. res://art/map/north_sea.glb or .tscn): sea, the five regions (Midgard Vale, Jotunheim, Wyrmreach, Hrolf's Mark, Barrow Fens), hills, coasts. Do NOT rebuild these as Godot primitives — all 3D assets are authored in Blender and imported. Author terrain with ~0.5x vertical exaggeration to match the prototype's flattened heights (see MapCamera.gd)."
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Terrain" unique_id=1182330467]
+transform = Transform3D(20, 0, 0, 0, 20, 0, 0, 0, 20, 0, 0, 0)
+mesh = SubResource("PlaneMesh_rbr1p")

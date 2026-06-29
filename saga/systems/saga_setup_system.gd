@@ -61,7 +61,7 @@ func handle_event(_event_name: String, _payload: Dictionary = {}) -> bool:
 ##
 ## chosen_hero_kind_id — HeroKindTable constant for the human player's hero.
 ## total_players       — 1 (human) + N (AI opponents).
-func run(chosen_hero_kind_id: int, total_players: int) -> void:
+func run(chosen_hero_kind_id: int, _total_players: int) -> void:
 	var player_count: int = 1 # hardcoded for initial build
 	# var player_count: int = total_players
 
@@ -103,11 +103,11 @@ func run(chosen_hero_kind_id: int, total_players: int) -> void:
 	for i in player_count:
 		var kind_id: int = monster_pool.pop_front()
 		var monster_id: String = SagaEntityManager_auto.create_monster(kind_id)
-		var placed: bool = broadcast_event("place_entity", {
+		var monster_placed: bool = broadcast_event("place_entity", {
 			"entity_id": monster_id,
 			"random_land": true,
 		})
-		if not placed:
+		if not monster_placed:
 			push_error("SagaSetupSystem.run: failed to place monster %s" % monster_id)
 			continue
 		var loc_id: String  = _get_entity_location(monster_id)
@@ -123,11 +123,11 @@ func run(chosen_hero_kind_id: int, total_players: int) -> void:
 	for i in player_count:
 		var kind_id: int = jarl_pool.pop_front()
 		var jarl_id: String = SagaEntityManager_auto.create_jarl(kind_id)
-		var placed: bool = broadcast_event("place_entity", {
+		var jarl_placed: bool = broadcast_event("place_entity", {
 			"entity_id":  jarl_id,
 			"random_land": true,
 		})
-		if not placed:
+		if not jarl_placed:
 			push_error("SagaSetupSystem.run: failed to place jarl %s" % jarl_id)
 			continue
 		var loc_id: String = _get_entity_location(jarl_id)
@@ -139,11 +139,11 @@ func run(chosen_hero_kind_id: int, total_players: int) -> void:
 	# ------------------------------------------------------------------
 	# 6. Place hero; record home country
 	# ------------------------------------------------------------------
-	var placed: bool = broadcast_event("place_entity", {
+	var hero_placed: bool = broadcast_event("place_entity", {
 		"entity_id":  hero_id,
 		"random_land": true,
 	})
-	if not placed:
+	if not hero_placed:
 		push_error("SagaSetupSystem.run: failed to place hero %s" % hero_id)
 
 	var home_loc_id: String = _get_entity_location(hero_id)

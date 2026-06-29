@@ -163,7 +163,7 @@ func do_action(action: GameAction) -> void:
 
 	match action.name:
 		"new_saga":
-			_game_engine.change_scene("GameScene", SETUP_SCENE_PATH)
+			SagaGameEngine_auto.change_scene("SetupScene", SETUP_SCENE_PATH)
 		"how_to_play", "settings", "credits":
 			# Stubs — implement when scenes exist.
 			print("TitleScene: '%s' not yet implemented" % action.name)

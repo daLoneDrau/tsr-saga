@@ -148,22 +148,22 @@ static func glory_for_monster_slay(kind_id: int) -> int:
 ## total_force = hero.combat_strength + sum of all jarls' combat_strength
 ## physically present on the same tile at time of combat.
 static func glory_for_hero_slay(total_force_at_tile: int) -> int:
-	return total_force_at_tile / 2
+	return int(float(total_force_at_tile) / 2)
 
 
 ## Glory for wounding a rival hero (same total force formula).
 static func glory_for_hero_wound(total_force_at_tile: int) -> int:
-	return total_force_at_tile / 4
+	return int(float(total_force_at_tile) / 4)
 
 
 ## Glory for slaying a rival jarl directly.
 static func glory_for_jarl_slay(jarl_combat_strength: int) -> int:
-	return jarl_combat_strength / 2
+	return int(float(jarl_combat_strength) / 2)
 
 
 ## Glory for recruiting a jarl.
 static func glory_for_jarl_recruit(jarl_combat_strength: int) -> int:
-	return jarl_combat_strength / 2
+	return int(float(jarl_combat_strength) / 2)
 
 
 ## Glory loss for fleeing combat.

@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://bewql2gcepj1k"]
 
 [ext_resource type="Shader" uid="uid://dt4e4ii68kktg" path="res://shaders/ctr_scanlines.gdshader" id="1_wtl6b"]
+[ext_resource type="Script" uid="uid://hda6ujgusdaj" path="res://scenes/setup/setup_scene.gd" id="1_xxvcc"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_rbr1p"]
 
@@ -48,9 +49,10 @@ shader_parameter/vignette = 0.5
 
 [node name="SetupScene" type="Node3D" unique_id=714159444]
 editor_description = "Instance the EMPTY imported Blender board under `Board`; the chosen opponent count + hero are collected by SetupController, which then runs game setup and changes to `game_scene`."
+script = ExtResource("1_xxvcc")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=659539906]
-transform = Transform3D(1, 0, 0, 0, 0.99, -0.139, 0, 0.139, 0.99, 0, 1.8, 10)
+transform = Transform3D(1, 0, 0, 0, 1.0000001, 0, 0, 0, 1.0000001, 0, 0, 10)
 projection = 1
 size = 7.0
 far = 100.0
@@ -490,6 +492,7 @@ editor_description = "PLACEHOLDER stub mesh. Drop a simple low-poly placeholder 
 mesh = SubResource("BoxMesh_wtl6b")
 
 [node name="HeroName" type="Label" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol" unique_id=1801943899]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 23
@@ -595,6 +598,7 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="AcceptBtn" type="Button" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol" unique_id=420182114]
+unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"GoldBtn"
 theme_override_colors/font_color = Color(0, 0, 0, 1)
