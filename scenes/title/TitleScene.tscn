@@ -65,7 +65,7 @@ layout_mode = 2
 [node name="BannerLeft" type="Label" parent="UI/Main/Content/TopRow/Column" unique_id=1598085975]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 14
+theme_type_variation = &"BannerLeft"
 text = "SAGA — AGE OF HEROES"
 vertical_alignment = 1
 

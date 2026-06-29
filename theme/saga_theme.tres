@@ -3,6 +3,51 @@
 [ext_resource type="FontFile" uid="uid://c06y3udfacnmw" path="res://assets/fonts/PressStart2P-Regular.ttf" id="1_7y10m"]
 [ext_resource type="FontFile" uid="uid://d2njtg7cxltxv" path="res://assets/fonts/PetMe64.ttf" id="2_7y10m"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wtl6b"]
+content_margin_left = 14.0
+content_margin_top = 9.0
+content_margin_right = 14.0
+content_margin_bottom = 9.0
+bg_color = Color(0.9098039, 0.8235294, 0.2901961, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_er8n6"]
+content_margin_left = 7.0
+content_margin_top = 6.0
+content_margin_right = 7.0
+content_margin_bottom = 6.0
+bg_color = Color(0.62352943, 0.7137255, 0.9607843, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6ykx6"]
+content_margin_left = 7.0
+content_margin_top = 6.0
+content_margin_right = 7.0
+content_margin_bottom = 6.0
+bg_color = Color(0.039215688, 0.039215688, 0.1882353, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.13725491, 0.13333334, 0.47843137, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yyx5a"]
+content_margin_left = 8.0
+content_margin_top = 8.0
+content_margin_right = 8.0
+content_margin_bottom = 8.0
+bg_color = Color(0.101960786, 0.10980392, 0.2901961, 1)
+border_width_right = 2
+border_color = Color(0, 0, 0, 1)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hkbnd"]
 content_margin_left = 12.0
 content_margin_top = 5.0
@@ -27,6 +72,50 @@ border_width_right = 2
 border_width_bottom = 2
 border_color = Color(0.42352942, 0.3882353, 0.8392157, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aupq5"]
+bg_color = Color(0.0627451, 0.07058824, 0.18039216, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.42352942, 0.3882353, 0.8392157, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_py1x7"]
+content_margin_left = 8.0
+content_margin_top = 7.0
+content_margin_right = 8.0
+content_margin_bottom = 6.0
+bg_color = Color(0.101960786, 0.101960786, 0.33333334, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.13725491, 0.13333334, 0.47843137, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7qt8t"]
+content_margin_left = 8.0
+content_margin_top = 7.0
+content_margin_right = 8.0
+content_margin_bottom = 6.0
+bg_color = Color(0.9098039, 0.8235294, 0.2901961, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.13725491, 0.13333334, 0.47843137, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lytlq"]
+content_margin_left = 10.0
+content_margin_top = 4.0
+content_margin_right = 10.0
+content_margin_bottom = 4.0
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.42352942, 0.3882353, 0.8392157, 1)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxEmpty_7y10m"]
 bg_color = Color(0.42352942, 0.3882353, 0.8392157, 1)
 draw_center = false
@@ -44,6 +133,17 @@ corner_detail = 3
 [resource]
 default_font = ExtResource("2_7y10m")
 default_font_size = 18
+BannerLeft/base_type = &"Label"
+BannerLeft/font_sizes/font_size = 14
+GoldBtn/base_type = &"Button"
+GoldBtn/styles/focus = SubResource("StyleBoxFlat_wtl6b")
+GoldBtn/styles/hover = SubResource("StyleBoxFlat_wtl6b")
+GoldBtn/styles/normal = SubResource("StyleBoxFlat_wtl6b")
+GoldBtn/styles/pressed = SubResource("StyleBoxFlat_wtl6b")
+HeroActive/base_type = &"PanelContainer"
+HeroActive/styles/panel = SubResource("StyleBoxFlat_er8n6")
+HeroIdle/base_type = &"PanelContainer"
+HeroIdle/styles/panel = SubResource("StyleBoxFlat_6ykx6")
 HeroSubtitle/base_type = &"Label"
 HeroSubtitle/colors/font_color = Color(1, 1, 1, 1)
 HeroSubtitle/colors/font_shadow_color = Color(0.4784, 0.0706, 0.2824, 1)
@@ -61,6 +161,8 @@ HeroTitle/constants/shadow_offset_y = 4
 HeroTitle/font_sizes/font_size = 62
 HeroTitle/fonts/font = ExtResource("1_7y10m")
 Label/colors/font_color = Color(0.9059, 0.8902, 0.9608, 1)
+ListBg/base_type = &"PanelContainer"
+ListBg/styles/panel = SubResource("StyleBoxFlat_yyx5a")
 MenuItem/base_type = &"Label"
 MenuItem/colors/font_color = Color(1, 1, 1, 1)
 MenuItem/font_sizes/font_size = 16
@@ -68,9 +170,21 @@ MenuItemSelected/base_type = &"PanelContainer"
 MenuItemSelected/styles/panel = SubResource("StyleBoxFlat_hkbnd")
 MenuItemUnselected/base_type = &"PanelContainer"
 MenuItemUnselected/styles/panel = SubResource("StyleBoxFlat_7y10m")
+PanelBox/base_type = &"PanelContainer"
+PanelBox/styles/panel = SubResource("StyleBoxFlat_aupq5")
+PipEmpty/base_type = &"PanelContainer"
+PipEmpty/styles/panel = SubResource("StyleBoxFlat_py1x7")
+PipFull/base_type = &"PanelContainer"
+PipFull/styles/panel = SubResource("StyleBoxFlat_7qt8t")
 Status/base_type = &"Label"
 Status/colors/font_color = Color(0.5451, 0.8784, 0.8784, 1)
 Status/font_sizes/font_size = 14
+StepBtn/base_type = &"Button"
+StepBtn/styles/disabled = SubResource("StyleBoxFlat_lytlq")
+StepBtn/styles/focus = SubResource("StyleBoxFlat_lytlq")
+StepBtn/styles/hover = SubResource("StyleBoxFlat_lytlq")
+StepBtn/styles/normal = SubResource("StyleBoxFlat_lytlq")
+StepBtn/styles/pressed = SubResource("StyleBoxFlat_lytlq")
 Tagline/base_type = &"Label"
 Tagline/colors/font_color = Color(1, 0.8392, 0.902, 1)
 Tagline/colors/font_shadow_color = Color(0.3529, 0.0549, 0.2039, 1)
