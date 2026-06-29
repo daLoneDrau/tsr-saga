@@ -122,6 +122,7 @@ func _start_game() -> void:
 
 	# Register scenes
 	register_scene("TitleScene", "res://scenes/title/TitleScene.tscn")
+	register_scene("SetupScene", "res://scenes/setup/SetupScene.tscn")
 
 	# Change to title scene
 	change_scene("TitleScene")
