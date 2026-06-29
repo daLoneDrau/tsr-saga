@@ -4,6 +4,20 @@
 
 [sub_resource type="BoxMesh" id="BoxMesh_rbr1p"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3oqb5"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 10
+border_width_top = 2
+border_width_right = 10
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rbr1p"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_l4kmf"]
+content_margin_left = 8.0
+content_margin_top = 8.0
+
 [sub_resource type="Environment" id="Environment_7y10m"]
 background_mode = 1
 background_color = Color(0.05490196, 0.0627451, 0.14117648, 1)
@@ -17,16 +31,6 @@ roughness = 0.9
 
 [sub_resource type="BoxMesh" id="BoxMesh_wtl6b"]
 material = SubResource("StandardMaterial3D_xxvcc")
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3oqb5"]
-bg_color = Color(0, 0, 0, 1)
-border_width_left = 10
-border_width_top = 2
-border_width_right = 10
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rbr1p"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wtl6b"]
 bg_color = Color(0, 0, 0, 1)
@@ -61,493 +65,6 @@ editor_description = "PLACEHOLDER — leave empty in source control. Instance th
 mesh = SubResource("BoxMesh_rbr1p")
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=889248581]
-
-[node name="Step1" type="CenterContainer" parent="UI" unique_id=1014625403]
-unique_name_in_owner = true
-visible = false
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = 28.0
-offset_bottom = -44.0
-
-[node name="Card" type="PanelContainer" parent="UI/Step1" unique_id=1244941736]
-custom_minimum_size = Vector2(330, 0)
-layout_mode = 2
-theme_type_variation = &"PanelBox"
-
-[node name="Pad" type="MarginContainer" parent="UI/Step1/Card" unique_id=1055323673]
-layout_mode = 2
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_top = 22
-theme_override_constants/margin_right = 24
-theme_override_constants/margin_bottom = 20
-
-[node name="Col" type="VBoxContainer" parent="UI/Step1/Card/Pad" unique_id=186720929]
-layout_mode = 2
-theme_override_constants/separation = 18
-alignment = 1
-
-[node name="Title" type="Label" parent="UI/Step1/Card/Pad/Col" unique_id=1016817455]
-layout_mode = 2
-theme_type_variation = &"HeroSubtitle"
-theme_override_colors/font_color = Color(1, 0.886, 0.286, 1)
-theme_override_font_sizes/font_size = 13
-text = "HOW MANY OPPONENTS?"
-horizontal_alignment = 1
-
-[node name="Stepper" type="HBoxContainer" parent="UI/Step1/Card/Pad/Col" unique_id=1718868945]
-layout_mode = 2
-theme_override_constants/separation = 16
-alignment = 1
-
-[node name="MinusBtn" type="Button" parent="UI/Step1/Card/Pad/Col/Stepper" unique_id=1141682142]
-unique_name_in_owner = true
-modulate = Color(1, 1, 1, 0.4)
-custom_minimum_size = Vector2(44, 44)
-layout_mode = 2
-theme_type_variation = &"StepBtn"
-theme_override_colors/font_color = Color(0.545, 0.878, 0.878, 1)
-theme_override_colors/font_focus_color = Color(0.545, 0.878, 0.878, 1)
-theme_override_colors/font_hover_color = Color(0.545, 0.878, 0.878, 1)
-theme_override_font_sizes/font_size = 28
-text = "-"
-
-[node name="CountLabel" type="Label" parent="UI/Step1/Card/Pad/Col/Stepper" unique_id=1791821687]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(58, 0)
-layout_mode = 2
-theme_type_variation = &"HeroSubtitle"
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 30
-text = "1"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="PlusBtn" type="Button" parent="UI/Step1/Card/Pad/Col/Stepper" unique_id=978532775]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(44, 44)
-layout_mode = 2
-mouse_default_cursor_shape = 2
-theme_type_variation = &"StepBtn"
-theme_override_colors/font_color = Color(0.545, 0.878, 0.878, 1)
-theme_override_colors/font_focus_color = Color(0.545, 0.878, 0.878, 1)
-theme_override_colors/font_hover_color = Color(0.545, 0.878, 0.878, 1)
-theme_override_font_sizes/font_size = 28
-text = "+"
-
-[node name="Hint" type="Label" parent="UI/Step1/Card/Pad/Col" unique_id=350813944]
-layout_mode = 2
-theme_type_variation = &"Status"
-theme_override_colors/font_color = Color(0.604, 0.627, 0.847, 1)
-theme_override_font_sizes/font_size = 13
-text = "RIVAL JARLS  ·  1 - 5"
-horizontal_alignment = 1
-
-[node name="ContinueBtn" type="Button" parent="UI/Step1/Card/Pad/Col" unique_id=864772022]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"GoldBtn"
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
-theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 17
-text = "CONTINUE »"
-
-[node name="Step2" type="Control" parent="UI" unique_id=1604153102]
-unique_name_in_owner = true
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = 28.0
-offset_bottom = -44.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="BackBtn" type="Button" parent="UI/Step2" unique_id=1980023967]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 8.0
-offset_top = 8.0
-offset_right = 96.0
-offset_bottom = 38.0
-theme_type_variation = &"StepBtn"
-theme_override_colors/font_color = Color(0.788, 0.627, 1, 1)
-theme_override_font_sizes/font_size = 16
-text = "« BACK"
-
-[node name="Center" type="CenterContainer" parent="UI/Step2" unique_id=13120149]
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = 8.0
-
-[node name="Card" type="PanelContainer" parent="UI/Step2/Center" unique_id=546550012]
-custom_minimum_size = Vector2(592, 340)
-layout_mode = 2
-theme_type_variation = &"PanelBox"
-
-[node name="Row" type="HBoxContainer" parent="UI/Step2/Center/Card" unique_id=959006739]
-layout_mode = 2
-theme_override_constants/separation = 0
-
-[node name="ListPane" type="PanelContainer" parent="UI/Step2/Center/Card/Row" unique_id=1192015784]
-custom_minimum_size = Vector2(244, 0)
-layout_mode = 2
-theme_type_variation = &"ListBg"
-
-[node name="ListCol" type="VBoxContainer" parent="UI/Step2/Center/Card/Row/ListPane" unique_id=725631147]
-layout_mode = 2
-theme_override_constants/separation = 6
-
-[node name="ListHdr" type="Label" parent="UI/Step2/Center/Card/Row/ListPane/ListCol" unique_id=2083444297]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.788, 0.627, 1, 1)
-theme_override_font_sizes/font_size = 14
-text = "CHOOSE HERO"
-
-[node name="HeroList" type="VBoxContainer" parent="UI/Step2/Center/Card/Row/ListPane/ListCol" unique_id=761471962]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_constants/separation = 6
-
-[node name="Hero0" type="PanelContainer" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList" unique_id=695732295]
-layout_mode = 2
-theme_type_variation = &"HeroActive"
-
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList/Hero0" unique_id=1061334465]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="Rune" type="Label" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList/Hero0/HBoxContainer" unique_id=2018839124]
-layout_mode = 2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-text = "ᛒ"
-vertical_alignment = 1
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList/Hero0/HBoxContainer" unique_id=2001306886]
-layout_mode = 2
-theme_override_constants/separation = 2
-
-[node name="Name" type="Label" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList/Hero0/HBoxContainer/VBoxContainer" unique_id=1991232102]
-layout_mode = 2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 15
-text = "BEOWULF"
-
-[node name="Epithet" type="Label" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList/Hero0/HBoxContainer/VBoxContainer" unique_id=1490002142]
-layout_mode = 2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 11
-text = "Bane of Grendel"
-
-[node name="Hero1" type="PanelContainer" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList" unique_id=1702937390]
-layout_mode = 2
-theme_type_variation = &"HeroIdle"
-
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList/Hero1" unique_id=606891006]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="Rune" type="Label" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList/Hero1/HBoxContainer" unique_id=999711844]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.6039216, 0.627451, 0.9372549, 1)
-text = "ᚦ"
-vertical_alignment = 1
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList/Hero1/HBoxContainer" unique_id=371685830]
-layout_mode = 2
-theme_override_constants/separation = 2
-
-[node name="Name" type="Label" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList/Hero1/HBoxContainer/VBoxContainer" unique_id=2107856352]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.6039216, 0.627451, 0.9372549, 1)
-theme_override_font_sizes/font_size = 15
-text = "BRUNHILD"
-
-[node name="Epithet" type="Label" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList/Hero1/HBoxContainer/VBoxContainer" unique_id=535724421]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.6039216, 0.627451, 0.9372549, 1)
-theme_override_font_sizes/font_size = 11
-text = "The Shield-Maiden"
-
-[node name="Hero2" type="PanelContainer" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList" unique_id=1461078748]
-layout_mode = 2
-theme_type_variation = &"HeroIdle"
-
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList/Hero2" unique_id=840323014]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="Rune" type="Label" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList/Hero2/HBoxContainer" unique_id=2042743080]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.6039216, 0.627451, 0.9372549, 1)
-text = "ᛖ"
-vertical_alignment = 1
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList/Hero2/HBoxContainer" unique_id=1291639057]
-layout_mode = 2
-theme_override_constants/separation = 2
-
-[node name="Name" type="Label" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList/Hero2/HBoxContainer/VBoxContainer" unique_id=828429164]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.6039216, 0.627451, 0.9372549, 1)
-theme_override_font_sizes/font_size = 15
-text = "EGIL"
-
-[node name="Epithet" type="Label" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList/Hero2/HBoxContainer/VBoxContainer" unique_id=589712018]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.6039216, 0.627451, 0.9372549, 1)
-theme_override_font_sizes/font_size = 11
-text = "Skald of Borg"
-
-[node name="Hero3" type="PanelContainer" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList" unique_id=1436486606]
-layout_mode = 2
-theme_type_variation = &"HeroIdle"
-
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList/Hero3" unique_id=1577597697]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="Rune" type="Label" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList/Hero3/HBoxContainer" unique_id=1591665313]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.6039216, 0.627451, 0.9372549, 1)
-text = "ᚱ"
-vertical_alignment = 1
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList/Hero3/HBoxContainer" unique_id=443245770]
-layout_mode = 2
-theme_override_constants/separation = 2
-
-[node name="Name" type="Label" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList/Hero3/HBoxContainer/VBoxContainer" unique_id=1594814850]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.6039216, 0.627451, 0.9372549, 1)
-theme_override_font_sizes/font_size = 15
-text = "RAGNAR"
-
-[node name="Epithet" type="Label" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList/Hero3/HBoxContainer/VBoxContainer" unique_id=1131636157]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.6039216, 0.627451, 0.9372549, 1)
-theme_override_font_sizes/font_size = 11
-text = "The Sea-King"
-
-[node name="Hero4" type="PanelContainer" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList" unique_id=998742492]
-layout_mode = 2
-theme_type_variation = &"HeroIdle"
-
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList/Hero4" unique_id=484425528]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="Rune" type="Label" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList/Hero4/HBoxContainer" unique_id=1332015700]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.6039216, 0.627451, 0.9372549, 1)
-text = "ᛋ"
-vertical_alignment = 1
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList/Hero4/HBoxContainer" unique_id=1535604981]
-layout_mode = 2
-theme_override_constants/separation = 2
-
-[node name="Name" type="Label" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList/Hero4/HBoxContainer/VBoxContainer" unique_id=83805260]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.6039216, 0.627451, 0.9372549, 1)
-theme_override_font_sizes/font_size = 15
-text = "SIEGFRIED"
-
-[node name="Epithet" type="Label" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList/Hero4/HBoxContainer/VBoxContainer" unique_id=963313547]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.6039216, 0.627451, 0.9372549, 1)
-theme_override_font_sizes/font_size = 11
-text = "The Dragonslayer"
-
-[node name="Hero5" type="PanelContainer" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList" unique_id=1760812073]
-layout_mode = 2
-theme_type_variation = &"HeroIdle"
-
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList/Hero5" unique_id=1528298036]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="Rune" type="Label" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList/Hero5/HBoxContainer" unique_id=2100705764]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.6039216, 0.627451, 0.9372549, 1)
-text = "ᛏ"
-vertical_alignment = 1
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList/Hero5/HBoxContainer" unique_id=447872696]
-layout_mode = 2
-theme_override_constants/separation = 2
-
-[node name="Name" type="Label" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList/Hero5/HBoxContainer/VBoxContainer" unique_id=451819283]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.6039216, 0.627451, 0.9372549, 1)
-theme_override_font_sizes/font_size = 15
-text = "STARKAD"
-
-[node name="Epithet" type="Label" parent="UI/Step2/Center/Card/Row/ListPane/ListCol/HeroList/Hero5/HBoxContainer/VBoxContainer" unique_id=1241945798]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.6039216, 0.627451, 0.9372549, 1)
-theme_override_font_sizes/font_size = 11
-text = "The Mighty"
-
-[node name="Dossier" type="MarginContainer" parent="UI/Step2/Center/Card/Row" unique_id=1814069568]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 14
-theme_override_constants/margin_right = 16
-theme_override_constants/margin_bottom = 14
-
-[node name="DCol" type="VBoxContainer" parent="UI/Step2/Center/Card/Row/Dossier" unique_id=451671754]
-layout_mode = 2
-theme_override_constants/separation = 12
-
-[node name="PortraitFrame" type="PanelContainer" parent="UI/Step2/Center/Card/Row/Dossier/DCol" unique_id=1411786896]
-custom_minimum_size = Vector2(150, 150)
-layout_mode = 2
-size_flags_horizontal = 4
-theme_type_variation = &"PanelBox"
-
-[node name="Portrait" type="SubViewportContainer" parent="UI/Step2/Center/Card/Row/Dossier/DCol/PortraitFrame" unique_id=97095783]
-layout_mode = 2
-stretch = true
-
-[node name="SubViewport" type="SubViewport" parent="UI/Step2/Center/Card/Row/Dossier/DCol/PortraitFrame/Portrait" unique_id=885035357]
-own_world_3d = true
-handle_input_locally = false
-size = Vector2i(144, 144)
-render_target_update_mode = 4
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="UI/Step2/Center/Card/Row/Dossier/DCol/PortraitFrame/Portrait/SubViewport" unique_id=1976305776]
-environment = SubResource("Environment_7y10m")
-
-[node name="PortraitCamera" type="Camera3D" parent="UI/Step2/Center/Card/Row/Dossier/DCol/PortraitFrame/Portrait/SubViewport" unique_id=1912891636]
-transform = Transform3D(1, 0, 0, 0, 0.985, 0.174, 0, -0.174, 0.985, 0, 0.35, 2.4)
-fov = 40.0
-
-[node name="PortraitLight" type="DirectionalLight3D" parent="UI/Step2/Center/Card/Row/Dossier/DCol/PortraitFrame/Portrait/SubViewport" unique_id=711471765]
-transform = Transform3D(0.866, -0.25, 0.433, 0, 0.866, 0.5, -0.5, -0.433, 0.75, 0, 0, 0)
-
-[node name="HeroMesh" type="MeshInstance3D" parent="UI/Step2/Center/Card/Row/Dossier/DCol/PortraitFrame/Portrait/SubViewport" unique_id=1345636316]
-unique_name_in_owner = true
-editor_description = "PLACEHOLDER stub mesh. Drop a simple low-poly placeholder here (e.g. the shared hero bust). SetupController sets `material_override.albedo_color` per hero; no mesh is assigned in source control."
-mesh = SubResource("BoxMesh_wtl6b")
-
-[node name="HeroName" type="Label" parent="UI/Step2/Center/Card/Row/Dossier/DCol" unique_id=1801943899]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 23
-text = "BEOWULF"
-horizontal_alignment = 1
-
-[node name="CombatRow" type="HBoxContainer" parent="UI/Step2/Center/Card/Row/Dossier/DCol" unique_id=276508540]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="Lbl" type="Label" parent="UI/Step2/Center/Card/Row/Dossier/DCol/CombatRow" unique_id=1047978957]
-custom_minimum_size = Vector2(78, 0)
-layout_mode = 2
-theme_type_variation = &"Status"
-theme_override_font_sizes/font_size = 13
-text = "COMBAT"
-vertical_alignment = 1
-
-[node name="CombatPips" type="HBoxContainer" parent="UI/Step2/Center/Card/Row/Dossier/DCol/CombatRow" unique_id=1102187780]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_constants/separation = 3
-
-[node name="P0" type="PanelContainer" parent="UI/Step2/Center/Card/Row/Dossier/DCol/CombatRow/CombatPips" unique_id=391884159]
-custom_minimum_size = Vector2(18, 15)
-layout_mode = 2
-theme_type_variation = &"PipFull"
-
-[node name="P1" type="PanelContainer" parent="UI/Step2/Center/Card/Row/Dossier/DCol/CombatRow/CombatPips" unique_id=397603342]
-custom_minimum_size = Vector2(18, 15)
-layout_mode = 2
-theme_type_variation = &"PipEmpty"
-
-[node name="P2" type="PanelContainer" parent="UI/Step2/Center/Card/Row/Dossier/DCol/CombatRow/CombatPips" unique_id=1625517153]
-custom_minimum_size = Vector2(18, 15)
-layout_mode = 2
-theme_type_variation = &"PipEmpty"
-
-[node name="P3" type="PanelContainer" parent="UI/Step2/Center/Card/Row/Dossier/DCol/CombatRow/CombatPips" unique_id=1390980699]
-custom_minimum_size = Vector2(18, 15)
-layout_mode = 2
-theme_type_variation = &"PipEmpty"
-
-[node name="P4" type="PanelContainer" parent="UI/Step2/Center/Card/Row/Dossier/DCol/CombatRow/CombatPips" unique_id=1126564384]
-custom_minimum_size = Vector2(18, 15)
-layout_mode = 2
-theme_type_variation = &"PipEmpty"
-
-[node name="P5" type="PanelContainer" parent="UI/Step2/Center/Card/Row/Dossier/DCol/CombatRow/CombatPips" unique_id=1127078644]
-custom_minimum_size = Vector2(18, 15)
-layout_mode = 2
-theme_type_variation = &"PipEmpty"
-
-[node name="SpeedRow" type="HBoxContainer" parent="UI/Step2/Center/Card/Row/Dossier/DCol" unique_id=1728250445]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="Lbl" type="Label" parent="UI/Step2/Center/Card/Row/Dossier/DCol/SpeedRow" unique_id=1373297297]
-custom_minimum_size = Vector2(78, 0)
-layout_mode = 2
-theme_type_variation = &"Status"
-theme_override_font_sizes/font_size = 13
-text = "SPEED"
-vertical_alignment = 1
-
-[node name="SpeedPips" type="HBoxContainer" parent="UI/Step2/Center/Card/Row/Dossier/DCol/SpeedRow" unique_id=2125122468]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_constants/separation = 3
-
-[node name="P0" type="PanelContainer" parent="UI/Step2/Center/Card/Row/Dossier/DCol/SpeedRow/SpeedPips" unique_id=73177823]
-custom_minimum_size = Vector2(18, 15)
-layout_mode = 2
-theme_type_variation = &"PipFull"
-
-[node name="P1" type="PanelContainer" parent="UI/Step2/Center/Card/Row/Dossier/DCol/SpeedRow/SpeedPips" unique_id=1879256961]
-custom_minimum_size = Vector2(18, 15)
-layout_mode = 2
-theme_type_variation = &"PipEmpty"
-
-[node name="P2" type="PanelContainer" parent="UI/Step2/Center/Card/Row/Dossier/DCol/SpeedRow/SpeedPips" unique_id=960938428]
-custom_minimum_size = Vector2(18, 15)
-layout_mode = 2
-theme_type_variation = &"PipEmpty"
-
-[node name="P3" type="PanelContainer" parent="UI/Step2/Center/Card/Row/Dossier/DCol/SpeedRow/SpeedPips" unique_id=1491866015]
-custom_minimum_size = Vector2(18, 15)
-layout_mode = 2
-theme_type_variation = &"PipEmpty"
-
-[node name="P4" type="PanelContainer" parent="UI/Step2/Center/Card/Row/Dossier/DCol/SpeedRow/SpeedPips" unique_id=824061360]
-custom_minimum_size = Vector2(18, 15)
-layout_mode = 2
-theme_type_variation = &"PipEmpty"
-
-[node name="P5" type="PanelContainer" parent="UI/Step2/Center/Card/Row/Dossier/DCol/SpeedRow/SpeedPips" unique_id=695155344]
-custom_minimum_size = Vector2(18, 15)
-layout_mode = 2
-theme_type_variation = &"PipEmpty"
-
-[node name="Spacer" type="Control" parent="UI/Step2/Center/Card/Row/Dossier/DCol" unique_id=599671378]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="AcceptBtn" type="Button" parent="UI/Step2/Center/Card/Row/Dossier/DCol" unique_id=420182114]
-layout_mode = 2
-theme_type_variation = &"GoldBtn"
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
-theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 17
-text = "ACCEPT »"
 
 [node name="Main" type="PanelContainer" parent="UI" unique_id=1874007776]
 anchors_preset = 15
@@ -589,10 +106,502 @@ custom_minimum_size = Vector2(0, 2)
 layout_mode = 2
 color = Color(0.42352942, 0.3882353, 0.8392157, 1)
 
-[node name="Panel" type="Panel" parent="UI/Main/Content" unique_id=1172112833]
+[node name="MiddlePane" type="Panel" parent="UI/Main/Content" unique_id=1172112833]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_rbr1p")
+
+[node name="Step1" type="CenterContainer" parent="UI/Main/Content/MiddlePane" unique_id=1014625403]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Card" type="PanelContainer" parent="UI/Main/Content/MiddlePane/Step1" unique_id=1244941736]
+custom_minimum_size = Vector2(330, 0)
+layout_mode = 2
+theme_type_variation = &"PanelBox"
+
+[node name="Pad" type="MarginContainer" parent="UI/Main/Content/MiddlePane/Step1/Card" unique_id=1055323673]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 22
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 20
+
+[node name="Col" type="VBoxContainer" parent="UI/Main/Content/MiddlePane/Step1/Card/Pad" unique_id=186720929]
+layout_mode = 2
+theme_override_constants/separation = 18
+alignment = 1
+
+[node name="Title" type="Label" parent="UI/Main/Content/MiddlePane/Step1/Card/Pad/Col" unique_id=1016817455]
+layout_mode = 2
+theme_type_variation = &"HeroSubtitle"
+theme_override_colors/font_color = Color(1, 0.886, 0.286, 1)
+theme_override_font_sizes/font_size = 13
+text = "HOW MANY OPPONENTS?"
+horizontal_alignment = 1
+
+[node name="Stepper" type="HBoxContainer" parent="UI/Main/Content/MiddlePane/Step1/Card/Pad/Col" unique_id=1718868945]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="MinusBtn" type="Button" parent="UI/Main/Content/MiddlePane/Step1/Card/Pad/Col/Stepper" unique_id=1141682142]
+unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0.4)
+custom_minimum_size = Vector2(44, 44)
+layout_mode = 2
+theme_type_variation = &"StepBtn"
+theme_override_colors/font_color = Color(0.545, 0.878, 0.878, 1)
+theme_override_colors/font_focus_color = Color(0.545, 0.878, 0.878, 1)
+theme_override_colors/font_hover_color = Color(0.545, 0.878, 0.878, 1)
+theme_override_font_sizes/font_size = 28
+text = "-"
+
+[node name="CountLabel" type="Label" parent="UI/Main/Content/MiddlePane/Step1/Card/Pad/Col/Stepper" unique_id=1791821687]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(58, 0)
+layout_mode = 2
+theme_type_variation = &"HeroSubtitle"
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 30
+text = "1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PlusBtn" type="Button" parent="UI/Main/Content/MiddlePane/Step1/Card/Pad/Col/Stepper" unique_id=978532775]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(44, 44)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_type_variation = &"StepBtn"
+theme_override_colors/font_color = Color(0.545, 0.878, 0.878, 1)
+theme_override_colors/font_focus_color = Color(0.545, 0.878, 0.878, 1)
+theme_override_colors/font_hover_color = Color(0.545, 0.878, 0.878, 1)
+theme_override_font_sizes/font_size = 28
+text = "+"
+
+[node name="Hint" type="Label" parent="UI/Main/Content/MiddlePane/Step1/Card/Pad/Col" unique_id=350813944]
+layout_mode = 2
+theme_type_variation = &"Status"
+theme_override_colors/font_color = Color(0.604, 0.627, 0.847, 1)
+theme_override_font_sizes/font_size = 13
+text = "RIVAL JARLS  ·  1 - 5"
+horizontal_alignment = 1
+
+[node name="ContinueBtn" type="Button" parent="UI/Main/Content/MiddlePane/Step1/Card/Pad/Col" unique_id=864772022]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"GoldBtn"
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 17
+text = "CONTINUE »"
+
+[node name="Step2" type="VBoxContainer" parent="UI/Main/Content/MiddlePane" unique_id=208861325]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/Main/Content/MiddlePane/Step2" unique_id=1752686344]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="UI/Main/Content/MiddlePane/Step2/HBoxContainer" unique_id=857560830]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_l4kmf")
+
+[node name="BackBtn" type="Button" parent="UI/Main/Content/MiddlePane/Step2/HBoxContainer/PanelContainer" unique_id=1980023967]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"StepBtn"
+theme_override_colors/font_color = Color(0.788, 0.627, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "« BACK"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/Main/Content/MiddlePane/Step2" unique_id=101749794]
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 1
+
+[node name="Center" type="CenterContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer" unique_id=13120149]
+layout_mode = 2
+
+[node name="Card" type="PanelContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center" unique_id=546550012]
+custom_minimum_size = Vector2(592, 340)
+layout_mode = 2
+theme_type_variation = &"PanelBox"
+
+[node name="Row" type="HBoxContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card" unique_id=959006739]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="ListPane" type="PanelContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row" unique_id=1192015784]
+custom_minimum_size = Vector2(244, 0)
+layout_mode = 2
+theme_type_variation = &"ListBg"
+
+[node name="ListCol" type="VBoxContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane" unique_id=725631147]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="ListHdr" type="Label" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol" unique_id=2083444297]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.788, 0.627, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "CHOOSE HERO"
+
+[node name="HeroList" type="VBoxContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol" unique_id=761471962]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Hero0" type="PanelContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList" unique_id=695732295]
+layout_mode = 2
+theme_type_variation = &"HeroActive"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList/Hero0" unique_id=1061334465]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Rune" type="Label" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList/Hero0/HBoxContainer" unique_id=2018839124]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "ᛒ"
+vertical_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList/Hero0/HBoxContainer" unique_id=2001306886]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Name" type="Label" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList/Hero0/HBoxContainer/VBoxContainer" unique_id=1991232102]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 15
+text = "BEOWULF"
+
+[node name="Epithet" type="Label" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList/Hero0/HBoxContainer/VBoxContainer" unique_id=1490002142]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 11
+text = "Bane of Grendel"
+
+[node name="Hero1" type="PanelContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList" unique_id=1702937390]
+layout_mode = 2
+theme_type_variation = &"HeroIdle"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList/Hero1" unique_id=606891006]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Rune" type="Label" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList/Hero1/HBoxContainer" unique_id=999711844]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6039216, 0.627451, 0.9372549, 1)
+text = "ᚦ"
+vertical_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList/Hero1/HBoxContainer" unique_id=371685830]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Name" type="Label" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList/Hero1/HBoxContainer/VBoxContainer" unique_id=2107856352]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6039216, 0.627451, 0.9372549, 1)
+theme_override_font_sizes/font_size = 15
+text = "BRUNHILD"
+
+[node name="Epithet" type="Label" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList/Hero1/HBoxContainer/VBoxContainer" unique_id=535724421]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6039216, 0.627451, 0.9372549, 1)
+theme_override_font_sizes/font_size = 11
+text = "The Shield-Maiden"
+
+[node name="Hero2" type="PanelContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList" unique_id=1461078748]
+layout_mode = 2
+theme_type_variation = &"HeroIdle"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList/Hero2" unique_id=840323014]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Rune" type="Label" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList/Hero2/HBoxContainer" unique_id=2042743080]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6039216, 0.627451, 0.9372549, 1)
+text = "ᛖ"
+vertical_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList/Hero2/HBoxContainer" unique_id=1291639057]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Name" type="Label" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList/Hero2/HBoxContainer/VBoxContainer" unique_id=828429164]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6039216, 0.627451, 0.9372549, 1)
+theme_override_font_sizes/font_size = 15
+text = "EGIL"
+
+[node name="Epithet" type="Label" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList/Hero2/HBoxContainer/VBoxContainer" unique_id=589712018]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6039216, 0.627451, 0.9372549, 1)
+theme_override_font_sizes/font_size = 11
+text = "Skald of Borg"
+
+[node name="Hero3" type="PanelContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList" unique_id=1436486606]
+layout_mode = 2
+theme_type_variation = &"HeroIdle"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList/Hero3" unique_id=1577597697]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Rune" type="Label" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList/Hero3/HBoxContainer" unique_id=1591665313]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6039216, 0.627451, 0.9372549, 1)
+text = "ᚱ"
+vertical_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList/Hero3/HBoxContainer" unique_id=443245770]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Name" type="Label" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList/Hero3/HBoxContainer/VBoxContainer" unique_id=1594814850]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6039216, 0.627451, 0.9372549, 1)
+theme_override_font_sizes/font_size = 15
+text = "RAGNAR"
+
+[node name="Epithet" type="Label" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList/Hero3/HBoxContainer/VBoxContainer" unique_id=1131636157]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6039216, 0.627451, 0.9372549, 1)
+theme_override_font_sizes/font_size = 11
+text = "The Sea-King"
+
+[node name="Hero4" type="PanelContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList" unique_id=998742492]
+layout_mode = 2
+theme_type_variation = &"HeroIdle"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList/Hero4" unique_id=484425528]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Rune" type="Label" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList/Hero4/HBoxContainer" unique_id=1332015700]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6039216, 0.627451, 0.9372549, 1)
+text = "ᛋ"
+vertical_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList/Hero4/HBoxContainer" unique_id=1535604981]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Name" type="Label" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList/Hero4/HBoxContainer/VBoxContainer" unique_id=83805260]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6039216, 0.627451, 0.9372549, 1)
+theme_override_font_sizes/font_size = 15
+text = "SIEGFRIED"
+
+[node name="Epithet" type="Label" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList/Hero4/HBoxContainer/VBoxContainer" unique_id=963313547]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6039216, 0.627451, 0.9372549, 1)
+theme_override_font_sizes/font_size = 11
+text = "The Dragonslayer"
+
+[node name="Hero5" type="PanelContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList" unique_id=1760812073]
+layout_mode = 2
+theme_type_variation = &"HeroIdle"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList/Hero5" unique_id=1528298036]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Rune" type="Label" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList/Hero5/HBoxContainer" unique_id=2100705764]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6039216, 0.627451, 0.9372549, 1)
+text = "ᛏ"
+vertical_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList/Hero5/HBoxContainer" unique_id=447872696]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Name" type="Label" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList/Hero5/HBoxContainer/VBoxContainer" unique_id=451819283]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6039216, 0.627451, 0.9372549, 1)
+theme_override_font_sizes/font_size = 15
+text = "STARKAD"
+
+[node name="Epithet" type="Label" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/ListPane/ListCol/HeroList/Hero5/HBoxContainer/VBoxContainer" unique_id=1241945798]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6039216, 0.627451, 0.9372549, 1)
+theme_override_font_sizes/font_size = 11
+text = "The Mighty"
+
+[node name="Dossier" type="MarginContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row" unique_id=1814069568]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 14
+
+[node name="DCol" type="VBoxContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier" unique_id=451671754]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="PortraitFrame" type="PanelContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol" unique_id=1411786896]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_type_variation = &"PanelBox"
+
+[node name="Portrait" type="SubViewportContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol/PortraitFrame" unique_id=97095783]
+layout_mode = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol/PortraitFrame/Portrait" unique_id=885035357]
+own_world_3d = true
+handle_input_locally = false
+size = Vector2i(144, 144)
+render_target_update_mode = 4
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol/PortraitFrame/Portrait/SubViewport" unique_id=1976305776]
+environment = SubResource("Environment_7y10m")
+
+[node name="PortraitCamera" type="Camera3D" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol/PortraitFrame/Portrait/SubViewport" unique_id=1912891636]
+transform = Transform3D(1, 0, 0, 0, 0.985, 0.174, 0, -0.174, 0.985, 0, 0.35, 2.4)
+fov = 40.0
+
+[node name="PortraitLight" type="DirectionalLight3D" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol/PortraitFrame/Portrait/SubViewport" unique_id=711471765]
+transform = Transform3D(0.866, -0.25, 0.433, 0, 0.866, 0.5, -0.5, -0.433, 0.75, 0, 0, 0)
+
+[node name="HeroMesh" type="MeshInstance3D" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol/PortraitFrame/Portrait/SubViewport" unique_id=1345636316]
+unique_name_in_owner = true
+editor_description = "PLACEHOLDER stub mesh. Drop a simple low-poly placeholder here (e.g. the shared hero bust). SetupController sets `material_override.albedo_color` per hero; no mesh is assigned in source control."
+mesh = SubResource("BoxMesh_wtl6b")
+
+[node name="HeroName" type="Label" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol" unique_id=1801943899]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 23
+text = "BEOWULF"
+horizontal_alignment = 1
+
+[node name="CombatRow" type="HBoxContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol" unique_id=276508540]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Lbl" type="Label" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol/CombatRow" unique_id=1047978957]
+custom_minimum_size = Vector2(78, 0)
+layout_mode = 2
+theme_type_variation = &"Status"
+theme_override_font_sizes/font_size = 13
+text = "COMBAT"
+vertical_alignment = 1
+
+[node name="CombatPips" type="HBoxContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol/CombatRow" unique_id=1102187780]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="P0" type="PanelContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol/CombatRow/CombatPips" unique_id=391884159]
+custom_minimum_size = Vector2(18, 15)
+layout_mode = 2
+theme_type_variation = &"PipFull"
+
+[node name="P1" type="PanelContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol/CombatRow/CombatPips" unique_id=397603342]
+custom_minimum_size = Vector2(18, 15)
+layout_mode = 2
+theme_type_variation = &"PipEmpty"
+
+[node name="P2" type="PanelContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol/CombatRow/CombatPips" unique_id=1625517153]
+custom_minimum_size = Vector2(18, 15)
+layout_mode = 2
+theme_type_variation = &"PipEmpty"
+
+[node name="P3" type="PanelContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol/CombatRow/CombatPips" unique_id=1390980699]
+custom_minimum_size = Vector2(18, 15)
+layout_mode = 2
+theme_type_variation = &"PipEmpty"
+
+[node name="P4" type="PanelContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol/CombatRow/CombatPips" unique_id=1126564384]
+custom_minimum_size = Vector2(18, 15)
+layout_mode = 2
+theme_type_variation = &"PipEmpty"
+
+[node name="P5" type="PanelContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol/CombatRow/CombatPips" unique_id=1127078644]
+custom_minimum_size = Vector2(18, 15)
+layout_mode = 2
+theme_type_variation = &"PipEmpty"
+
+[node name="SpeedRow" type="HBoxContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol" unique_id=1728250445]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Lbl" type="Label" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol/SpeedRow" unique_id=1373297297]
+custom_minimum_size = Vector2(78, 0)
+layout_mode = 2
+theme_type_variation = &"Status"
+theme_override_font_sizes/font_size = 13
+text = "SPEED"
+vertical_alignment = 1
+
+[node name="SpeedPips" type="HBoxContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol/SpeedRow" unique_id=2125122468]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="P0" type="PanelContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol/SpeedRow/SpeedPips" unique_id=73177823]
+custom_minimum_size = Vector2(18, 15)
+layout_mode = 2
+theme_type_variation = &"PipFull"
+
+[node name="P1" type="PanelContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol/SpeedRow/SpeedPips" unique_id=1879256961]
+custom_minimum_size = Vector2(18, 15)
+layout_mode = 2
+theme_type_variation = &"PipEmpty"
+
+[node name="P2" type="PanelContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol/SpeedRow/SpeedPips" unique_id=960938428]
+custom_minimum_size = Vector2(18, 15)
+layout_mode = 2
+theme_type_variation = &"PipEmpty"
+
+[node name="P3" type="PanelContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol/SpeedRow/SpeedPips" unique_id=1491866015]
+custom_minimum_size = Vector2(18, 15)
+layout_mode = 2
+theme_type_variation = &"PipEmpty"
+
+[node name="P4" type="PanelContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol/SpeedRow/SpeedPips" unique_id=824061360]
+custom_minimum_size = Vector2(18, 15)
+layout_mode = 2
+theme_type_variation = &"PipEmpty"
+
+[node name="P5" type="PanelContainer" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol/SpeedRow/SpeedPips" unique_id=695155344]
+custom_minimum_size = Vector2(18, 15)
+layout_mode = 2
+theme_type_variation = &"PipEmpty"
+
+[node name="Spacer" type="Control" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol" unique_id=599671378]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="AcceptBtn" type="Button" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol" unique_id=420182114]
+layout_mode = 2
+theme_type_variation = &"GoldBtn"
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 17
+text = "ACCEPT »"
 
 [node name="Spacer2" type="ColorRect" parent="UI/Main/Content" unique_id=302993139]
 custom_minimum_size = Vector2(0, 2)

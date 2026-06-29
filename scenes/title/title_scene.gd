@@ -25,7 +25,7 @@ const ACTION_QUIT:       String = "quit"
 const ARROW_GLYPH: String = "▶"
 
 # Stub path — replace when GameScene exists.
-const GAME_SCENE_PATH: String = "res://scenes/game/GameScene.tscn"
+const SETUP_SCENE_PATH: String = "res://scenes/setup/SetupScene.tscn"
 
 
 # ---------------------------------------------------------------------------
@@ -163,7 +163,7 @@ func do_action(action: GameAction) -> void:
 
 	match action.name:
 		"new_saga":
-			_game_engine.change_scene("GameScene", GAME_SCENE_PATH)
+			_game_engine.change_scene("GameScene", SETUP_SCENE_PATH)
 		"how_to_play", "settings", "credits":
 			# Stubs — implement when scenes exist.
 			print("TitleScene: '%s' not yet implemented" % action.name)
