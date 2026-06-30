@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://ci7wv06df7rn"]
+
+[ext_resource type="PackedScene" uid="uid://butyqqbp1kkuu" path="res://assets/art/models/heroes/beowulf/beowulf_bust.tscn" id="1_a85u4"]
+
+[sub_resource type="Environment" id="Environment_2ukw0"]
+background_mode = 1
+background_color = Color(0.12, 0.12, 0.14, 1)
+ambient_light_source = 2
+ambient_light_color = Color(1, 1, 1, 1)
+ambient_light_energy = 0.6
+
+[node name="Node3D" type="Node3D" unique_id=1024562480]
+
+[node name="beowulf_bust" parent="." unique_id=97650447 instance=ExtResource("1_a85u4")]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1101007567]
+environment = SubResource("Environment_2ukw0")
+
+[node name="PortraitCamera" type="Camera3D" parent="." unique_id=1499322019]
+transform = Transform3D(0.84711933, 0.07396864, -0.5262295, 0, 0.990265, 0.13919508, 0.5314027, -0.11791484, 0.8388726, -1.5507101, 0.7968211, 2.5083523)
+fov = 16.5
+size = 0.9
+
+[node name="PortraitLight" type="DirectionalLight3D" parent="." unique_id=1094957934]
+transform = Transform3D(0.866, -0.25, 0.433, 0, 0.866, 0.5, -0.5, -0.433, 0.75, 0, 0, 0)

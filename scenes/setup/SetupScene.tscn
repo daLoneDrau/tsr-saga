@@ -3,6 +3,7 @@
 [ext_resource type="Shader" uid="uid://dt4e4ii68kktg" path="res://shaders/ctr_scanlines.gdshader" id="1_wtl6b"]
 [ext_resource type="Script" uid="uid://hda6ujgusdaj" path="res://scenes/setup/setup_scene.gd" id="1_xxvcc"]
 [ext_resource type="Shader" uid="uid://cqxcl0ne4n3wx" path="res://shaders/quadrant.gdshader" id="2_6ykx6"]
+[ext_resource type="PackedScene" uid="uid://d3pgpvhrebr58" path="res://assets/art/models/heroes/egil/egil_bust.tscn" id="3_w72uo"]
 
 [sub_resource type="Environment" id="Environment_7y10m"]
 background_mode = 1
@@ -33,13 +34,6 @@ border_color = Color(0, 0, 0, 1)
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_l4kmf"]
 content_margin_left = 8.0
 content_margin_top = 8.0
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xxvcc"]
-albedo_color = Color(0.9297628, 0.44762212, 0.6517936, 1)
-roughness = 0.9
-
-[sub_resource type="BoxMesh" id="BoxMesh_wtl6b"]
-material = SubResource("StandardMaterial3D_xxvcc")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wtl6b"]
 bg_color = Color(0, 0, 0, 1)
@@ -511,10 +505,8 @@ fov = 40.0
 [node name="PortraitLight" type="DirectionalLight3D" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol/PortraitFrame/Portrait/SubViewport" unique_id=711471765]
 transform = Transform3D(0.866, -0.25, 0.433, 0, 0.866, 0.5, -0.5, -0.433, 0.75, 0, 0, 0)
 
-[node name="HeroMesh" type="MeshInstance3D" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol/PortraitFrame/Portrait/SubViewport" unique_id=1345636316]
-unique_name_in_owner = true
-editor_description = "PLACEHOLDER stub mesh. Drop a simple low-poly placeholder here (e.g. the shared hero bust). SetupController sets `material_override.albedo_color` per hero; no mesh is assigned in source control."
-mesh = SubResource("BoxMesh_wtl6b")
+[node name="egil_bust" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol/PortraitFrame/Portrait/SubViewport" unique_id=209357027 instance=ExtResource("3_w72uo")]
+transform = Transform3D(0.90630776, 0, 0.42261827, 0, 1, 0, -0.42261827, 0, 0.90630776, 0.465, -1.64, -1.035)
 
 [node name="HeroName" type="Label" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol" unique_id=1801943899]
 unique_name_in_owner = true

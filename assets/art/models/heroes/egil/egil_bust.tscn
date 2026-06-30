@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://d3pgpvhrebr58"]
+
+[ext_resource type="PackedScene" uid="uid://dox4frj88vcr0" path="res://assets/art/models/heroes/egil/egil_bust.glb" id="1_cw3ay"]
+[ext_resource type="Material" uid="uid://e26fj40fpbq1" path="res://assets/art/materials/heroes/skin/florid.tres" id="2_ywegx"]
+[ext_resource type="Material" uid="uid://d2jl281uoyq3h" path="res://assets/art/materials/heroes/hair/blonde.tres" id="3_punhn"]
+
+[node name="egil_bust" unique_id=209357027 instance=ExtResource("1_cw3ay")]
+
+[node name="egil_head_synty" parent="." index="0" unique_id=1370593801]
+surface_material_override/0 = ExtResource("2_ywegx")
+surface_material_override/1 = ExtResource("3_punhn")
