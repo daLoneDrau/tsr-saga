@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://y7d27benixmg"]
+
+[sub_resource type="Environment" id="Environment_6r8ny"]
+background_mode = 1
+background_color = Color(0.12, 0.12, 0.14, 1)
+ambient_light_source = 2
+ambient_light_color = Color(1, 1, 1, 1)
+ambient_light_energy = 0.6
+
+[node name="PortraitPreview" type="Node3D" unique_id=1557086660]
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="." unique_id=2095158290]
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer" unique_id=1362629618]
+own_world_3d = true
+handle_input_locally = false
+size = Vector2i(2, 2)
+render_target_update_mode = 4
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewportContainer/SubViewport" unique_id=541787139]
+environment = SubResource("Environment_6r8ny")
+
+[node name="PortraitCamera" type="Camera3D" parent="SubViewportContainer/SubViewport" unique_id=353669148]
+transform = Transform3D(1, 0, 0, 0, 0.9903, 0.1392, 0, -0.1392, 0.9903, 0, -1.2433, 0.4435)
+fov = 40.0
+
+[node name="PortraitLight" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport" unique_id=1041715897]
+transform = Transform3D(0.866, -0.25, 0.433, 0, 0.866, 0.5, -0.5, -0.433, 0.75, 0, 0, 0)
+
+[node name="BeowulfBust" type="Node3D" parent="SubViewportContainer/SubViewport" unique_id=730770166]
+editor_description = "Drop the imported beowulf_bust.glb here as a child, or set this node's scene to the .glb directly via 'Reload' / instancing in the editor."
