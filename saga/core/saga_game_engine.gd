@@ -125,7 +125,7 @@ func _start_game() -> void:
 	register_scene("SetupScene", "res://scenes/setup/SetupScene.tscn")
 
 	# Change to title scene
-	# change_scene("TitleScene")
+	change_scene("TitleScene")
 
 
 ## Load core game resources (fonts, UI, sounds)

@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://2f6yuggalb8"]
 
+[ext_resource type="Shader" uid="uid://cqxcl0ne4n3wx" path="res://shaders/quadrant.gdshader" id="1_roj00"]
+
 [sub_resource type="Environment" id="Environment_eg2af"]
 background_mode = 1
 background_color = Color(0.05490196, 0.0627451, 0.14117648, 1)
@@ -7,11 +9,12 @@ ambient_light_source = 2
 ambient_light_color = Color(0.6, 0.6392157, 0.8, 1)
 ambient_light_energy = 0.5
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eg2af"]
-albedo_color = Color(0.39607844, 1, 1, 1)
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_eg2af"]
+render_priority = 0
+shader = ExtResource("1_roj00")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_rbr1p"]
-material = SubResource("StandardMaterial3D_eg2af")
+material = SubResource("ShaderMaterial_eg2af")
 
 [node name="MapScene" type="Node3D" unique_id=1502685633]
 
@@ -19,10 +22,9 @@ material = SubResource("StandardMaterial3D_eg2af")
 environment = SubResource("Environment_eg2af")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=531994940]
-transform = Transform3D(0.7071053, -7.5865837e-06, -0.7071083, -0.35355264, 0.8660229, -0.35356042, 0.6123746, 0.5000045, 0.6123666, 36.74, 30, 36.74)
-keep_aspect = 0
+transform = Transform3D(0.70710677, -0.31661347, 0.6322625, 0, 0.89415425, 0.44775906, -0.70710677, -0.31661347, 0.6322625, 20, 15, 20)
 projection = 1
-size = 80.0
+size = 40.0
 near = 0.1
 far = 1000.0
 
@@ -36,6 +38,3 @@ editor_description = "PLACEHOLDER — leave empty in source control. Instance th
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Terrain" unique_id=1182330467]
 transform = Transform3D(20, 0, 0, 0, 20, 0, 0, 0, 20, 0, 0, 0)
 mesh = SubResource("PlaneMesh_rbr1p")
-
-[node name="Camera3D2" type="Camera3D" parent="." unique_id=1970252297]
-transform = Transform3D(1, 6.2947706e-08, 2.4480599e-08, 4.288323e-08, -0.87177676, 0.48990327, 5.2179896e-08, -0.48990327, -0.87177676, 0, 52.221558, -126.16666)

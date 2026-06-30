@@ -122,15 +122,39 @@ func on_exit() -> void:
 
 
 # ---------------------------------------------------------------------------
-# Scene.do_action — required override
+#region Scene.do_action — required override
 # ---------------------------------------------------------------------------
 
-func do_action(_action: GameAction) -> void:
-	pass  # All input in this scene is handled by button signals.
+func do_action(action: GameAction) -> void:
+	if not action.is_pressed():
+		pass # sometimes you want to skip key release events
 
+	match action.name:
+		"minus_pressed":
+			if _ai_count > AI_MIN:
+				_ai_count -= 1
+				_refresh_stepper()
+		"plus_pressed":
+			if _ai_count < AI_MAX:
+				_ai_count += 1
+				_refresh_stepper()
+		"show_step":
+			_show_step(action.args)
+		"accept":
+			var chosen_kind_id: int = HERO_KIND_IDS[_selected_hero_idx]
+			var total_players: int  = 1 + _ai_count   # 1 human + N AI
+		
+			var setup_sys := get_registered_system(&"SagaSetupSystem") as SagaSetupSystem
+			if setup_sys == null:
+				push_error("SetupScene: SagaSetupSystem not registered")
+
+			setup_sys.run(chosen_kind_id, total_players)
+			# Transition happens in _on_setup_complete once run() emits setup_complete.
+		
+#endregion
 
 # ---------------------------------------------------------------------------
-# System registration
+#region System registration
 # ---------------------------------------------------------------------------
 
 func _register_systems() -> void:
@@ -155,10 +179,11 @@ func _register_systems() -> void:
 	register_system(setup)
 
 	setup.setup_complete.connect(_on_setup_complete)
-
+	
+#endregion
 
 # ---------------------------------------------------------------------------
-# Step visibility
+#region Step visibility
 # ---------------------------------------------------------------------------
 
 func _show_step(step: int) -> void:
@@ -174,48 +199,37 @@ func _show_step(step: int) -> void:
 		_msg2.text = BAR_STEP2_MSG2
 		_refresh_hero_list()
 		_refresh_dossier(_selected_hero_idx)
+		
+#endregion
 
 
 # ---------------------------------------------------------------------------
-# Step 1 — opponent count
+#region Step 1 — opponent count
 # ---------------------------------------------------------------------------
 
 func _wire_step1() -> void:
-	_minus_btn.pressed.connect(_on_minus_pressed)
-	_plus_btn.pressed.connect(_on_plus_pressed)
-	_continue_btn.pressed.connect(_on_continue_pressed)
+	_minus_btn.pressed.connect(do_action.bind(GameAction.new("minus_pressed", GameAction.PHASE_END)))
+	_plus_btn.pressed.connect(do_action.bind(GameAction.new("plus_pressed", GameAction.PHASE_END)))
+	_continue_btn.pressed.connect(do_action.bind(GameAction.new("show_step", GameAction.PHASE_END, 2)))
 
 
 func _unwire_step1() -> void:
-	if _minus_btn.pressed.is_connected(_on_minus_pressed):
-		_minus_btn.pressed.disconnect(_on_minus_pressed)
-	if _plus_btn.pressed.is_connected(_on_plus_pressed):
-		_plus_btn.pressed.disconnect(_on_plus_pressed)
-	if _continue_btn.pressed.is_connected(_on_continue_pressed):
-		_continue_btn.pressed.disconnect(_on_continue_pressed)
+	if _minus_btn.pressed.is_connected(do_action):
+		_minus_btn.pressed.disconnect(do_action)
+	if _plus_btn.pressed.is_connected(do_action):
+		_plus_btn.pressed.disconnect(do_action)
+	if _continue_btn.pressed.is_connected(do_action):
+		_continue_btn.pressed.disconnect(do_action)
 
 
 func _refresh_stepper() -> void:
 	_count_label.text = str(_ai_count)
 	_minus_btn.modulate.a = 0.4 if _ai_count <= AI_MIN else 1.0
+	_minus_btn.mouse_default_cursor_shape = Control.CURSOR_FORBIDDEN if _ai_count <= AI_MIN else Control.CURSOR_POINTING_HAND
 	_plus_btn.modulate.a  = 0.4 if _ai_count >= AI_MAX else 1.0
+	_plus_btn.mouse_default_cursor_shape = Control.CURSOR_FORBIDDEN if _ai_count >= AI_MAX else Control.CURSOR_POINTING_HAND
 
-
-func _on_minus_pressed() -> void:
-	if _ai_count > AI_MIN:
-		_ai_count -= 1
-		_refresh_stepper()
-
-
-func _on_plus_pressed() -> void:
-	if _ai_count < AI_MAX:
-		_ai_count += 1
-		_refresh_stepper()
-
-
-func _on_continue_pressed() -> void:
-	_show_step(2)
-
+#endregion
 
 # ---------------------------------------------------------------------------
 # Step 2 — hero selection
@@ -230,8 +244,8 @@ func _wire_step2() -> void:
 		panel.gui_input.connect(_on_hero_panel_input.bind(i))
 		panel.mouse_entered.connect(_on_hero_panel_hover.bind(i))
 
-	_back_btn.pressed.connect(_on_back_pressed)
-	_accept_btn.pressed.connect(_on_accept_pressed)
+	_back_btn.pressed.connect(do_action.bind(GameAction.new("show_step", GameAction.PHASE_END, 1)))
+	_accept_btn.pressed.connect(do_action.bind(GameAction.new("accept", GameAction.PHASE_END)))
 
 
 func _unwire_step2() -> void:
@@ -245,14 +259,10 @@ func _unwire_step2() -> void:
 		if panel.mouse_entered.is_connected(_on_hero_panel_hover.bind(i)):
 			panel.mouse_entered.disconnect(_on_hero_panel_hover.bind(i))
 
-	if _back_btn.pressed.is_connected(_on_back_pressed):
-		_back_btn.pressed.disconnect(_on_back_pressed)
-	if _accept_btn.pressed.is_connected(_on_accept_pressed):
-		_accept_btn.pressed.disconnect(_on_accept_pressed)
-
-
-func _on_back_pressed() -> void:
-	_show_step(1)
+	if _back_btn.pressed.is_connected(do_action):
+		_back_btn.pressed.disconnect(do_action)
+	if _accept_btn.pressed.is_connected(do_action):
+		_accept_btn.pressed.disconnect(do_action)
 
 
 func _on_hero_panel_hover(idx: int) -> void:
@@ -268,20 +278,6 @@ func _on_hero_panel_input(event: InputEvent, idx: int) -> void:
 			_selected_hero_idx = idx
 			_refresh_hero_list()
 			_refresh_dossier(idx)
-
-
-func _on_accept_pressed() -> void:
-	var chosen_kind_id: int = HERO_KIND_IDS[_selected_hero_idx]
-	var total_players: int  = 1 + _ai_count   # 1 human + N AI
-
-	var setup_sys := get_registered_system(&"SagaSetupSystem") as SagaSetupSystem
-	if setup_sys == null:
-		push_error("SetupScene: SagaSetupSystem not registered")
-		return
-
-	setup_sys.run(chosen_kind_id, total_players)
-# Transition happens in _on_setup_complete once run() emits setup_complete.
-
 
 # ---------------------------------------------------------------------------
 # Hero list visual refresh
