@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://butyqqbp1kkuu"]
+
+[ext_resource type="PackedScene" uid="uid://b273451b53acf" path="res://assets/art/models/heroes/beowulf/beowulf_bust.glb" id="1_2a4lt"]
+
+[node name="beowulf_bust" unique_id=97650447 instance=ExtResource("1_2a4lt")]

@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://y7d27benixmg"]
 
+[ext_resource type="PackedScene" uid="uid://butyqqbp1kkuu" path="res://assets/art/models/heroes/beowulf/beowulf_bust.tscn" id="1_e3j2b"]
+
 [sub_resource type="Environment" id="Environment_6r8ny"]
 background_mode = 1
 background_color = Color(0.12, 0.12, 0.14, 1)
@@ -28,5 +30,4 @@ fov = 40.0
 [node name="PortraitLight" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport" unique_id=1041715897]
 transform = Transform3D(0.866, -0.25, 0.433, 0, 0.866, 0.5, -0.5, -0.433, 0.75, 0, 0, 0)
 
-[node name="BeowulfBust" type="Node3D" parent="SubViewportContainer/SubViewport" unique_id=730770166]
-editor_description = "Drop the imported beowulf_bust.glb here as a child, or set this node's scene to the .glb directly via 'Reload' / instancing in the editor."
+[node name="beowulf_bust" parent="SubViewportContainer/SubViewport" unique_id=97650447 instance=ExtResource("1_e3j2b")]
