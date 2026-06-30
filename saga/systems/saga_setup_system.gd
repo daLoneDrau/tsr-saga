@@ -61,7 +61,10 @@ func handle_event(_event_name: String, _payload: Dictionary = {}) -> bool:
 ##
 ## chosen_hero_kind_id — HeroKindTable constant for the human player's hero.
 ## total_players       — 1 (human) + N (AI opponents).
-func run(chosen_hero_kind_id: int, _total_players: int) -> void:
+## skin_material_path  — resource path of the randomly chosen skin material.
+## hair_material_path  — resource path of the randomly chosen hair material.
+func run(chosen_hero_kind_id: int, _total_players: int,
+skin_material_path: String, hair_material_path: String) -> void:
 	var player_count: int = 1 # hardcoded for initial build
 	# var player_count: int = total_players
 
@@ -82,6 +85,14 @@ func run(chosen_hero_kind_id: int, _total_players: int) -> void:
 	# ------------------------------------------------------------------
 	var hero_kind_id: int = chosen_hero_kind_id
 	var hero_id: String = SagaEntityManager_auto.create_hero(hero_kind_id, true)
+
+	# Store the chosen palette on HeroComponent so any future system that
+	# renders this hero (board piece, portrait) can apply the same colours.
+	var hero_entity: Entity = SagaEntityManager_auto.get_entity_by_id(hero_id)
+	var hero_comp: SagaHeroComponent = hero_entity.get_component("SagaHeroComponent") as SagaHeroComponent
+	if hero_comp != null:
+		hero_comp.skin_material_path = skin_material_path
+		hero_comp.hair_material_path = hair_material_path
 
 	# ------------------------------------------------------------------
 	# 3. Create magic sword and equip via broadcast
@@ -147,8 +158,6 @@ func run(chosen_hero_kind_id: int, _total_players: int) -> void:
 		push_error("SagaSetupSystem.run: failed to place hero %s" % hero_id)
 
 	var home_loc_id: String = _get_entity_location(hero_id)
-	var hero_entity: Entity = SagaEntityManager_auto.get_entity_by_id(hero_id)
-	var hero_comp: SagaHeroComponent = hero_entity.get_component("SagaHeroComponent") as SagaHeroComponent
 	hero_comp.home_country = home_loc_id
 
 	# ------------------------------------------------------------------

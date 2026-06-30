@@ -7,8 +7,9 @@
 #   - Step 1: collect AI opponent count via the +/- stepper.
 #   - Step 2: present the alphabetical hero list; show stats in the dossier
 #             panel when a hero is highlighted; confirm selection via Accept.
-#   - On Accept: call SagaSetupSystem.run() with chosen hero kind ID and
-#                total player count, then transition to GameScene.
+#   - On Accept: call SagaSetupSystem.run() with chosen hero kind ID,
+#                total player count, and the selected skin/hair palette paths,
+#                then transition to GameScene.
 #
 # Node references are resolved once in _ready() via unique-name shortcuts
 # (%NodeName) and stored in typed vars. No $path lookups after _ready().
@@ -26,17 +27,6 @@ const GAME_SCENE_PATH: String = "res://scenes/game/GameScene.tscn"
 const AI_MIN: int = 1
 const AI_MAX: int = 5
 
-# One distinct stub colour per hero, matched to the alphabetical display order:
-# Beowulf, Brunhild, Egil, Ragnar, Siegfried, Starkad
-const HERO_STUB_COLORS: Array[Color] = [
-	Color(0.85, 0.55, 0.20),   # Beowulf   — amber
-	Color(0.40, 0.70, 0.90),   # Brunhild  — ice blue
-	Color(0.55, 0.85, 0.45),   # Egil      — sage green
-	Color(0.90, 0.35, 0.35),   # Ragnar    — crimson
-	Color(0.75, 0.55, 0.90),   # Siegfried — violet
-	Color(0.90, 0.80, 0.30),   # Starkad   — gold
-]
-
 # Hero kind IDs in the same alphabetical order as the scene's Hero0–Hero5 panels.
 # This maps list index → HeroKindTable constant so the script never hard-codes
 # names — it reads everything from the kind table at runtime.
@@ -47,6 +37,34 @@ const HERO_KIND_IDS: Array[int] = [
 	HeroKindTable.RAGNAR,
 	HeroKindTable.SIEGFRIED,
 	HeroKindTable.STARKAD,
+]
+
+# Hero bust scene paths in the same alphabetical order as HERO_KIND_IDS.
+# STUB: Beowulf, Brunhild, Ragnar, Siegfried, Starkad busts not yet authored —
+# they fall back to Egil until replaced.
+const HERO_BUST_PATHS: Array[String] = [
+	"res://assets/art/models/heroes/egil/egil_bust.tscn",  # STUB
+	"res://assets/art/models/heroes/egil/egil_bust.tscn",  # STUB — Brunhild
+	"res://assets/art/models/heroes/egil/egil_bust.tscn",
+	"res://assets/art/models/heroes/egil/egil_bust.tscn",  # STUB — Ragnar
+	"res://assets/art/models/heroes/egil/egil_bust.tscn",  # STUB — Siegfried
+	"res://assets/art/models/heroes/egil/egil_bust.tscn",  # STUB — Starkad
+]
+
+# Skin material resource paths — four palette options.
+const SKIN_MATERIAL_PATHS: Array[String] = [
+	"res://assets/art/materials/heroes/skin/fair_rosy.tres",
+	"res://assets/art/materials/heroes/skin/light_tan.tres",
+	"res://assets/art/materials/heroes/skin/florid.tres",
+	"res://assets/art/materials/heroes/skin/olive.tres",
+]
+
+# Hair material resource paths — four palette options.
+const HAIR_MATERIAL_PATHS: Array[String] = [
+	"res://assets/art/materials/heroes/hair/blonde.tres",
+	"res://assets/art/materials/heroes/hair/auburn.tres",
+	"res://assets/art/materials/heroes/hair/red.tres",
+	"res://assets/art/materials/heroes/hair/black.tres",
 ]
 
 # Maximum pip count rendered in the dossier (matches the scene's P0–P5 nodes).
@@ -63,33 +81,42 @@ const BAR_STEP2_MSG2: String = "HIGHLIGHT A HERO, THEN ACCEPT TO MUSTER."
 # State
 # ---------------------------------------------------------------------------
 
-var _ai_count:          int = 1
-var _selected_hero_idx: int = 0   # index into HERO_KIND_IDS / scene list
+var _ai_count:           int    = 1
+var _selected_hero_idx:  int    = 0   # index into HERO_KIND_IDS / scene list
+var _selected_skin_path: String = ""  # resource path of chosen skin material
+var _selected_hair_path: String = ""  # resource path of chosen hair material
+
+# Holds the currently instanced bust node so it can be removed when the
+# selection changes. Null when no bust is loaded.
+var _bust_instance: Node3D = null
 
 
 # ---------------------------------------------------------------------------
 # Node references — Step 1
 # ---------------------------------------------------------------------------
 
-@onready var _step1:       CenterContainer = %Step1
-@onready var _minus_btn:   Button          = %MinusBtn
-@onready var _count_label: Label           = %CountLabel
-@onready var _plus_btn:    Button          = %PlusBtn
-@onready var _continue_btn: Button         = %ContinueBtn
+@onready var _step1:        CenterContainer = %Step1
+@onready var _minus_btn:    Button          = %MinusBtn
+@onready var _count_label:  Label           = %CountLabel
+@onready var _plus_btn:     Button          = %PlusBtn
+@onready var _continue_btn: Button          = %ContinueBtn
 
 
 # ---------------------------------------------------------------------------
 # Node references — Step 2
 # ---------------------------------------------------------------------------
 
-@onready var _step2:      Control    = %Step2
-@onready var _back_btn:   Button     = %BackBtn
-@onready var _hero_list:  VBoxContainer = %HeroList
-@onready var _hero_mesh:  MeshInstance3D = %HeroMesh
-@onready var _hero_name:  Label      = %HeroName   # dossier name label
-@onready var _combat_pips: HBoxContainer = %CombatPips
-@onready var _speed_pips:  HBoxContainer = %SpeedPips
-@onready var _accept_btn: Button     = %AcceptBtn
+@onready var _step2:       Control        = %Step2
+@onready var _back_btn:    Button         = %BackBtn
+@onready var _hero_list:   VBoxContainer  = %HeroList
+@onready var _hero_name:   Label          = %HeroName
+@onready var _combat_pips: HBoxContainer  = %CombatPips
+@onready var _speed_pips:  HBoxContainer  = %SpeedPips
+@onready var _accept_btn:  Button         = %AcceptBtn
+
+# SubViewport that owns the portrait camera rig.
+# The bust instance is added as a child of this node.
+@onready var _portrait_viewport: SubViewport = %SubViewport
 
 
 # ---------------------------------------------------------------------------
@@ -105,7 +132,7 @@ var _selected_hero_idx: int = 0   # index into HERO_KIND_IDS / scene list
 # ---------------------------------------------------------------------------
 
 func _ready() -> void:
-	_selected_hero_idx = DiceTower_auto.roll("d6-1")
+	_selected_hero_idx = randi_range(0, HERO_KIND_IDS.size() - 1)
 	_register_systems()
 	_wire_step1()
 	_wire_step2()
@@ -119,6 +146,7 @@ func on_enter() -> void:
 func on_exit() -> void:
 	_unwire_step1()
 	_unwire_step2()
+	_clear_bust()
 
 
 # ---------------------------------------------------------------------------
@@ -141,17 +169,10 @@ func do_action(action: GameAction) -> void:
 		"show_step":
 			_show_step(action.args)
 		"accept":
-			var chosen_kind_id: int = HERO_KIND_IDS[_selected_hero_idx]
-			var total_players: int  = 1 + _ai_count   # 1 human + N AI
-		
-			var setup_sys := get_registered_system(&"SagaSetupSystem") as SagaSetupSystem
-			if setup_sys == null:
-				push_error("SetupScene: SagaSetupSystem not registered")
+			_on_accept()
 
-			setup_sys.run(chosen_kind_id, total_players)
-			# Transition happens in _on_setup_complete once run() emits setup_complete.
-		
 #endregion
+
 
 # ---------------------------------------------------------------------------
 #region System registration
@@ -179,8 +200,9 @@ func _register_systems() -> void:
 	register_system(setup)
 
 	setup.setup_complete.connect(_on_setup_complete)
-	
+
 #endregion
+
 
 # ---------------------------------------------------------------------------
 #region Step visibility
@@ -199,7 +221,7 @@ func _show_step(step: int) -> void:
 		_msg2.text = BAR_STEP2_MSG2
 		_refresh_hero_list()
 		_refresh_dossier(_selected_hero_idx)
-		
+
 #endregion
 
 
@@ -231,8 +253,9 @@ func _refresh_stepper() -> void:
 
 #endregion
 
+
 # ---------------------------------------------------------------------------
-# Step 2 — hero selection
+#region Step 2 — hero selection
 # ---------------------------------------------------------------------------
 
 func _wire_step2() -> void:
@@ -279,8 +302,11 @@ func _on_hero_panel_input(event: InputEvent, idx: int) -> void:
 			_refresh_hero_list()
 			_refresh_dossier(idx)
 
+#endregion
+
+
 # ---------------------------------------------------------------------------
-# Hero list visual refresh
+#region Hero list visual refresh
 # ---------------------------------------------------------------------------
 
 func _refresh_hero_list() -> void:
@@ -298,35 +324,35 @@ func _refresh_hero_list() -> void:
 
 
 ## Propagates a font colour to every Label descendant of a hero panel.
-## The scene uses per-node theme_override_colors so we update them at runtime
-## to match the active/idle state rather than duplicating theme variations.
 func _set_hero_panel_color(panel: PanelContainer, color: Color) -> void:
 	for node in panel.find_children("*", "Label", true, false):
 		var lbl := node as Label
 		lbl.add_theme_color_override("font_color", color)
 
+#endregion
+
 
 # ---------------------------------------------------------------------------
-# Dossier refresh
+#region Dossier refresh
 # ---------------------------------------------------------------------------
 
 func _refresh_dossier(idx: int) -> void:
-	var kind_id: int       = HERO_KIND_IDS[idx]
-	var data: Dictionary   = HeroKindTable.get_hero(kind_id)
+	var kind_id: int     = HERO_KIND_IDS[idx]
+	var data: Dictionary = HeroKindTable.get_hero(kind_id)
 
 	# Name
 	_hero_name.text = data["name"].to_upper()
 
-	# Pips — set PipFull on the first N children, PipEmpty on the rest.
+	# Pips
 	_fill_pips(_combat_pips, data["combat_strength"])
 	_fill_pips(_speed_pips,  data["movement_speed"])
 
-	# Portrait stub mesh color.
-	# STUB: replace albedo_color swap with real model load when assets ship.
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = HERO_STUB_COLORS[idx]
-	mat.roughness    = 0.9
-	_hero_mesh.material_override = mat
+	# Palette — roll randomly and store for later use by SetupSystem.
+	_selected_skin_path = SKIN_MATERIAL_PATHS[randi_range(0, SKIN_MATERIAL_PATHS.size() - 1)]
+	_selected_hair_path = HAIR_MATERIAL_PATHS[randi_range(0, HAIR_MATERIAL_PATHS.size() - 1)]
+
+	# Portrait — load the bust scene, instance it, apply palette.
+	_load_bust(idx)
 
 
 func _fill_pips(container: HBoxContainer, filled: int) -> void:
@@ -337,12 +363,103 @@ func _fill_pips(container: HBoxContainer, filled: int) -> void:
 			continue
 		pip.theme_type_variation = &"PipFull" if i < filled else &"PipEmpty"
 
+#endregion
+
 
 # ---------------------------------------------------------------------------
-# Setup complete handler
+#region Portrait — bust loading and palette application
+# ---------------------------------------------------------------------------
+
+## Remove the current bust instance from the SubViewport if one exists.
+func _clear_bust() -> void:
+	if _bust_instance != null and is_instance_valid(_bust_instance):
+		_bust_instance.queue_free()
+	_bust_instance = null
+
+
+## Load the bust scene for the given hero list index, instance it into the
+## SubViewport, and apply the randomly chosen skin and hair materials.
+func _load_bust(idx: int) -> void:
+	_clear_bust()
+
+	var path: String = HERO_BUST_PATHS[idx]
+	var packed: PackedScene = load(path) as PackedScene
+	if packed == null:
+		push_error("SetupScene: could not load bust scene at %s" % path)
+		return
+
+	_bust_instance = packed.instantiate() as Node3D
+	if _bust_instance == null:
+		push_error("SetupScene: bust scene root is not Node3D at %s" % path)
+		return
+
+	_portrait_viewport.add_child(_bust_instance)
+	_apply_palette(_bust_instance)
+
+
+## Walk the bust instance tree to find the first MeshInstance3D descendant
+## and apply the chosen skin (slot 0) and hair (slot 1) materials to it.
+## Surface slot convention: 0 = skin, 1 = hair — must be consistent across
+## all hero bust meshes.
+func _apply_palette(bust_root: Node3D) -> void:
+	var mesh_node: MeshInstance3D = _find_mesh(bust_root)
+	if mesh_node == null:
+		push_error("SetupScene: no MeshInstance3D found in bust instance")
+		return
+
+	var skin_mat: StandardMaterial3D = load(_selected_skin_path) as StandardMaterial3D
+	var hair_mat: StandardMaterial3D = load(_selected_hair_path) as StandardMaterial3D
+
+	if skin_mat == null:
+		push_error("SetupScene: could not load skin material at %s" % _selected_skin_path)
+	else:
+		mesh_node.set_surface_override_material(0, skin_mat)
+
+	if hair_mat == null:
+		push_error("SetupScene: could not load hair material at %s" % _selected_hair_path)
+	else:
+		mesh_node.set_surface_override_material(1, hair_mat)
+
+
+## Recursively find the first MeshInstance3D in the subtree.
+func _find_mesh(node: Node) -> MeshInstance3D:
+	if node is MeshInstance3D:
+		return node as MeshInstance3D
+	for child in node.get_children():
+		var result: MeshInstance3D = _find_mesh(child)
+		if result != null:
+			return result
+	return null
+
+#endregion
+
+
+# ---------------------------------------------------------------------------
+#region Accept handler
+# ---------------------------------------------------------------------------
+
+func _on_accept() -> void:
+	var chosen_kind_id: int = HERO_KIND_IDS[_selected_hero_idx]
+	var total_players:  int = 1 + _ai_count  # 1 human + N AI
+
+	var setup_sys := get_registered_system(&"SagaSetupSystem") as SagaSetupSystem
+	if setup_sys == null:
+		push_error("SetupScene: SagaSetupSystem not registered")
+		return
+
+	setup_sys.run(chosen_kind_id, total_players, _selected_skin_path, _selected_hair_path)
+# Transition happens in _on_setup_complete once run() emits setup_complete.
+
+#endregion
+
+
+# ---------------------------------------------------------------------------
+#region Setup complete handler
 # ---------------------------------------------------------------------------
 
 func _on_setup_complete(_payload: Dictionary) -> void:
 	# Board is now populated. Transition to GameScene.
 	# STUB path — replace when GameScene exists.
 	_game_engine.change_scene("GameScene", GAME_SCENE_PATH)
+
+#endregion

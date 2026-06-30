@@ -33,3 +33,11 @@ var rune = null  # RuneType | null
 # Wounded state. No stat penalties — the only mechanical effect is
 # death on a second wound. Managed by CombatSystem.
 var is_wounded: bool = false
+
+# Resource paths for the skin and hair materials assigned during setup.
+# Chosen randomly from the four palette options and stored here so that
+# any scene or system that renders this hero (portrait, board piece) can
+# apply the same palette without re-rolling.
+# Set once by SagaSetupSystem.run() and never changed afterward.
+var skin_material_path: String = ""
+var hair_material_path: String = ""

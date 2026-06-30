@@ -1,9 +1,0 @@
-[gd_scene format=3 uid="uid://butyqqbp1kkuu"]
-
-[ext_resource type="PackedScene" uid="uid://b273451b53acf" path="res://assets/art/models/heroes/beowulf/beowulf_bust.glb" id="1_2a4lt"]
-[ext_resource type="Material" uid="uid://q27qjl2tgau7" path="res://assets/art/materials/heroes/skin/fair_rosy.tres" id="2_yq3s4"]
-
-[node name="beowulf_bust" unique_id=97650447 instance=ExtResource("1_2a4lt")]
-
-[node name="male_body_bust" parent="." index="0" unique_id=1184676385]
-surface_material_override/0 = ExtResource("2_yq3s4")
