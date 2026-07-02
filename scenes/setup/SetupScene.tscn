@@ -490,6 +490,7 @@ layout_mode = 2
 stretch = true
 
 [node name="SubViewport" type="SubViewport" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol/PortraitFrame/Portrait" unique_id=885035357]
+unique_name_in_owner = true
 own_world_3d = true
 handle_input_locally = false
 size = Vector2i(144, 144)
@@ -506,7 +507,8 @@ fov = 40.0
 transform = Transform3D(0.866, -0.25, 0.433, 0, 0.866, 0.5, -0.5, -0.433, 0.75, 0, 0, 0)
 
 [node name="egil_bust" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol/PortraitFrame/Portrait/SubViewport" unique_id=209357027 instance=ExtResource("3_w72uo")]
-transform = Transform3D(0.90630776, 0, 0.42261827, 0, 1, 0, -0.42261827, 0, 0.90630776, 0.465, -1.64, -1.035)
+transform = Transform3D(0.90630776, 0, 0.42261827, 0, 1, 0, -0.42261827, 0, 0.90630776, 0.045, 0.115, 1.98)
+visible = false
 
 [node name="HeroName" type="Label" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol" unique_id=1801943899]
 unique_name_in_owner = true

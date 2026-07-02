@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://gkork8vmuttw"]
+
+[ext_resource type="PackedScene" uid="uid://pcs10ledia0g" path="res://assets/art/models/heroes/siegfried/siegfried_bust.glb" id="1_31yeu"]
+
+[node name="siegfried_bust" unique_id=1299609425 instance=ExtResource("1_31yeu")]

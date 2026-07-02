@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://dv5gi7lvigp5k"]
+
+[ext_resource type="PackedScene" uid="uid://b2mymlncn80n6" path="res://assets/art/models/heroes/brunhild/egil_bust.glb" id="1_3p36a"]
+
+[node name="egil_bust" unique_id=209357027 instance=ExtResource("1_3p36a")]

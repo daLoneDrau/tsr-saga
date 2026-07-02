@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://bvpfjggjro5wb"]
+
+[ext_resource type="PackedScene" uid="uid://cloaku4u6ag7v" path="res://assets/art/models/heroes/starkad/starkad_bust.glb" id="1_7e8b6"]
+
+[node name="starkad_bust" unique_id=1394355271 instance=ExtResource("1_7e8b6")]
