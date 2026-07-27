@@ -1,0 +1,13 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://yyu2odfr5h0c"]
+
+[ext_resource type="Shader" uid="uid://dqrlhui7g4fbu" path="res://shaders/toon_outline.gdshader" id="1_pocxh"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lc3be"]
+render_priority = 0
+shader = ExtResource("1_pocxh")
+shader_parameter/outline_width = 0.0050000002375
+shader_parameter/outline_color = Color(0.18, 0.13, 0.1, 1)
+
+[resource]
+next_pass = SubResource("ShaderMaterial_lc3be")
+albedo_color = Color(0.41960785, 0.34117648, 0.26666668, 1)

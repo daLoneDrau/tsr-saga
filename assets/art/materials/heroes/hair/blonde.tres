@@ -1,4 +1,13 @@
 [gd_resource type="StandardMaterial3D" format=3 uid="uid://d2jl281uoyq3h"]
 
+[ext_resource type="Shader" uid="uid://dqrlhui7g4fbu" path="res://shaders/toon_outline.gdshader" id="1_n2u8b"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1nlsj"]
+render_priority = 0
+shader = ExtResource("1_n2u8b")
+shader_parameter/outline_width = 0.002000000095
+shader_parameter/outline_color = Color(0.18, 0.13, 0.1, 1)
+
 [resource]
+next_pass = SubResource("ShaderMaterial_1nlsj")
 albedo_color = Color(0.9098039, 0.7607843, 0.41568628, 1)

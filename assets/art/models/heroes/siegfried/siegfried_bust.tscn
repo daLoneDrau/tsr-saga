@@ -1,5 +1,15 @@
 [gd_scene format=3 uid="uid://gkork8vmuttw"]
 
 [ext_resource type="PackedScene" uid="uid://pcs10ledia0g" path="res://assets/art/models/heroes/siegfried/siegfried_bust.glb" id="1_31yeu"]
+[ext_resource type="Material" uid="uid://q27qjl2tgau7" path="res://assets/art/materials/heroes/skin/fair_rosy.tres" id="2_yajod"]
+[ext_resource type="Material" uid="uid://d2jl281uoyq3h" path="res://assets/art/materials/heroes/hair/blonde.tres" id="3_148pu"]
+[ext_resource type="Material" uid="uid://pl3g6kubkkgi" path="res://assets/art/materials/heroes/clothing/helmet_major.tres" id="4_0l6u1"]
+[ext_resource type="Material" uid="uid://cgswiadgmi0f6" path="res://assets/art/materials/heroes/clothing/helmet_horns_feathers.tres" id="5_fu2uw"]
 
-[node name="siegfried_bust" unique_id=1299609425 instance=ExtResource("1_31yeu")]
+[node name="siegfried_bust" unique_id=649973253 instance=ExtResource("1_31yeu")]
+
+[node name="siegfried_head_export_001" parent="." index="0" unique_id=463668872]
+surface_material_override/0 = ExtResource("2_yajod")
+surface_material_override/1 = ExtResource("3_148pu")
+surface_material_override/2 = ExtResource("4_0l6u1")
+surface_material_override/3 = ExtResource("5_fu2uw")

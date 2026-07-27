@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://bibqaasayon7l"]
+
+[ext_resource type="PackedScene" uid="uid://s70huony0l00" path="res://assets/art/models/heroes/siegfried/siegfried.glb" id="1_8ehsx"]
+[ext_resource type="Texture2D" uid="uid://e8yilpni3r0l" path="res://assets/art/models/heroes/siegfried/siegfried_siegfried.png" id="2_1o1r2"]
+[ext_resource type="Shader" uid="uid://dqrlhui7g4fbu" path="res://shaders/toon_outline.gdshader" id="3_n7chd"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rnwuk"]
+render_priority = 0
+shader = ExtResource("3_n7chd")
+shader_parameter/outline_width = 0.015
+shader_parameter/outline_color = Color(0.18, 0.13, 0.1, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bf2rm"]
+next_pass = SubResource("ShaderMaterial_rnwuk")
+albedo_texture = ExtResource("2_1o1r2")
+
+[node name="siegfried" unique_id=875563874 instance=ExtResource("1_8ehsx")]
+
+[node name="Plane_001" parent="." index="0" unique_id=185484922]
+surface_material_override/0 = SubResource("StandardMaterial3D_bf2rm")

@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://byyy8rih7ax81"]
+
+[ext_resource type="PackedScene" uid="uid://dunh5fw83e5el" path="res://assets/art/models/heroes/beowulf/beowulf_incomplete.glb" id="1_a4la3"]
+[ext_resource type="Material" uid="uid://e26fj40fpbq1" path="res://assets/art/materials/heroes/skin/florid.tres" id="2_kepsg"]
+[ext_resource type="Material" uid="uid://4gfrchc5otk" path="res://assets/art/materials/heroes/hair/black.tres" id="3_ndlcm"]
+[ext_resource type="Material" uid="uid://drx0s1gqwf4pr" path="res://assets/art/materials/heroes/clothing/tunic_blue.tres" id="4_5ib6y"]
+[ext_resource type="Material" uid="uid://d3s7u13h1w1xe" path="res://assets/art/materials/heroes/factions/trim_beowulf.tres" id="5_npvoe"]
+[ext_resource type="Material" uid="uid://yyu2odfr5h0c" path="res://assets/art/materials/heroes/clothing/pants_neutral.tres" id="6_6g8ms"]
+[ext_resource type="Material" uid="uid://dkuqkjq454ov1" path="res://assets/art/materials/heroes/clothing/boots_fur.tres" id="7_tbmel"]
+[ext_resource type="Material" uid="uid://ejkjcjfyctxl" path="res://assets/art/materials/heroes/clothing/boots_major.tres" id="8_fx7pk"]
+[ext_resource type="Material" uid="uid://lx4nd6hbyjoo" path="res://assets/art/materials/heroes/clothing/boots_straps.tres" id="9_gwn08"]
+[ext_resource type="Material" uid="uid://d2k3lf4hafeuq" path="res://assets/art/materials/heroes/clothing/belt_major.tres" id="10_cga8m"]
+[ext_resource type="Material" uid="uid://dxhtf7ua44btm" path="res://assets/art/materials/heroes/clothing/belt_buckle.tres" id="11_oy81f"]
+
+[node name="beowulf_incomplete" unique_id=1218253566 instance=ExtResource("1_a4la3")]
+
+[node name="beowulf_body_export_incomplete" parent="." index="0" unique_id=2112440078]
+surface_material_override/0 = ExtResource("2_kepsg")
+surface_material_override/1 = ExtResource("3_ndlcm")
+surface_material_override/2 = ExtResource("4_5ib6y")
+surface_material_override/3 = ExtResource("5_npvoe")
+surface_material_override/4 = ExtResource("6_6g8ms")
+surface_material_override/5 = ExtResource("7_tbmel")
+surface_material_override/6 = ExtResource("8_fx7pk")
+surface_material_override/7 = ExtResource("9_gwn08")
+surface_material_override/8 = ExtResource("10_cga8m")
+surface_material_override/9 = ExtResource("11_oy81f")

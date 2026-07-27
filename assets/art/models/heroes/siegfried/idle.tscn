@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://c5khgyspgo1m2"]
+
+[ext_resource type="PackedScene" uid="uid://cqu665a4ty1yc" path="res://assets/art/models/heroes/siegfried/Idle.fbx" id="1_y3ear"]
+[ext_resource type="Material" uid="uid://q27qjl2tgau7" path="res://assets/art/materials/heroes/skin/fair_rosy.tres" id="2_8iun2"]
+[ext_resource type="Material" uid="uid://d2jl281uoyq3h" path="res://assets/art/materials/heroes/hair/blonde.tres" id="3_6avy1"]
+
+[node name="Idle" unique_id=773355416 instance=ExtResource("1_y3ear")]
+
+[node name="Skeleton3D" parent="." index="0" unique_id=432430447]
+bones/0/position = Vector3(-0.014822835, 0.93779194, 0.010764463)
+bones/0/rotation = Quaternion(-0.038833503, -0.36642066, -0.013407093, 0.92954195)
+bones/1/rotation = Quaternion(-0.030691013, 0.04071445, -0.0057675703, 0.99868274)
+bones/2/rotation = Quaternion(0.09739817, 0.08219677, -0.0046641696, 0.9918345)
+bones/3/rotation = Quaternion(0.09739822, 0.08219678, -0.0046641664, 0.9918344)
+bones/4/rotation = Quaternion(0.05660226, -0.011010847, 0.0009016603, 0.99833566)
+bones/5/rotation = Quaternion(-0.03809145, 0.17609517, -0.0057315207, 0.9836192)
+bones/7/rotation = Quaternion(-0.5471006, -0.4532906, 0.56520593, -0.41922653)
+bones/8/rotation = Quaternion(0.47412455, -0.044216666, 0.010636484, 0.8792825)
+bones/9/rotation = Quaternion(-0.0015208616, 0.064714074, 0.41053587, 0.909544)
+bones/11/rotation = Quaternion(0.60214823, -0.40523863, 0.53383124, 0.43384725)
+bones/12/rotation = Quaternion(0.42403236, 0.036823314, 0.22309455, 0.876966)
+bones/13/rotation = Quaternion(0.062016636, 0.010280793, -0.3617717, 0.9301449)
+bones/15/rotation = Quaternion(0.07687038, 0.21709673, 0.96776646, -0.1019224)
+bones/16/rotation = Quaternion(-0.31188327, 0.11945212, -0.032822702, 0.94201)
+bones/17/rotation = Quaternion(0.44730726, -0.22545668, 0.07158816, 0.86253154)
+bones/18/rotation = Quaternion(0.35625064, -0.036852453, -0.009963149, 0.9336104)
+bones/20/rotation = Quaternion(-0.123392515, 0.01411918, 0.98398083, 0.12789391)
+bones/21/rotation = Quaternion(-0.30101514, 0.07817825, -0.023876928, 0.9501095)
+bones/22/rotation = Quaternion(0.5473897, 0.26570988, 0.027734656, 0.79309124)
+bones/23/rotation = Quaternion(0.34105507, 0.06940187, -0.0209181, 0.9372445)
+
+[node name="siegfried_export" parent="Skeleton3D" index="0" unique_id=1760097922]
+surface_material_override/0 = ExtResource("2_8iun2")
+surface_material_override/1 = ExtResource("3_6avy1")
+
+[node name="AnimationPlayer" parent="." index="1" unique_id=1401648965]
+autoplay = &"mixamo_com"

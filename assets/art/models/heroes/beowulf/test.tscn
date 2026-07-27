@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://bywnqivlr3dp8"]
+
+[ext_resource type="PackedScene" uid="uid://3s8pr8y7bvnd" path="res://assets/art/models/heroes/beowulf/test.glb" id="1_kmfbx"]
+[ext_resource type="Material" uid="uid://q27qjl2tgau7" path="res://assets/art/materials/heroes/skin/fair_rosy.tres" id="2_82dhs"]
+[ext_resource type="Material" uid="uid://yyu2odfr5h0c" path="res://assets/art/materials/heroes/clothing/pants_neutral.tres" id="3_vp1sl"]
+[ext_resource type="Material" uid="uid://ejkjcjfyctxl" path="res://assets/art/materials/heroes/clothing/boots_major.tres" id="4_w3lvr"]
+[ext_resource type="Material" uid="uid://lx4nd6hbyjoo" path="res://assets/art/materials/heroes/clothing/boots_straps.tres" id="5_b841g"]
+
+[node name="test" unique_id=164686026 instance=ExtResource("1_kmfbx")]
+
+[node name="starkad_geometry_body_001" parent="." index="0" unique_id=1854442398]
+transform = Transform3D(0.19236767, 0, 0, 0, 0.19236767, 0, 0, 0, 0.19236767, 0.07376099, 0.23809814, 0.5986328)
+surface_material_override/0 = ExtResource("2_82dhs")
+surface_material_override/1 = ExtResource("3_vp1sl")
+surface_material_override/2 = ExtResource("4_w3lvr")
+surface_material_override/3 = ExtResource("5_b841g")

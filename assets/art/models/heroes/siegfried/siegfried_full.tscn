@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://levtfr7taowm"]
+
+[ext_resource type="PackedScene" uid="uid://b55flej7ntfai" path="res://assets/art/models/heroes/siegfried/siegfried_full.glb" id="1_xytls"]
+[ext_resource type="Shader" uid="uid://b3w1spojdb8vq" path="res://shaders/toon_character.gdshader" id="2_xytls"]
+[ext_resource type="Material" uid="uid://d2jl281uoyq3h" path="res://assets/art/materials/heroes/hair/blonde.tres" id="3_7ahos"]
+[ext_resource type="Material" uid="uid://yyu2odfr5h0c" path="res://assets/art/materials/heroes/clothing/pants_neutral.tres" id="4_02m5g"]
+[ext_resource type="Material" uid="uid://dkuqkjq454ov1" path="res://assets/art/materials/heroes/clothing/boots_fur.tres" id="5_gelrs"]
+[ext_resource type="Material" uid="uid://ejkjcjfyctxl" path="res://assets/art/materials/heroes/clothing/boots_major.tres" id="6_qqqkm"]
+[ext_resource type="Material" uid="uid://lx4nd6hbyjoo" path="res://assets/art/materials/heroes/clothing/boots_straps.tres" id="7_6j7ky"]
+[ext_resource type="Material" uid="uid://d2k3lf4hafeuq" path="res://assets/art/materials/heroes/clothing/belt_major.tres" id="8_cc21s"]
+[ext_resource type="Material" uid="uid://dxhtf7ua44btm" path="res://assets/art/materials/heroes/clothing/belt_buckle.tres" id="9_or3tr"]
+[ext_resource type="Material" uid="uid://cgswiadgmi0f6" path="res://assets/art/materials/heroes/clothing/helmet_horns_feathers.tres" id="11_alkfg"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7y10m"]
+render_priority = 0
+shader = ExtResource("2_xytls")
+shader_parameter/albedo = Color(0.9490196, 0.7764706, 0.627451, 1)
+shader_parameter/shadow_strength = 0.45
+shader_parameter/shadow_cool = 0.08
+shader_parameter/shadow_threshold = 0.05
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xytls"]
+render_priority = 0
+shader = ExtResource("2_xytls")
+shader_parameter/albedo = Color(0.36078432, 0.36078432, 0.36078432, 1)
+shader_parameter/shadow_strength = 0.45
+shader_parameter/shadow_cool = 0.08
+shader_parameter/shadow_threshold = 0.05
+
+[node name="siegfried_full" unique_id=820972963 instance=ExtResource("1_xytls")]
+
+[node name="siegfried_export" parent="." index="0" unique_id=2076600217]
+surface_material_override/0 = SubResource("ShaderMaterial_7y10m")
+surface_material_override/1 = ExtResource("3_7ahos")
+surface_material_override/2 = ExtResource("4_02m5g")
+surface_material_override/3 = ExtResource("5_gelrs")
+surface_material_override/4 = ExtResource("6_qqqkm")
+surface_material_override/5 = ExtResource("7_6j7ky")
+surface_material_override/6 = ExtResource("8_cc21s")
+surface_material_override/7 = ExtResource("9_or3tr")
+surface_material_override/8 = SubResource("ShaderMaterial_xytls")
+surface_material_override/9 = ExtResource("11_alkfg")
