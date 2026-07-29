@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://ki21xxpk0dv2"]
+
+[ext_resource type="PackedScene" uid="uid://dvbu2ur2wv77l" path="res://assets/art/models/map/map.glb" id="1_nyb04"]
+[ext_resource type="Script" uid="uid://cpx1pyuly0q3e" path="res://scenes/map/map_preview.gd" id="1_vfh4r"]
+
+[node name="Node3D" type="Node3D" unique_id=1155331291]
+script = ExtResource("1_vfh4r")
+
+[node name="Map" parent="." unique_id=35034871 instance=ExtResource("1_nyb04")]
