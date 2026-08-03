@@ -16,8 +16,11 @@
 
 [node name="egil" unique_id=1070567895 instance=ExtResource("1_s60t0")]
 
-[node name="Skeleton3D" parent="metarig" parent_id_path=PackedInt32Array(1579871301) index="0" unique_id=818580067]
+[node name="Skeleton3D" parent="metarig" parent_id_path=PackedInt32Array(417096928) index="0" unique_id=811937416]
+bones/2/rotation = Quaternion(-0.03927759, -1.1911732e-07, -4.6822546e-09, 0.99922836)
+bones/3/rotation = Quaternion(-0.07647848, 1.4169235e-14, 1.0868247e-15, 0.99707127)
 bones/5/rotation = Quaternion(0.09495953, 5.475648e-17, 5.635482e-17, 0.99548113)
+bones/6/rotation = Quaternion(-0.017563213, 1.1919089e-07, -2.0936974e-09, 0.99984586)
 bones/7/rotation = Quaternion(0.7317729, -0.17741588, -0.65256464, -0.084802255)
 bones/8/rotation = Quaternion(0.43069616, -0.23430851, 0.2038344, 0.84737945)
 bones/9/rotation = Quaternion(0.03408792, -0.14601818, 0.5310028, 0.8339981)
@@ -30,23 +33,27 @@ bones/15/rotation = Quaternion(-0.5722263, 0.39431727, 0.44302672, 0.56639063)
 bones/16/rotation = Quaternion(0.1864713, -0.7599242, 0.5882255, 0.20429033)
 bones/17/rotation = Quaternion(0.5086757, -0.11624603, -0.13743287, 0.84193116)
 bones/18/rotation = Quaternion(0.9694848, 0.10940227, -0.010882927, 0.21911645)
+bones/19/rotation = Quaternion(0.23584837, 0.017332625, 0.06763103, 0.9692787)
 bones/20/rotation = Quaternion(0.96948475, -0.10940236, 0.010883555, 0.21911646)
+bones/21/rotation = Quaternion(0.23584858, -0.017332666, -0.067631096, 0.96927863)
 bones/22/position = Vector3(0.2441102, -0.31193635, 1.4066751)
 bones/22/rotation = Quaternion(0.066515334, 0.7058814, -0.5072709, -0.48988113)
 bones/23/position = Vector3(-1.7440816e-05, -1.8851624e-05, 3.5881163e-05)
+bones/26/rotation = Quaternion(0.93009615, 0.0657367, -0.0053231516, -0.36134678)
+bones/29/rotation = Quaternion(0.93009615, -0.0657367, 0.0053231516, -0.36134678)
 bones/30/rotation = Quaternion(0.008939333, 0.942915, -0.32901904, -0.05077236)
 bones/31/position = Vector3(-0.16696566, -0.24163836, 1.1068481)
 bones/31/rotation = Quaternion(-0.45370707, 0.7919586, -0.4048833, 0.054964006)
 bones/32/position = Vector3(2.822052e-06, 2.1787682e-06, 2.2414642e-05)
 bones/33/rotation = Quaternion(-0.47966552, 0.48142248, 0.5199507, -0.5174987)
-bones/36/position = Vector3(0.96877646, 1.1977394, -0.24435368)
-bones/37/position = Vector3(-1.1145798, 1.1977394, 0.08630693)
-bones/38/position = Vector3(-0.13781513, 0.98365855, 0.27335674)
-bones/38/rotation = Quaternion(0.2937047, 0.9219077, 0.011738337, 0.25236067)
-bones/40/position = Vector3(-0.13781513, 0.98365855, 0.27335674)
-bones/40/rotation = Quaternion(0.2937047, 0.9219077, 0.011738337, 0.25236067)
+bones/34/position = Vector3(-0.13781513, -0.27335674, 0.98365855)
+bones/34/rotation = Quaternion(0.38612652, 0.64358705, 0.6601874, -0.029234603)
+bones/37/position = Vector3(0.96877646, 1.1977394, -0.24435368)
+bones/38/position = Vector3(-1.1145798, 1.1977394, 0.08630693)
+bones/39/position = Vector3(-0.13781513, 0.98365855, 0.27335674)
+bones/39/rotation = Quaternion(0.2937047, 0.9219077, 0.011738337, 0.25236067)
 
-[node name="egil_geometry_rig" parent="metarig/Skeleton3D" index="0" unique_id=519108814]
+[node name="egil_geometry_rig" parent="metarig/Skeleton3D" index="0" unique_id=671205863]
 surface_material_override/0 = ExtResource("2_rhqe4")
 surface_material_override/1 = ExtResource("3_heglq")
 surface_material_override/2 = ExtResource("4_rhqe4")
@@ -58,6 +65,6 @@ surface_material_override/7 = ExtResource("4_tb47m")
 surface_material_override/8 = ExtResource("10_4rnww")
 surface_material_override/9 = ExtResource("11_5qpcv")
 
-[node name="Cube_002" parent="metarig/Skeleton3D" index="1" unique_id=1911163122]
+[node name="Cube_002" parent="metarig/Skeleton3D" index="1" unique_id=1034390219]
 surface_material_override/0 = ExtResource("11_lir8r")
 surface_material_override/1 = ExtResource("12_5qpcv")
