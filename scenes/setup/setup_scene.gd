@@ -42,7 +42,7 @@ const HERO_KIND_IDS: Array[int] = [
 # Hero bust scene paths in the same alphabetical order as HERO_KIND_IDS.
 # STUB: Beowulf, Brunhild, Ragnar, Siegfried, Starkad busts not yet authored —
 # they fall back to Egil until replaced.
-const HERO_BUST_PATHS: Array[String] = [
+const HERO_MODEL_PATHS: Array[String] = [
 	"res://assets/art/models/heroes/beowulf/beowulf.tscn",
 	"res://assets/art/models/heroes/brunhild/brunhild.tscn",  # STUB — Brunhild
 	"res://assets/art/models/heroes/egil/egil.tscn",
@@ -405,7 +405,7 @@ func _clear_bust() -> void:
 func _load_bust(idx: int) -> void:
 	_clear_bust()
 
-	var path: String = HERO_BUST_PATHS[idx]
+	var path: String =        HERO_MODEL_PATHS[idx]
 	var packed: PackedScene = load(path) as PackedScene
 	if packed == null:
 		push_error("SetupScene: could not load bust scene at %s" % path)
