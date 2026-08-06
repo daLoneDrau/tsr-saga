@@ -44,9 +44,9 @@ const HERO_KIND_IDS: Array[int] = [
 # they fall back to Egil until replaced.
 const HERO_BUST_PATHS: Array[String] = [
 	"res://assets/art/models/heroes/beowulf/beowulf.tscn",
-	"res://assets/art/models/heroes/brunhild/egil.tscn",  # STUB — Brunhild
+	"res://assets/art/models/heroes/brunhild/brunhild.tscn",  # STUB — Brunhild
 	"res://assets/art/models/heroes/egil/egil.tscn",
-	"res://assets/art/models/heroes/ragnar/egil.tscn",  # STUB — Ragnar
+	"res://assets/art/models/heroes/ragnar/ragnar.tscn",  # STUB — Ragnar
 	"res://assets/art/models/heroes/siegfried/siegfried.tscn",
 	"res://assets/art/models/heroes/starkad/starkad.tscn",  # STUB — Starkad
 ]
