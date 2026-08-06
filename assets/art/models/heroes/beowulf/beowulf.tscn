@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://cvvh6fb2dspm2"]
+
+[ext_resource type="PackedScene" uid="uid://cvc2d75c1blj6" path="res://assets/art/models/heroes/beowulf/beowulf.glb" id="1_pqw2t"]
+
+[node name="beowulf2" unique_id=1754343925 instance=ExtResource("1_pqw2t")]
+
+[node name="Skeleton3D" parent="beowulf" parent_id_path=PackedInt32Array(700336819) index="0" unique_id=122074238]
+bones/2/scale = Vector3(1.0530049, 1, 1.0530049)

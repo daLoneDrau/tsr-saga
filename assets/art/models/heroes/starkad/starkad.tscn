@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://do0e14r0i6ceq"]
+
+[ext_resource type="PackedScene" uid="uid://btafqaej3kteu" path="res://assets/art/models/heroes/starkad/starkad.glb" id="1_i1ivc"]
+
+[node name="starkad2" unique_id=1616976567 instance=ExtResource("1_i1ivc")]
+
+[node name="Skeleton3D" parent="starkad" parent_id_path=PackedInt32Array(1852240453) index="0" unique_id=1682680219]
+bones/2/scale = Vector3(1.0530049, 1, 1.0530049)

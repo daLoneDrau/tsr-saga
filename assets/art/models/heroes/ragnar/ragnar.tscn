@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://d4ny4ww66qugq"]
+
+[ext_resource type="PackedScene" uid="uid://bkvxbastxh4hc" path="res://assets/art/models/heroes/ragnar/ragnar.glb" id="1_pdspr"]
+
+[node name="ragnar2" unique_id=449928356 instance=ExtResource("1_pdspr")]
+
+[node name="Skeleton3D" parent="ragnar" parent_id_path=PackedInt32Array(1651837252) index="0" unique_id=1981773793]
+bones/2/scale = Vector3(1.0530049, 1, 1.0530049)

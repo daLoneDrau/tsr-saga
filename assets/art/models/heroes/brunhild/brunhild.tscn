@@ -1,25 +1,8 @@
 [gd_scene format=3 uid="uid://caowvs7wo14jb"]
 
-[ext_resource type="PackedScene" uid="uid://0adgjcjmwk4d" path="res://assets/art/models/heroes/brunhild/brunhild.glb" id="1_4mdh7"]
-[ext_resource type="Shader" uid="uid://dqrlhui7g4fbu" path="res://shaders/toon_outline.gdshader" id="2_y81ne"]
-[ext_resource type="Shader" uid="uid://b3w1spojdb8vq" path="res://shaders/toon_character.gdshader" id="3_eggy6"]
+[ext_resource type="PackedScene" uid="uid://0adgjcjmwk4d" path="res://assets/art/models/heroes/brunhild/brunhild.glb" id="1_ir6kj"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_qvvos"]
-render_priority = 0
-shader = ExtResource("2_y81ne")
-shader_parameter/outline_width = 0.015
-shader_parameter/outline_color = Color(0.18, 0.13, 0.1, 1)
+[node name="brunhild2" unique_id=525764986 instance=ExtResource("1_ir6kj")]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_y4tqw"]
-render_priority = 0
-next_pass = SubResource("ShaderMaterial_qvvos")
-shader = ExtResource("3_eggy6")
-shader_parameter/albedo = Color(0.9490196, 0.7764706, 0.627451, 1)
-shader_parameter/shadow_strength = 0.45
-shader_parameter/shadow_cool = 0.08
-shader_parameter/shadow_threshold = 0.05
-
-[node name="brunhild" unique_id=187908166 instance=ExtResource("1_4mdh7")]
-
-[node name="brunhild_torso" parent="." index="0" unique_id=1838530535]
-surface_material_override/0 = SubResource("ShaderMaterial_y4tqw")
+[node name="Skeleton3D" parent="brunhild" parent_id_path=PackedInt32Array(2011659232) index="0" unique_id=730155551]
+bones/2/scale = Vector3(1.0530049, 1, 1.0530049)

@@ -43,12 +43,12 @@ const HERO_KIND_IDS: Array[int] = [
 # STUB: Beowulf, Brunhild, Ragnar, Siegfried, Starkad busts not yet authored —
 # they fall back to Egil until replaced.
 const HERO_BUST_PATHS: Array[String] = [
-	"res://assets/art/models/heroes/beowulf/beowulf_bust.tscn",
-	"res://assets/art/models/heroes/brunhild/egil_bust.tscn",  # STUB — Brunhild
-	"res://assets/art/models/heroes/egil/egil_bust.tscn",
-	"res://assets/art/models/heroes/ragnar/egil_bust.tscn",  # STUB — Ragnar
-	"res://assets/art/models/heroes/siegfried/siegfried_bust.tscn",
-	"res://assets/art/models/heroes/starkad/starkad_bust.tscn",  # STUB — Starkad
+	"res://assets/art/models/heroes/beowulf/beowulf.tscn",
+	"res://assets/art/models/heroes/brunhild/egil.tscn",  # STUB — Brunhild
+	"res://assets/art/models/heroes/egil/egil.tscn",
+	"res://assets/art/models/heroes/ragnar/egil.tscn",  # STUB — Ragnar
+	"res://assets/art/models/heroes/siegfried/siegfried.tscn",
+	"res://assets/art/models/heroes/starkad/starkad.tscn",  # STUB — Starkad
 ]
 
 # Skin material resource paths — four palette options.
