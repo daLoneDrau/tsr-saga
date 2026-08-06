@@ -16,7 +16,7 @@ size = Vector2(20, 20)
 [node name="PortraitPreview" type="Node3D" unique_id=1557086660]
 
 [node name="SubViewport" type="SubViewport" parent="." unique_id=1362629618]
-size = Vector2i(640, 480)
+size = Vector2i(144, 144)
 render_target_update_mode = 4
 
 [node name="characterMark" type="Node3D" parent="SubViewport" unique_id=560063381]
