@@ -77,9 +77,9 @@ func _initialize_systems() -> void:
 	print("SagaGameEngine: Initializing core services...")
 
 	# Create entity manager
-	entity_manager = SagaEntityManager.new()
+	entity_manager = SagaEntityManager_auto
 	entity_manager.name = "SagaEntityManager"
-	add_child(entity_manager)
+	# add_child(entity_manager)
 
 	# Create assets library
 	assets = AssetsLibrary.new()
