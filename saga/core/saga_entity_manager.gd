@@ -144,7 +144,7 @@ func create_hero(kind_id: int, is_player: bool) -> String:
 
 	# Tag
 	entity.tags.add(TAG_PLAYER if is_player else TAG_AI)
-
+	print("adding entity")
 	add_entity(entity)
 	return entity.id
 

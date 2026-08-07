@@ -31,54 +31,54 @@ const AI_MAX: int = 5
 # This maps list index → HeroKindTable constant so the script never hard-codes
 # names — it reads everything from the kind table at runtime.
 const HERO_KIND_IDS: Array[int] = [
-	HeroKindTable.BEOWULF,
-	HeroKindTable.BRUNHILD,
-	HeroKindTable.EGIL,
-	HeroKindTable.RAGNAR,
-	HeroKindTable.SIEGFRIED,
-	HeroKindTable.STARKAD,
-]
+								  HeroKindTable.BEOWULF,
+								  HeroKindTable.BRUNHILD,
+								  HeroKindTable.EGIL,
+								  HeroKindTable.RAGNAR,
+								  HeroKindTable.SIEGFRIED,
+								  HeroKindTable.STARKAD,
+								  ]
 
-# Hero bust scene paths in the same alphabetical order as HERO_KIND_IDS.
-# STUB: Beowulf, Brunhild, Ragnar, Siegfried, Starkad busts not yet authored —
-# they fall back to Egil until replaced.
+# Full-body hero model scene paths, in the same alphabetical order as
+# HERO_KIND_IDS. Used for both the dossier portrait and (eventually) the
+# in-game board piece.
 const HERO_MODEL_PATHS: Array[String] = [
-	"res://assets/art/models/heroes/beowulf/beowulf.tscn",
-	"res://assets/art/models/heroes/brunhild/brunhild.tscn",  # STUB — Brunhild
-	"res://assets/art/models/heroes/egil/egil.tscn",
-	"res://assets/art/models/heroes/ragnar/ragnar.tscn",  # STUB — Ragnar
-	"res://assets/art/models/heroes/siegfried/siegfried.tscn",
-	"res://assets/art/models/heroes/starkad/starkad.tscn",  # STUB — Starkad
-]
+										"res://assets/art/models/heroes/beowulf/beowulf.tscn",
+										"res://assets/art/models/heroes/brunhild/brunhild.tscn",  # STUB — Brunhild
+										"res://assets/art/models/heroes/egil/egil.tscn",
+										"res://assets/art/models/heroes/ragnar/ragnar.tscn",  # STUB — Ragnar
+										"res://assets/art/models/heroes/siegfried/siegfried.tscn",
+										"res://assets/art/models/heroes/starkad/starkad.tscn",  # STUB — Starkad
+										]
 
 # Skin material resource paths — four palette options.
 const SKIN_MATERIAL_PATHS: Array[String] = [
-	"res://assets/art/materials/heroes/skin/fair_rosy.tres",
-	"res://assets/art/materials/heroes/skin/light_tan.tres",
-	"res://assets/art/materials/heroes/skin/florid.tres",
-	"res://assets/art/materials/heroes/skin/olive.tres",
-]
+										   "res://assets/art/materials/heroes/skin/fair_rosy.tres",
+										   "res://assets/art/materials/heroes/skin/light_tan.tres",
+										   "res://assets/art/materials/heroes/skin/florid.tres",
+										   "res://assets/art/materials/heroes/skin/olive.tres",
+										   ]
 const HAIR_MATERIAL_PATHS_OLIVE: Array[String] = [
-	"res://assets/art/materials/heroes/hair/auburn.tres",
-	"res://assets/art/materials/heroes/hair/black.tres",
-]
+										   "res://assets/art/materials/heroes/hair/auburn.tres",
+										   "res://assets/art/materials/heroes/hair/black.tres",
+										   ]
 # Maps scalp hair material path → matching stubble path for Starkad.
 const STUBBLE_BY_HAIR: Dictionary = {
-	"res://assets/art/materials/heroes/hair/blonde.tres": "res://assets/art/materials/heroes/stubble/stubble_blonde.tres",
-	"res://assets/art/materials/heroes/hair/auburn.tres": "res://assets/art/materials/heroes/stubble/stubble_auburn.tres",
-	"res://assets/art/materials/heroes/hair/red.tres": "res://assets/art/materials/heroes/stubble/stubble_red.tres",
-	"res://assets/art/materials/heroes/hair/black.tres": "res://assets/art/materials/heroes/stubble/stubble_black.tres",
-	"res://assets/art/materials/heroes/hair/platinum.tres": "res://assets/art/materials/heroes/stubble/stubble_platinum.tres",
-}
+										"res://assets/art/materials/heroes/hair/blonde.tres": "res://assets/art/materials/heroes/stubble/stubble_blonde.tres",
+										"res://assets/art/materials/heroes/hair/auburn.tres": "res://assets/art/materials/heroes/stubble/stubble_auburn.tres",
+										"res://assets/art/materials/heroes/hair/red.tres": "res://assets/art/materials/heroes/stubble/stubble_red.tres",
+										"res://assets/art/materials/heroes/hair/black.tres": "res://assets/art/materials/heroes/stubble/stubble_black.tres",
+										"res://assets/art/materials/heroes/hair/platinum.tres": "res://assets/art/materials/heroes/stubble/stubble_platinum.tres",
+									}
 
 # Hair material resource paths — four palette options.
 const HAIR_MATERIAL_PATHS: Array[String] = [
-	"res://assets/art/materials/heroes/hair/blonde.tres",
-	"res://assets/art/materials/heroes/hair/auburn.tres",
-	"res://assets/art/materials/heroes/hair/red.tres",
-	"res://assets/art/materials/heroes/hair/black.tres",
-	"res://assets/art/materials/heroes/hair/platinum.tres",
-]
+										   "res://assets/art/materials/heroes/hair/blonde.tres",
+										   "res://assets/art/materials/heroes/hair/auburn.tres",
+										   "res://assets/art/materials/heroes/hair/red.tres",
+										   "res://assets/art/materials/heroes/hair/black.tres",
+										   "res://assets/art/materials/heroes/hair/platinum.tres",
+										   ]
 
 # Maximum pip count rendered in the dossier (matches the scene's P0–P5 nodes).
 const MAX_PIPS: int = 6
@@ -96,13 +96,9 @@ const BAR_STEP2_MSG2: String = "HIGHLIGHT A HERO, THEN ACCEPT TO MUSTER."
 
 var _ai_count:           int    = 1
 var _selected_hero_idx:  int    = 0   # index into HERO_KIND_IDS / scene list
-var _selected_skin_path: String = ""  # resource path of chosen skin material
-var _selected_hair_path: String = ""  # resource path of chosen hair material
-var _selected_stubble_path: String = ""  # resource path of chosen hair material
-
-# Holds the currently instanced bust node so it can be removed when the
-# selection changes. Null when no bust is loaded.
-var _bust_instance: Node3D = null
+var _hero_skin_paths:    Array[String] = []  # per-hero skin material path, indexed like HERO_KIND_IDS
+var _hero_hair_paths:    Array[String] = []  # per-hero hair material path, indexed like HERO_KIND_IDS
+var _hero_stubble_paths: Array[String] = []  # per-hero stubble material path ("" unless Starkad)
 
 
 # ---------------------------------------------------------------------------
@@ -128,9 +124,10 @@ var _bust_instance: Node3D = null
 @onready var _speed_pips:  HBoxContainer  = %SpeedPips
 @onready var _accept_btn:  Button         = %AcceptBtn
 
-# SubViewport that owns the portrait camera rig.
-# The bust instance is added as a child of this node.
-@onready var _portrait_viewport: SubViewport = %SubViewport
+# Self-contained hero portrait rig — owns its own camera/light/stage and
+# exposes show_hero()/clear_hero() so this script never touches mesh or
+# material internals directly.
+@onready var _portrait_widget: PortraitWidget = %PortraitWidget
 
 
 # ---------------------------------------------------------------------------
@@ -147,10 +144,38 @@ var _bust_instance: Node3D = null
 
 func _ready() -> void:
 	_selected_hero_idx = randi_range(0, HERO_KIND_IDS.size() - 1)
+	_roll_palette()
 	_register_systems()
 	_wire_step1()
 	_wire_step2()
 	_show_step(1)
+
+
+## Rolls an independent skin/hair/stubble palette for every hero, once for
+## the whole setup session. Called a single time from _ready(). Highlighting
+## a different hero afterward only swaps to that hero's already-rolled
+## combo — nothing re-rolls after this point.
+func _roll_palette() -> void:
+	_hero_skin_paths    = []
+	_hero_hair_paths    = []
+	_hero_stubble_paths = []
+
+	for idx in HERO_KIND_IDS.size():
+		var skin_path: String = SKIN_MATERIAL_PATHS[randi_range(0, SKIN_MATERIAL_PATHS.size() - 1)]
+
+		var hair_pool: Array[String] = HAIR_MATERIAL_PATHS_OLIVE \
+									   if skin_path == SKIN_MATERIAL_PATHS[3] \
+									   else HAIR_MATERIAL_PATHS
+		var hair_path: String = hair_pool[randi_range(0, hair_pool.size() - 1)]
+
+		# Stubble only exists on Starkad's model — resolve it for every hero
+		# from the same hair roll, but it's only ever non-empty for him;
+		# _refresh_dossier still gates on hero kind before using it.
+		var stubble_path: String = STUBBLE_BY_HAIR.get(hair_path, "")
+
+		_hero_skin_paths.append(skin_path)
+		_hero_hair_paths.append(hair_path)
+		_hero_stubble_paths.append(stubble_path)
 
 
 func on_enter() -> void:
@@ -160,7 +185,7 @@ func on_enter() -> void:
 func on_exit() -> void:
 	_unwire_step1()
 	_unwire_step2()
-	_clear_bust()
+	_portrait_widget.clear_hero()
 
 
 # ---------------------------------------------------------------------------
@@ -361,21 +386,17 @@ func _refresh_dossier(idx: int) -> void:
 	_fill_pips(_combat_pips, data["combat_strength"])
 	_fill_pips(_speed_pips,  data["movement_speed"])
 
-	# Palette — roll randomly and store for later use by SetupSystem.
-	# SKIN
-	_selected_skin_path = SKIN_MATERIAL_PATHS[randi_range(0, SKIN_MATERIAL_PATHS.size() - 1)]
-	# HAIR
-	var hair_pool: Array[String] = HAIR_MATERIAL_PATHS_OLIVE \
-		if _selected_skin_path == SKIN_MATERIAL_PATHS[3] \
-		else HAIR_MATERIAL_PATHS
-	_selected_hair_path = hair_pool[randi_range(0, hair_pool.size() - 1)]
-	# STUBBLE
-	_selected_stubble_path = ""
-	if HERO_KIND_IDS[idx] == HeroKindTable.STARKAD:
-		_selected_stubble_path = STUBBLE_BY_HAIR[_selected_hair_path]
-
-	# Portrait — load the bust scene, instance it, apply palette.
-	_load_bust(idx)
+	# Portrait — each hero got its own fixed skin/hair/stubble combo, rolled
+	# once in _ready(). Highlighting a hero just looks up its combo; nothing
+	# is re-rolled here. Stubble only applies when Starkad is showing, since
+	# his is the only model with that surface slot.
+	var stubble_path: String = _hero_stubble_paths[idx] if kind_id == HeroKindTable.STARKAD else ""
+	_portrait_widget.show_hero(
+		HERO_MODEL_PATHS[idx],
+		_hero_skin_paths[idx],
+		_hero_hair_paths[idx],
+		stubble_path,
+	)
 
 
 func _fill_pips(container: HBoxContainer, filled: int) -> void:
@@ -385,88 +406,6 @@ func _fill_pips(container: HBoxContainer, filled: int) -> void:
 		if pip == null:
 			continue
 		pip.theme_type_variation = &"PipFull" if i < filled else &"PipEmpty"
-
-#endregion
-
-
-# ---------------------------------------------------------------------------
-#region Portrait — bust loading and palette application
-# ---------------------------------------------------------------------------
-
-## Remove the current bust instance from the SubViewport if one exists.
-func _clear_bust() -> void:
-	if _bust_instance != null and is_instance_valid(_bust_instance):
-		_bust_instance.queue_free()
-	_bust_instance = null
-
-
-## Load the bust scene for the given hero list index, instance it into the
-## SubViewport, and apply the randomly chosen skin and hair materials.
-func _load_bust(idx: int) -> void:
-	_clear_bust()
-
-	var path: String =        HERO_MODEL_PATHS[idx]
-	var packed: PackedScene = load(path) as PackedScene
-	if packed == null:
-		push_error("SetupScene: could not load bust scene at %s" % path)
-		return
-
-	_bust_instance = packed.instantiate() as Node3D
-	if _bust_instance == null:
-		push_error("SetupScene: bust scene root is not Node3D at %s" % path)
-		return
-
-	_bust_instance.position = Vector3(0.045,      0.115,      1.98)
-	_bust_instance.rotation = Vector3(0, 0.436332, 0)
-
-	_portrait_viewport.add_child(_bust_instance)
-	_apply_palette(_bust_instance)
-
-
-## Walk the bust instance tree to find the first MeshInstance3D descendant
-## and apply the chosen skin (slot 0) and hair (slot 1) materials to it.
-## Surface slot convention: 0 = skin, 1 = hair — must be consistent across
-## all hero bust meshes.
-func _apply_palette(bust_root: Node3D) -> void:
-	var mesh_node: MeshInstance3D = _find_mesh(bust_root)
-	if mesh_node == null:
-		push_error("SetupScene: no MeshInstance3D found in bust instance")
-		return
-
-	var skin_mat: StandardMaterial3D = load(_selected_skin_path) as StandardMaterial3D
-	var hair_mat: StandardMaterial3D = load(_selected_hair_path) as StandardMaterial3D
-
-	if skin_mat == null:
-		push_error("SetupScene: could not load skin material at %s" % _selected_skin_path)
-	else:
-		mesh_node.set_surface_override_material(0, skin_mat)
-
-	if hair_mat == null:
-		push_error("SetupScene: could not load hair material at %s" % _selected_hair_path)
-	else:
-		mesh_node.set_surface_override_material(1, hair_mat)
-	
-	if not _selected_stubble_path.is_empty():
-		var stubble_mat: StandardMaterial3D = load(_selected_stubble_path) as StandardMaterial3D
-		if stubble_mat == null:
-			push_error("SetupScene: could not load stubble material at %s" % _selected_skin_path)
-		else:
-			mesh_node.set_surface_override_material(2, stubble_mat)
-		
-
-	# Force the SubViewport to render a fresh frame with the new materials.
-	_portrait_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
-
-
-## Recursively find the first MeshInstance3D in the subtree.
-func _find_mesh(node: Node) -> MeshInstance3D:
-	if node is MeshInstance3D:
-		return node as MeshInstance3D
-	for child in node.get_children():
-		var result: MeshInstance3D = _find_mesh(child)
-		if result != null:
-			return result
-	return null
 
 #endregion
 
@@ -484,7 +423,7 @@ func _on_accept() -> void:
 		push_error("SetupScene: SagaSetupSystem not registered")
 		return
 
-	setup_sys.run(chosen_kind_id, total_players, _selected_skin_path, _selected_hair_path)
+	setup_sys.run(chosen_kind_id, total_players, _hero_skin_paths[_selected_hero_idx], _hero_hair_paths[_selected_hero_idx])
 # Transition happens in _on_setup_complete once run() emits setup_complete.
 
 #endregion

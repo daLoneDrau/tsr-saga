@@ -2,23 +2,7 @@
 
 [ext_resource type="Shader" uid="uid://dt4e4ii68kktg" path="res://shaders/ctr_scanlines.gdshader" id="1_wtl6b"]
 [ext_resource type="Script" uid="uid://hda6ujgusdaj" path="res://scenes/setup/setup_scene.gd" id="1_xxvcc"]
-[ext_resource type="Shader" uid="uid://cqxcl0ne4n3wx" path="res://shaders/quadrant.gdshader" id="2_6ykx6"]
-
-[sub_resource type="Environment" id="Environment_7y10m"]
-background_mode = 1
-background_color = Color(0.05490196, 0.0627451, 0.14117648, 1)
-ambient_light_source = 2
-ambient_light_color = Color(0.6, 0.6392157, 0.8, 1)
-ambient_light_energy = 0.5
-
-[sub_resource type="BoxMesh" id="BoxMesh_rbr1p"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_eg2af"]
-render_priority = 0
-shader = ExtResource("2_6ykx6")
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_w72uo"]
-material = SubResource("ShaderMaterial_eg2af")
+[ext_resource type="PackedScene" uid="uid://y7d27benixmg" path="res://scenes/setup/PortraitWidget.tscn" id="3_portrait"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3oqb5"]
 bg_color = Color(0, 0, 0, 1)
@@ -51,32 +35,6 @@ shader_parameter/vignette = 0.5
 [node name="SetupScene" type="Node3D" unique_id=714159444]
 editor_description = "Instance the EMPTY imported Blender board under `Board`; the chosen opponent count + hero are collected by SetupController, which then runs game setup and changes to `game_scene`."
 script = ExtResource("1_xxvcc")
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1286998521]
-environment = SubResource("Environment_7y10m")
-
-[node name="Camera3D" type="Camera3D" parent="." unique_id=1838814263]
-transform = Transform3D(0.7071068, -0.31661347, 0.6322626, 0, 0.89415425, 0.44775906, -0.7071068, -0.31661347, 0.6322626, 20, 15, 20)
-projection = 1
-size = 40.0
-near = 0.1
-far = 1000.0
-
-[node name="SunLight" type="DirectionalLight3D" parent="." unique_id=1243493666]
-transform = Transform3D(0.866, -0.25, 0.433, 0, 0.866, 0.5, -0.5, -0.433, 0.75, 0, 0, 0)
-
-[node name="Board" type="Node3D" parent="." unique_id=557786601]
-editor_description = "PLACEHOLDER — leave empty in source control. Instance the imported Blender board here, rendered but with NO pieces on it yet (setup places entities at runtime). Do NOT rebuild board geometry from Godot primitives — all 3D assets are authored in Blender and imported."
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Board" unique_id=17487487]
-mesh = SubResource("BoxMesh_rbr1p")
-
-[node name="Terrain" type="Node3D" parent="Board" unique_id=105670458]
-editor_description = "PLACEHOLDER — leave empty in source control. Instance the external Blender map asset here (e.g. res://art/map/north_sea.glb or .tscn): sea, the five regions (Midgard Vale, Jotunheim, Wyrmreach, Hrolf's Mark, Barrow Fens), hills, coasts. Do NOT rebuild these as Godot primitives — all 3D assets are authored in Blender and imported. Author terrain with ~0.5x vertical exaggeration to match the prototype's flattened heights (see MapCamera.gd)."
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Board/Terrain" unique_id=1104668458]
-transform = Transform3D(20, 0, 0, 0, 20, 0, 0, 0, 20, 0, 0, 0)
-mesh = SubResource("PlaneMesh_w72uo")
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=889248581]
 
@@ -488,22 +446,9 @@ theme_type_variation = &"PanelBox"
 layout_mode = 2
 stretch = true
 
-[node name="SubViewport" type="SubViewport" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol/PortraitFrame/Portrait" unique_id=885035357]
+[node name="PortraitWidget" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol/PortraitFrame/Portrait" unique_id=1675180648 instance=ExtResource("3_portrait")]
 unique_name_in_owner = true
-own_world_3d = true
 handle_input_locally = false
-size = Vector2i(144, 144)
-render_target_update_mode = 4
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol/PortraitFrame/Portrait/SubViewport" unique_id=1976305776]
-environment = SubResource("Environment_7y10m")
-
-[node name="PortraitCamera" type="Camera3D" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol/PortraitFrame/Portrait/SubViewport" unique_id=1912891636]
-transform = Transform3D(1, 0, 0, 0, 0.985, 0.174, 0, -0.174, 0.985, 0, 0.35, 2.4)
-fov = 40.0
-
-[node name="PortraitLight" type="DirectionalLight3D" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol/PortraitFrame/Portrait/SubViewport" unique_id=711471765]
-transform = Transform3D(0.866, -0.25, 0.433, 0, 0.866, 0.5, -0.5, -0.433, 0.75, 0, 0, 0)
 
 [node name="HeroName" type="Label" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol" unique_id=1801943899]
 unique_name_in_owner = true
@@ -618,6 +563,7 @@ alignment = 1
 [node name="AcceptBtn" type="Button" parent="UI/Main/Content/MiddlePane/Step2/VBoxContainer/Center/Card/Row/Dossier/DCol/HBoxContainer" unique_id=420182114]
 unique_name_in_owner = true
 layout_mode = 2
+mouse_default_cursor_shape = 2
 theme_type_variation = &"GoldBtn"
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)

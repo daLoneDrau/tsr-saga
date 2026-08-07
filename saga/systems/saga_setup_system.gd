@@ -85,10 +85,15 @@ skin_material_path: String, hair_material_path: String) -> void:
 	# ------------------------------------------------------------------
 	var hero_kind_id: int = chosen_hero_kind_id
 	var hero_id: String = SagaEntityManager_auto.create_hero(hero_kind_id, true)
+	while SagaEntityManager_auto.get_entity_by_id(hero_id) == null:
+		print("waiting")
+		# wait a cycle for the entity to be fully added
+		await get_parent().get_tree().create_timer(0.01).timeout
 
 	# Store the chosen palette on HeroComponent so any future system that
 	# renders this hero (board piece, portrait) can apply the same colours.
 	var hero_entity: Entity = SagaEntityManager_auto.get_entity_by_id(hero_id)
+	print("hero created ", hero_entity)
 	var hero_comp: SagaHeroComponent = hero_entity.get_component("SagaHeroComponent") as SagaHeroComponent
 	if hero_comp != null:
 		hero_comp.skin_material_path = skin_material_path
