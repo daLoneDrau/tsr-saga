@@ -53,7 +53,7 @@ func handle_event(_event_name: String, _payload: Dictionary = {}) -> bool:
 
 
 # ---------------------------------------------------------------------------
-# Public API
+#region Public API
 # ---------------------------------------------------------------------------
 
 ## Run the full setup sequence. Called once by SetupScene after the player
@@ -86,14 +86,12 @@ skin_material_path: String, hair_material_path: String) -> void:
 	var hero_kind_id: int = chosen_hero_kind_id
 	var hero_id: String = SagaEntityManager_auto.create_hero(hero_kind_id, true)
 	while SagaEntityManager_auto.get_entity_by_id(hero_id) == null:
-		print("waiting")
 		# wait a cycle for the entity to be fully added
 		await get_parent().get_tree().create_timer(0.01).timeout
 
 	# Store the chosen palette on HeroComponent so any future system that
 	# renders this hero (board piece, portrait) can apply the same colours.
 	var hero_entity: Entity = SagaEntityManager_auto.get_entity_by_id(hero_id)
-	print("hero created ", hero_entity)
 	var hero_comp: SagaHeroComponent = hero_entity.get_component("SagaHeroComponent") as SagaHeroComponent
 	if hero_comp != null:
 		hero_comp.skin_material_path = skin_material_path
@@ -195,9 +193,10 @@ skin_material_path: String, hair_material_path: String) -> void:
 		"jarls":             placed_jarls,
 	})
 
+#endregion
 
 # ---------------------------------------------------------------------------
-# Private helpers
+#region Private helpers
 # ---------------------------------------------------------------------------
 
 func _get_entity_location(entity_id: String) -> String:
@@ -226,3 +225,5 @@ func _location_code_string(land_comp: SagaLandComponent) -> String:
 	if land_comp == null or land_comp.location == null:
 		return ""
 	return "%d:%d" % [land_comp.location.x, land_comp.location.y]
+
+#endregion
