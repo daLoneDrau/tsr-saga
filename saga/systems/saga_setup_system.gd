@@ -13,8 +13,10 @@
 #   8. Write remaining monster/jarl/treasure kind IDs to SagaGameEngine pools.
 #   9. Emit setup_complete with summary payload for SetupScene to display.
 #
-# All cross-system communication goes through broadcast_event — this system
-# holds no references to other systems.
+# Cross-system communication mostly goes through broadcast_event (this system
+# holds no direct references to other systems) — except equip_failed, a
+# native Godot signal from EquipmentSystem routed via Switchboard, which
+# needs a real subscriber callable instead (see _on_ready/_on_equip_failed).
 
 class_name SagaSetupSystem
 extends GameSystem
@@ -34,6 +36,11 @@ signal setup_complete(payload: Dictionary)
 
 func _on_ready() -> void:
 	Switchboard_auto.add_node_broadcaster(self, &"setup_complete")
+	# EquipmentSystem.equip_failed is a native Godot signal broadcast through
+	# Switchboard, NOT a broadcast_event() — it can only be caught by a real
+	# subscriber callable (matching the signal's own parameter list), never
+	# by handle_event(). See _on_equip_failed below.
+	Switchboard_auto.connect_subscriber(self, "equip_failed", _on_equip_failed)
 
 
 func _on_initialize() -> void:
@@ -42,18 +49,20 @@ func _on_initialize() -> void:
 
 func _on_cleanup() -> void:
 	Switchboard_auto.remove_node_broadcaster(self, &"setup_complete")
+	Switchboard_auto.remove_subscriber(self)
+
+
+## Switchboard subscriber for EquipmentSystem.equip_failed. Signature must
+## match the signal exactly: signal equip_failed(entity_id, item_id, reasons).
+func _on_equip_failed(entity_id: StringName, item_id: StringName, reasons: Array[String]) -> void:
+	push_error("SagaSetupSystem: equip failed for entity %s, item %s: %s" % [entity_id, item_id, reasons])
 
 
 func _process_system(_delta: float) -> void:
 	pass
 
 
-func handle_event(event_name: String, payload: Dictionary = {}) -> bool:
-	print("SagaSetupSystem.handle_event(", event_name)
-	match event_name:
-		"equip_failed":
-			push_error("equip_failed ", payload)
-			return true
+func handle_event(_event_name: String, _payload: Dictionary = {}) -> bool:
 	return true
 
 
