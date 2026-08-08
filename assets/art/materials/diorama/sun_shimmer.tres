@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://0atfk67rv8dr"]
 
-[ext_resource type="Shader" uid="uid://ddikhawf7l3x" path="res://shaders/sun_shimmer.gdshader" id="1_b6ksc"]
+[ext_resource type="Shader" uid="uid://d2vdhqrd3evm4" path="res://shaders/sun_shimmer.gdshader" id="1_b6ksc"]
 
 [resource]
 render_priority = 0

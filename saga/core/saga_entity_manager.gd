@@ -119,6 +119,7 @@ func create_hero(kind_id: int, is_player: bool) -> String:
 
 	# Hero instance data
 	var hero_comp := SagaHeroComponent.new()
+	hero_comp.kind_id = kind_id
 	entity.set_component(hero_comp)
 
 	# Glory tracking

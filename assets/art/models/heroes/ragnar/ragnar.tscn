@@ -4,5 +4,5 @@
 
 [node name="ragnar2" unique_id=449928356 instance=ExtResource("1_pdspr")]
 
-[node name="Skeleton3D" parent="ragnar" parent_id_path=PackedInt32Array(1651837252) index="0" unique_id=1981773793]
+[node name="Skeleton3D" parent="ragnar" parent_id_path=PackedInt32Array(715315156) index="0" unique_id=1841054498]
 bones/2/scale = Vector3(1.0530049, 1, 1.0530049)

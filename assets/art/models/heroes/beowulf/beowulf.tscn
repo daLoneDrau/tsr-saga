@@ -4,5 +4,5 @@
 
 [node name="beowulf2" unique_id=1754343925 instance=ExtResource("1_pqw2t")]
 
-[node name="Skeleton3D" parent="beowulf" parent_id_path=PackedInt32Array(700336819) index="0" unique_id=122074238]
+[node name="Skeleton3D" parent="beowulf" parent_id_path=PackedInt32Array(350076240) index="0" unique_id=1430315768]
 bones/2/scale = Vector3(1.0530049, 1, 1.0530049)

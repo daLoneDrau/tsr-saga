@@ -13,37 +13,37 @@ const TABLE: Dictionary = {
 		"name": "Beowulf",
 		"combat_strength": 5,
 		"movement_speed": 4,
-		"model": "res://assets/models/heroes/beowulf.glb",
+		"model": "res://assets/art/models/heroes/beowulf/beowulf.tscn",
 	},
 	EGIL: {
 		"name": "Egil",
 		"combat_strength": 5,
 		"movement_speed": 4,
-		"model": "res://assets/models/heroes/egil.glb",
+		"model": "res://assets/art/models/heroes/egil/egil.tscn",
 	},
 	BRUNHILD: {
 		"name": "Brunhild",
 		"combat_strength": 5,
 		"movement_speed": 4,
-		"model": "res://assets/models/heroes/brunhild.glb",
+		"model": "res://assets/art/models/heroes/brunhild/brunhild.tscn",
 	},
 	SIEGFRIED: {
 		"name": "Siegfried",
 		"combat_strength": 5,
 		"movement_speed": 4,
-		"model": "res://assets/models/heroes/siegfried.glb",
+		"model": "res://assets/art/models/heroes/siegfried/siegfried.tscn",
 	},
 	STARKAD: {
 		"name": "Starkad",
 		"combat_strength": 5,
 		"movement_speed": 4,
-		"model": "res://assets/models/heroes/starkad.glb",
+		"model": "res://assets/art/models/heroes/starkad/starkad.tscn",
 	},
 	RAGNAR: {
 		"name": "Ragnar",
 		"combat_strength": 5,
 		"movement_speed": 4,
-		"model": "res://assets/models/heroes/ragnar.glb",
+		"model": "res://assets/art/models/heroes/ragnar/ragnar.tscn",
 	},
 }
 

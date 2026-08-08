@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://caowvs7wo14jb"]
 
-[ext_resource type="PackedScene" uid="uid://0adgjcjmwk4d" path="res://assets/art/models/heroes/brunhild/brunhild.glb" id="1_ir6kj"]
+[ext_resource type="PackedScene" uid="uid://bcpos43i5d7qf" path="res://assets/art/models/heroes/brunhild/brunhild.glb" id="1_ir6kj"]
 
 [node name="brunhild2" unique_id=525764986 instance=ExtResource("1_ir6kj")]
 
-[node name="Skeleton3D" parent="brunhild" parent_id_path=PackedInt32Array(2011659232) index="0" unique_id=730155551]
+[node name="Skeleton3D" parent="brunhild" parent_id_path=PackedInt32Array(1408605166) index="0" unique_id=1113952139]
 bones/2/scale = Vector3(1.0530049, 1, 1.0530049)

@@ -34,6 +34,9 @@ var rune = null  # RuneType | null
 # death on a second wound. Managed by CombatSystem.
 var is_wounded: bool = false
 
+# the hero's id
+var kind_id: int = -1
+
 # Resource paths for the skin and hair materials assigned during setup.
 # Chosen randomly from the four palette options and stored here so that
 # any scene or system that renders this hero (portrait, board piece) can
