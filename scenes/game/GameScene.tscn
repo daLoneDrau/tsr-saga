@@ -1,0 +1,39 @@
+[gd_scene format=3 uid="uid://bj2pqvt73pa7g"]
+
+[node name="GameScene" type="Control" unique_id=1797217881]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="." unique_id=557130777]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = 24.0
+offset_right = -24.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 12
+
+[node name="StatusLabel" type="Label" parent="VBox" unique_id=1545356227]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Loading..."
+autowrap_mode = 2
+
+[node name="ReachableList" type="ItemList" parent="VBox" unique_id=500377103]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 320)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PassBtn" type="Button" parent="VBox" unique_id=1132324544]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Pass"

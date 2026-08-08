@@ -249,10 +249,10 @@ func create_magic_sword(kind_id: int) -> String:
 	# Combat strength modifier — applied to wielder's StatsComponent on equip,
 	# removed on unequip or drop. Managed by CombatSystem.
 	var mod_entry := StatModifierEntry.create(
-		&"magic_sword",
-		kind_data["combat_bonus"],
-		false
-	)
+						 &"magic_sword",
+						 kind_data["combat_bonus"],
+						 false
+					 )
 	var bundle := ItemModifierBundle.new()
 	bundle.stat_modifiers.append(mod_entry)
 
@@ -266,6 +266,46 @@ func create_magic_sword(kind_id: int) -> String:
 	entity.set_component(script_comp)
 
 	entity.tags.add(TAG_ITEM)
+
+	add_entity(entity)
+	return entity.id
+
+
+## Creates a land (territory) entity from a MapSystem region entry.
+## region_id: the map data key, e.g. "1_1_Finmark" (kept for lookups, not stored).
+## Stamps: SagaLandComponent, NameComponent.
+## Tags:   TAG_LAND.
+func create_land(land_name: String, x: int, y: int, tax_value: int) -> String:
+	var entity: SagaEntity = SagaEntity.new()
+	entity.id = uuidv4()
+
+	# Name
+	entity.set_component(NameComponent.new(land_name))
+
+	# Land instance data
+	var land_comp := SagaLandComponent.new()
+	land_comp.name = land_name
+	land_comp.tax_value = tax_value
+	land_comp.location = Enums.LocationCode.new(x, y)
+	entity.set_component(land_comp)
+
+	entity.tags.add(TAG_LAND)
+
+	add_entity(entity)
+	return entity.id
+
+
+## Creates a sea location entity.
+## Stamps: SagaSeaComponent.
+## Tags:   TAG_SEA.
+func create_sea() -> String:
+	var entity: SagaEntity = SagaEntity.new()
+	entity.id = uuidv4()
+
+	# Sea instance data (marker component — shared name "At Sea")
+	entity.set_component(SagaSeaComponent.new())
+
+	entity.tags.add(TAG_SEA)
 
 	add_entity(entity)
 	return entity.id

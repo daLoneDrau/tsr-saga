@@ -48,7 +48,12 @@ func _process_system(_delta: float) -> void:
 	pass
 
 
-func handle_event(_event_name: String, _payload: Dictionary = {}) -> bool:
+func handle_event(event_name: String, payload: Dictionary = {}) -> bool:
+	print("SagaSetupSystem.handle_event(", event_name)
+	match event_name:
+		"equip_failed":
+			push_error("equip_failed ", payload)
+			return true
 	return true
 
 
@@ -102,6 +107,9 @@ skin_material_path: String, hair_material_path: String) -> void:
 	# ------------------------------------------------------------------
 	var sword_kind_id: int = sword_pool.pop_front()
 	var sword_id: String = SagaEntityManager_auto.create_magic_sword(sword_kind_id)
+	while SagaEntityManager_auto.get_entity_by_id(sword_id) == null:
+		# wait a cycle for the entity to be fully added
+		await get_parent().get_tree().create_timer(0.01).timeout
 	var equipped: bool = broadcast_event("equip_item", {
 		"entity_id": hero_id,
 		"item_id":   sword_id,
@@ -117,6 +125,9 @@ skin_material_path: String, hair_material_path: String) -> void:
 	for i in player_count:
 		var kind_id: int = monster_pool.pop_front()
 		var monster_id: String = SagaEntityManager_auto.create_monster(kind_id)
+		while SagaEntityManager_auto.get_entity_by_id(monster_id) == null:
+			# wait a cycle for the entity to be fully added
+			await get_parent().get_tree().create_timer(0.01).timeout
 		var monster_placed: bool = broadcast_event("place_entity", {
 			"entity_id": monster_id,
 			"random_land": true,
@@ -137,6 +148,9 @@ skin_material_path: String, hair_material_path: String) -> void:
 	for i in player_count:
 		var kind_id: int = jarl_pool.pop_front()
 		var jarl_id: String = SagaEntityManager_auto.create_jarl(kind_id)
+		while SagaEntityManager_auto.get_entity_by_id(jarl_id) == null:
+			# wait a cycle for the entity to be fully added
+			await get_parent().get_tree().create_timer(0.01).timeout
 		var jarl_placed: bool = broadcast_event("place_entity", {
 			"entity_id":  jarl_id,
 			"random_land": true,

@@ -19,6 +19,44 @@ var jarl_pool: Array[int] = []
 var treasure_pool: Array[int] = []
 
 
+# ---------------------------------------------------------------------------
+# Cross-scene persistent state — board placement and map graph.
+#
+# SagaBoardSystem and SagaMapSystem are registered fresh in every scene that
+# needs them (SetupScene, GameScene, ...). Godot destroys their node
+# instances on change_scene_to_file, so any state they held locally would be
+# lost at the SetupScene -> GameScene transition. Instead, both systems
+# alias their working Dictionaries directly to the fields below in
+# _on_initialize() (Dictionaries are reference types in GDScript, so writes
+# from any scene's system instance land here and are visible to the next
+# scene's instance automatically). Neither system's _on_cleanup() clears
+# these — only a deliberate new-game reset should.
+# ---------------------------------------------------------------------------
+
+## SagaBoardSystem's primary index: location_entity_id -> Array[String occupant_entity_id].
+var board_grid: Dictionary = {}
+
+## SagaBoardSystem's reverse index: occupant_entity_id -> location_entity_id.
+var board_locations: Dictionary = {}
+
+## True once SagaMapSystem has parsed map.json and created land/sea entities.
+## Guards against re-creating (and duplicating) all 66 region entities if a
+## second SagaMapSystem instance initializes in a later scene.
+var map_loaded: bool = false
+
+## SagaMapSystem's region_id (map.json key) -> entity_id.
+var map_region_id_to_entity_id: Dictionary = {}
+
+## SagaMapSystem's entity_id -> region_id (reverse lookup).
+var map_entity_id_to_region_id: Dictionary = {}
+
+## SagaMapSystem's adjacency graph: entity_id -> Array[String entity_id].
+var map_adjacency: Dictionary = {}
+
+## SagaMapSystem's land/sea classification: entity_id -> bool (true = land).
+var map_is_land: Dictionary = {}
+
+
 # --- Monster pool ---
 
 ## Draw the next monster kind ID from the pool.
@@ -124,9 +162,9 @@ func _start_game() -> void:
 	register_scene("TitleScene", "res://scenes/title/TitleScene.tscn")
 	register_scene("SetupScene", "res://scenes/setup/SetupScene.tscn")
 
-	# Change to title scene
-	#TODO - comment this line when testing individual scenes
-	# change_scene("TitleScene")
+# Change to title scene
+#TODO - comment this line when testing individual scenes
+# change_scene("TitleScene")
 
 
 ## Load core game resources (fonts, UI, sounds)

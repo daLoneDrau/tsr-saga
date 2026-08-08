@@ -13,6 +13,14 @@
 # _locations is never written directly. All writes to either dictionary go
 # through _add_to_grid and _remove_from_grid, which keep both in sync atomically.
 #
+# Both Dictionaries are aliased (not copied) to SagaGameEngine_auto.board_grid /
+# board_locations in _on_initialize(). This system is re-registered fresh in
+# every scene (SetupScene, GameScene, ...), and Godot destroys the old scene's
+# node instances on change_scene_to_file — aliasing to the engine-held
+# Dictionaries (reference types in GDScript) is what makes placement survive
+# that transition. _on_cleanup() deliberately does NOT clear this data —
+# only clear() should, and only for an explicit new-game reset.
+#
 # Listens for:
 #   "place_entity"  payload: { entity_id: String, location_id: String }
 #                        OR  { entity_id: String, random_land: true }
@@ -24,7 +32,8 @@ extends GameSystem
 
 
 # ---------------------------------------------------------------------------
-# Internal storage
+# Internal storage — aliased to SagaGameEngine_auto in _on_initialize(), not
+# owned locally. See header comment.
 # ---------------------------------------------------------------------------
 
 # Primary index: location_entity_id -> Array[String occupant_entity_id]
@@ -43,10 +52,12 @@ func _on_ready() -> void:
 	pass
 
 func _on_cleanup() -> void:
-	clear()
+	# Deliberately does not clear _grid/_locations — see header comment.
+	pass
 
 func _on_initialize() -> void:
-	pass
+	_grid = SagaGameEngine_auto.board_grid
+	_locations = SagaGameEngine_auto.board_locations
 
 func _process_system(_delta: float) -> void:
 	pass

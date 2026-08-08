@@ -29,6 +29,7 @@ func _process_system(_delta: float) -> void:
 
 
 func handle_event(event_name: String, payload: Dictionary = {}) -> bool:
+	print("SagaEquipmentSystem.handle_event(", event_name)
 	match event_name:
 		"equip_item":
 			return equip(payload["entity_id"], payload["item_id"], payload.get("slot", -1))

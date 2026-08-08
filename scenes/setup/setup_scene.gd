@@ -31,54 +31,54 @@ const AI_MAX: int = 5
 # This maps list index → HeroKindTable constant so the script never hard-codes
 # names — it reads everything from the kind table at runtime.
 const HERO_KIND_IDS: Array[int] = [
-	HeroKindTable.BEOWULF,
-	HeroKindTable.BRUNHILD,
-	HeroKindTable.EGIL,
-	HeroKindTable.RAGNAR,
-	HeroKindTable.SIEGFRIED,
-	HeroKindTable.STARKAD,
-]
+								  HeroKindTable.BEOWULF,
+								  HeroKindTable.BRUNHILD,
+								  HeroKindTable.EGIL,
+								  HeroKindTable.RAGNAR,
+								  HeroKindTable.SIEGFRIED,
+								  HeroKindTable.STARKAD,
+								  ]
 
 # Full-body hero model scene paths, in the same alphabetical order as
 # HERO_KIND_IDS. Used for both the dossier portrait and (eventually) the
 # in-game board piece.
 const HERO_MODEL_PATHS: Array[String] = [
-	"res://assets/art/models/heroes/beowulf/beowulf.tscn",
-	"res://assets/art/models/heroes/brunhild/brunhild.tscn",  # STUB — Brunhild
-	"res://assets/art/models/heroes/egil/egil.tscn",
-	"res://assets/art/models/heroes/ragnar/ragnar.tscn",  # STUB — Ragnar
-	"res://assets/art/models/heroes/siegfried/siegfried.tscn",
-	"res://assets/art/models/heroes/starkad/starkad.tscn",  # STUB — Starkad
-]
+										"res://assets/art/models/heroes/beowulf/beowulf.tscn",
+										"res://assets/art/models/heroes/brunhild/brunhild.tscn",  # STUB — Brunhild
+										"res://assets/art/models/heroes/egil/egil.tscn",
+										"res://assets/art/models/heroes/ragnar/ragnar.tscn",  # STUB — Ragnar
+										"res://assets/art/models/heroes/siegfried/siegfried.tscn",
+										"res://assets/art/models/heroes/starkad/starkad.tscn",  # STUB — Starkad
+										]
 
 # Skin material resource paths — four palette options.
 const SKIN_MATERIAL_PATHS: Array[String] = [
-	"res://assets/art/materials/heroes/skin/fair_rosy.tres",
-	"res://assets/art/materials/heroes/skin/light_tan.tres",
-	"res://assets/art/materials/heroes/skin/florid.tres",
-	"res://assets/art/materials/heroes/skin/olive.tres",
-]
+										   "res://assets/art/materials/heroes/skin/fair_rosy.tres",
+										   "res://assets/art/materials/heroes/skin/light_tan.tres",
+										   "res://assets/art/materials/heroes/skin/florid.tres",
+										   "res://assets/art/materials/heroes/skin/olive.tres",
+										   ]
 const HAIR_MATERIAL_PATHS_OLIVE: Array[String] = [
-	"res://assets/art/materials/heroes/hair/auburn.tres",
-	"res://assets/art/materials/heroes/hair/black.tres",
-]
+										   "res://assets/art/materials/heroes/hair/auburn.tres",
+										   "res://assets/art/materials/heroes/hair/black.tres",
+										   ]
 # Maps scalp hair material path → matching stubble path for Starkad.
 const STUBBLE_BY_HAIR: Dictionary = {
-	"res://assets/art/materials/heroes/hair/blonde.tres": "res://assets/art/materials/heroes/stubble/stubble_blonde.tres",
-	"res://assets/art/materials/heroes/hair/auburn.tres": "res://assets/art/materials/heroes/stubble/stubble_auburn.tres",
-	"res://assets/art/materials/heroes/hair/red.tres": "res://assets/art/materials/heroes/stubble/stubble_red.tres",
-	"res://assets/art/materials/heroes/hair/black.tres": "res://assets/art/materials/heroes/stubble/stubble_black.tres",
-	"res://assets/art/materials/heroes/hair/platinum.tres": "res://assets/art/materials/heroes/stubble/stubble_platinum.tres",
-}
+										"res://assets/art/materials/heroes/hair/blonde.tres": "res://assets/art/materials/heroes/stubble/stubble_blonde.tres",
+										"res://assets/art/materials/heroes/hair/auburn.tres": "res://assets/art/materials/heroes/stubble/stubble_auburn.tres",
+										"res://assets/art/materials/heroes/hair/red.tres": "res://assets/art/materials/heroes/stubble/stubble_red.tres",
+										"res://assets/art/materials/heroes/hair/black.tres": "res://assets/art/materials/heroes/stubble/stubble_black.tres",
+										"res://assets/art/materials/heroes/hair/platinum.tres": "res://assets/art/materials/heroes/stubble/stubble_platinum.tres",
+									}
 
 # Hair material resource paths — four palette options.
 const HAIR_MATERIAL_PATHS: Array[String] = [
-	"res://assets/art/materials/heroes/hair/blonde.tres",
-	"res://assets/art/materials/heroes/hair/auburn.tres",
-	"res://assets/art/materials/heroes/hair/red.tres",
-	"res://assets/art/materials/heroes/hair/black.tres",
-	"res://assets/art/materials/heroes/hair/platinum.tres",
-]
+										   "res://assets/art/materials/heroes/hair/blonde.tres",
+										   "res://assets/art/materials/heroes/hair/auburn.tres",
+										   "res://assets/art/materials/heroes/hair/red.tres",
+										   "res://assets/art/materials/heroes/hair/black.tres",
+										   "res://assets/art/materials/heroes/hair/platinum.tres",
+										   ]
 
 # Maximum pip count rendered in the dossier (matches the scene's P0–P5 nodes).
 const MAX_PIPS: int = 6
@@ -216,6 +216,13 @@ func do_action(action: GameAction) -> void:
 # ---------------------------------------------------------------------------
 
 func _register_systems() -> void:
+	# Must be registered before SagaBoardSystem/SagaSetupSystem — random
+	# hero/monster/jarl placement below needs land entities to already exist.
+	var map := SagaMapSystem.new()
+	map.name = "SagaMapSystem"
+	add_child(map)
+	register_system(map)
+
 	var board := SagaBoardSystem.new()
 	board.name = "SagaBoardSystem"
 	add_child(board)
@@ -434,6 +441,6 @@ func _on_accept() -> void:
 func _on_setup_complete(_payload: Dictionary) -> void:
 	# Board is now populated. Transition to GameScene.
 	# STUB path — replace when GameScene exists.
-	_game_engine.change_scene("GameScene", GAME_SCENE_PATH)
+	SagaGameEngine_auto.change_scene("GameScene", GAME_SCENE_PATH)
 
 #endregion
