@@ -24,6 +24,41 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 12
 
+[node name="HeroInfoBtn" type="Button" parent="VBox" unique_id=1132324545]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Hero Info"
+
+[node name="HeroInfoPopup" type="PopupPanel" parent="."]
+unique_name_in_owner = true
+size = Vector2i(360, 320)
+
+[node name="Margin" type="MarginContainer" parent="HeroInfoPopup"]
+layout_mode = 2
+offset_right = 360.0
+offset_bottom = 320.0
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBox" type="VBoxContainer" parent="HeroInfoPopup/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="HeroInfoText" type="RichTextLabel" parent="HeroInfoPopup/Margin/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 250)
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+fit_content = true
+
+[node name="HeroInfoCloseBtn" type="Button" parent="HeroInfoPopup/Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Close"
+
 [node name="StatusLabel" type="Label" parent="VBox" unique_id=1545356227]
 unique_name_in_owner = true
 layout_mode = 2

@@ -28,6 +28,10 @@ extends Scene
 @onready var _status_label:   Label    = %StatusLabel
 @onready var _reachable_list: ItemList = %ReachableList
 @onready var _pass_btn:       Button   = %PassBtn
+@onready var _hero_info_btn:  Button     = %HeroInfoBtn
+@onready var _hero_info_popup: PopupPanel   = %HeroInfoPopup
+@onready var _hero_info_text: RichTextLabel = %HeroInfoText
+@onready var _hero_info_close_btn: Button   = %HeroInfoCloseBtn
 
 
 # ---------------------------------------------------------------------------
@@ -112,6 +116,8 @@ func _register_systems() -> void:
 func _wire_ui() -> void:
 	_reachable_list.item_selected.connect(_on_region_selected)
 	_pass_btn.pressed.connect(_on_pass_pressed)
+	_hero_info_btn.pressed.connect(_on_hero_info_pressed)
+	_hero_info_close_btn.pressed.connect(_on_hero_info_close_pressed)
 
 
 func _unwire_ui() -> void:
@@ -119,6 +125,10 @@ func _unwire_ui() -> void:
 		_reachable_list.item_selected.disconnect(_on_region_selected)
 	if _pass_btn.pressed.is_connected(_on_pass_pressed):
 		_pass_btn.pressed.disconnect(_on_pass_pressed)
+	if _hero_info_btn.pressed.is_connected(_on_hero_info_pressed):
+		_hero_info_btn.pressed.disconnect(_on_hero_info_pressed)
+	if _hero_info_close_btn.pressed.is_connected(_on_hero_info_close_pressed):
+		_hero_info_close_btn.pressed.disconnect(_on_hero_info_close_pressed)
 
 #endregion
 
@@ -174,6 +184,70 @@ func _on_pass_pressed() -> void:
 
 #endregion
 
+
+# ---------------------------------------------------------------------------
+#region Hero info popup
+# ---------------------------------------------------------------------------
+
+
+func _on_hero_info_pressed() -> void:
+	_hero_info_text.text = _build_hero_info_text()
+	_hero_info_popup.popup_centered()
+func _on_hero_info_close_pressed() -> void:
+	_hero_info_popup.hide()
+	
+
+## Gathers and formats the human player's hero data. Always shows THE
+## player's hero specifically (TAG_PLAYER), regardless of whose turn it
+## currently is to move.
+func _build_hero_info_text() -> String:
+	var players: Array = SagaEntityManager_auto.get_entities_by_tag(SagaEntityManager.TAG_PLAYER)
+	if players.is_empty():
+		return "No player hero found."
+	var hero: Entity = players[0]
+	var hero_comp: SagaHeroComponent = hero.get_component("SagaHeroComponent", false) as SagaHeroComponent
+	var stats: SagaStatsComponent = hero.get_component("StatsComponent", false) as SagaStatsComponent
+	var glory_comp: SagaGloryComponent = hero.get_component("SagaGloryComponent", false) as SagaGloryComponent
+	var equip_comp: SagaEquipmentComponent = hero.get_component("EquipmentComponent", false) as SagaEquipmentComponent
+	var board := get_registered_system(&"SagaBoardSystem") as SagaBoardSystem
+	var lines: Array[String] = []
+	lines.append("[b]%s[/b]" % _entity_display_name(hero.id))
+	if hero_comp:
+		lines.append("Home country: %s" % (_entity_display_name(hero_comp.home_country) if hero_comp.home_country != "" else "—"))
+	var current_location := board.get_location_of(hero.id) if board else ""
+	lines.append("Current location: %s" % (_entity_display_name(current_location) if current_location != "" else "—"))
+	if stats:
+		lines.append("Combat strength: %d" % stats.get_value(SagaStatsComponent.COMBAT_STRENGTH))
+		lines.append("Movement factor: %d" % stats.get_value(SagaStatsComponent.MOVEMENT_SPEED))
+		lines.append("Luck: %d" % stats.get_value(SagaStatsComponent.LUCK))
+	lines.append("Glory: %d" % (glory_comp.current if glory_comp else 0))
+	lines.append("Sword equipped: %s" % _sword_display_text(equip_comp))
+	if hero_comp:
+		lines.append("Gold: %d" % hero_comp.gold)
+		lines.append("Jarls: %d / 4" % hero_comp.jarls.size())
+		lines.append("Kingdom: %d region%s" % [hero_comp.kingdom.size(), "" if hero_comp.kingdom.size() == 1 else "s"])
+		lines.append("Wounded: %s" % ("Yes" if hero_comp.is_wounded else "No"))
+	return "\n".join(lines)
+
+
+## Resolves the MAIN_HAND slot to a display string: sword name and its
+## combat bonus, or "None" if the slot is empty.
+func _sword_display_text(equip_comp: SagaEquipmentComponent) -> String:
+	if equip_comp == null:
+		return "None"
+	var sword_id: String = equip_comp.slots.get(EquipmentSlot.Enum.MAIN_HAND, "")
+	if sword_id == "":
+		return "None"
+	var sword_entity: Entity = SagaEntityManager_auto.get_entity_by_id(sword_id)
+	if sword_entity == null:
+		return "None"
+	var sword_name := _entity_display_name(sword_id)
+	var sword_comp: SagaMagicSwordComponent = sword_entity.get_component("SagaMagicSwordComponent", false) as SagaMagicSwordComponent
+	if sword_comp:
+		return "%s (+%d combat)" % [sword_name, sword_comp.combat_bonus]
+	return sword_name
+
+#endregion
 
 # ---------------------------------------------------------------------------
 #region Helpers
