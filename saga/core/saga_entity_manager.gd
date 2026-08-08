@@ -249,14 +249,15 @@ func create_magic_sword(kind_id: int) -> String:
 	# Combat strength modifier — applied to wielder's StatsComponent on equip,
 	# removed on unequip or drop. Managed by CombatSystem.
 	var mod_entry := StatModifierEntry.create(
-						 &"magic_sword",
-						 kind_data["combat_bonus"],
-						 false
-					 )
+		&"magic_sword",
+		kind_data["combat_bonus"],
+		false
+	)
 	var bundle := ItemModifierBundle.new()
 	bundle.stat_modifiers.append(mod_entry)
 
 	var item_comp := SagaItemComponent.new()
+	item_comp.equip_slots = [EquipmentSlot.Enum.MAIN_HAND]
 	item_comp.modifiers = bundle
 	entity.set_component(item_comp)
 
