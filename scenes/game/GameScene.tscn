@@ -1,6 +1,33 @@
 [gd_scene format=3 uid="uid://bj2pqvt73pa7g"]
 
 [ext_resource type="Script" uid="uid://bmbrul1fkimy0" path="res://scenes/game/game_scene.gd" id="1_2stm1"]
+[ext_resource type="Shader" uid="uid://dt4e4ii68kktg" path="res://shaders/ctr_scanlines.gdshader" id="2_shader"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bar"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 10
+border_width_top = 2
+border_width_right = 10
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_middle"]
+content_margin_top = 18.0
+content_margin_bottom = 14.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_crt"]
+shader = ExtResource("2_shader")
+shader_parameter/line_strength = 0.22
+shader_parameter/line_period = 3.0
+shader_parameter/vignette = 0.5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_popup"]
+bg_color = Color(0.0627451, 0.07058824, 0.18039216, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.42352942, 0.3882353, 0.8392157, 1)
 
 [node name="GameScene" type="Control" unique_id=1797217881]
 layout_mode = 3
@@ -11,67 +38,216 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_2stm1")
 
-[node name="VBox" type="VBoxContainer" parent="." unique_id=557130777]
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Main" type="PanelContainer" parent="UI"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"WindowBorder"
+
+[node name="Content" type="VBoxContainer" parent="UI/Main"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="TopRow" type="PanelContainer" parent="UI/Main/Content"]
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bar")
+
+[node name="Column" type="HBoxContainer" parent="UI/Main/Content/TopRow"]
+layout_mode = 2
+
+[node name="BannerLeft" type="Label" parent="UI/Main/Content/TopRow/Column"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"BannerLeft"
+text = "SAGA — AGE OF HEROES"
+vertical_alignment = 1
+
+[node name="BannerRight" type="Label" parent="UI/Main/Content/TopRow/Column"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"Status"
+text = "TURN 1 — MOVEMENT"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Spacer" type="ColorRect" parent="UI/Main/Content"]
+custom_minimum_size = Vector2(0, 2)
+layout_mode = 2
+color = Color(0.42352942, 0.3882353, 0.8392157, 1)
+
+[node name="MiddlePane" type="Panel" parent="UI/Main/Content"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_middle")
+
+[node name="Center" type="CenterContainer" parent="UI/Main/Content/MiddlePane"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 24.0
-offset_top = 24.0
-offset_right = -24.0
-offset_bottom = -24.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 12
 
-[node name="HeroInfoBtn" type="Button" parent="VBox" unique_id=1132324545]
+[node name="Card" type="PanelContainer" parent="UI/Main/Content/MiddlePane/Center"]
+custom_minimum_size = Vector2(420, 0)
+layout_mode = 2
+theme_type_variation = &"PanelBox"
+
+[node name="Pad" type="MarginContainer" parent="UI/Main/Content/MiddlePane/Center/Card"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 22
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 20
+
+[node name="Col" type="VBoxContainer" parent="UI/Main/Content/MiddlePane/Center/Card/Pad"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="MoverLabel" type="Label" parent="UI/Main/Content/MiddlePane/Center/Card/Pad/Col"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Hero Info"
+theme_type_variation = &"HeroSubtitle"
+theme_override_colors/font_color = Color(1, 0.886, 0.286, 1)
+theme_override_font_sizes/font_size = 13
+text = "LOADING..."
+horizontal_alignment = 1
+autowrap_mode = 2
 
-[node name="HeroInfoPopup" type="PopupPanel" parent="."]
+[node name="LocationLabel" type="Label" parent="UI/Main/Content/MiddlePane/Center/Card/Pad/Col"]
 unique_name_in_owner = true
-size = Vector2i(360, 320)
+layout_mode = 2
+theme_type_variation = &"Status"
+text = ""
+horizontal_alignment = 1
+autowrap_mode = 2
 
-[node name="Margin" type="MarginContainer" parent="HeroInfoPopup"]
+[node name="RegionsHeader" type="Label" parent="UI/Main/Content/MiddlePane/Center/Card/Pad/Col"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"MenuItem"
+theme_override_font_sizes/font_size = 12
+text = "REACHABLE REGIONS"
+
+[node name="RegionsScroll" type="ScrollContainer" parent="UI/Main/Content/MiddlePane/Center/Card/Pad/Col"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 180)
+layout_mode = 2
+
+[node name="RegionList" type="VBoxContainer" parent="UI/Main/Content/MiddlePane/Center/Card/Pad/Col/RegionsScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="ButtonRow" type="HBoxContainer" parent="UI/Main/Content/MiddlePane/Center/Card/Pad/Col"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 16
+
+[node name="PassBtn" type="Button" parent="UI/Main/Content/MiddlePane/Center/Card/Pad/Col/ButtonRow"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_type_variation = &"StepBtn"
+theme_override_colors/font_color = Color(0.545, 0.878, 0.878, 1)
+theme_override_colors/font_focus_color = Color(0.545, 0.878, 0.878, 1)
+theme_override_colors/font_hover_color = Color(0.545, 0.878, 0.878, 1)
+theme_override_font_sizes/font_size = 15
+text = "PASS"
+
+[node name="HeroInfoBtn" type="Button" parent="UI/Main/Content/MiddlePane/Center/Card/Pad/Col/ButtonRow"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_type_variation = &"GoldBtn"
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 15
+text = "HERO INFO"
+
+[node name="Spacer2" type="ColorRect" parent="UI/Main/Content"]
+custom_minimum_size = Vector2(0, 2)
+layout_mode = 2
+color = Color(0.42352942, 0.3882353, 0.8392157, 1)
+
+[node name="BottomRow" type="PanelContainer" parent="UI/Main/Content"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bar")
+
+[node name="Column" type="VBoxContainer" parent="UI/Main/Content/BottomRow"]
+layout_mode = 2
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="Msg1" type="Label" parent="UI/Main/Content/BottomRow/Column"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 13
+text = "THE NORTH AWAITS YOUR COMMAND."
+vertical_alignment = 1
+
+[node name="Msg2" type="Label" parent="UI/Main/Content/BottomRow/Column"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"Status"
+text = "CLICK A REGION TO MOVE, OR PASS."
+vertical_alignment = 1
+
+[node name="Scanlines" type="ColorRect" parent="UI"]
+material = SubResource("ShaderMaterial_crt")
+offset_right = 640.0
+offset_bottom = 480.0
+mouse_filter = 2
+
+[node name="HeroInfoPopup" type="PopupPanel" parent="UI"]
+unique_name_in_owner = true
+size = Vector2i(360, 340)
+theme_override_styles/panel = SubResource("StyleBoxFlat_popup")
+
+[node name="Margin" type="MarginContainer" parent="UI/HeroInfoPopup"]
 layout_mode = 2
 offset_right = 360.0
-offset_bottom = 320.0
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 16
-theme_override_constants/margin_bottom = 16
+offset_bottom = 340.0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 18
 
-[node name="VBox" type="VBoxContainer" parent="HeroInfoPopup/Margin"]
+[node name="VBox" type="VBoxContainer" parent="UI/HeroInfoPopup/Margin"]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 10
 
-[node name="HeroInfoText" type="RichTextLabel" parent="HeroInfoPopup/Margin/VBox"]
+[node name="HeroInfoTitle" type="Label" parent="UI/HeroInfoPopup/Margin/VBox"]
+theme_type_variation = &"HeroSubtitle"
+theme_override_colors/font_color = Color(1, 0.886, 0.286, 1)
+theme_override_font_sizes/font_size = 13
+text = "HERO DOSSIER"
+
+[node name="HeroInfoText" type="RichTextLabel" parent="UI/HeroInfoPopup/Margin/VBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 250)
+custom_minimum_size = Vector2(0, 240)
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_colors/default_color = Color(0.9059, 0.8902, 0.9608, 1)
+theme_override_font_sizes/normal_font_size = 14
 bbcode_enabled = true
 fit_content = true
 
-[node name="HeroInfoCloseBtn" type="Button" parent="HeroInfoPopup/Margin/VBox"]
+[node name="HeroInfoCloseBtn" type="Button" parent="UI/HeroInfoPopup/Margin/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Close"
-
-[node name="StatusLabel" type="Label" parent="VBox" unique_id=1545356227]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Loading..."
-autowrap_mode = 2
-
-[node name="ReachableList" type="ItemList" parent="VBox" unique_id=500377103]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 320)
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="PassBtn" type="Button" parent="VBox" unique_id=1132324544]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Pass"
+mouse_default_cursor_shape = 2
+theme_type_variation = &"StepBtn"
+theme_override_colors/font_color = Color(0.545, 0.878, 0.878, 1)
+theme_override_colors/font_focus_color = Color(0.545, 0.878, 0.878, 1)
+theme_override_colors/font_hover_color = Color(0.545, 0.878, 0.878, 1)
+text = "CLOSE"

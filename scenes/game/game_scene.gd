@@ -2,44 +2,75 @@
 # Minimal controller for the main game loop screen. Extends Scene — registered
 # as the root script on GameScene.tscn.
 #
-# This is intentionally bare: a status label plus a clickable list of
-# reachable regions, enough to exercise SagaTurnSystem/SagaMovementSystem end
-# to end from the editor. It is NOT the real board UI — that's a later step
-# (3D board, region picking on the map itself). Combat, taxes, and the
-# monster/jarl placement phases aren't wired yet; this only drives the
-# movement phase, then reports the phase complete and stops.
+# Visually matches TitleScene/SetupScene: WindowBorder frame, black top/bottom
+# banner bars with a violet divider, a PanelBox card in the middle, and a CRT
+# scanline overlay. Reachable regions are rendered as MenuItem-styled rows
+# (PanelContainer + arrow + label) built at runtime — same hover/click
+# pattern as TitleScene's menu, since the set of reachable regions changes
+# every time the current mover changes.
+#
+# This is intentionally bare on GAMEPLAY scope, even though it's now styled:
+# a status readout plus a clickable list of reachable regions, enough to
+# exercise SagaTurnSystem/SagaMovementSystem end to end from the editor. It
+# is NOT the real board UI — that's a later step (3D board, region picking
+# on the map itself). Combat, taxes, and the monster/jarl placement phases
+# aren't wired yet; this only drives the movement phase, then reports the
+# phase complete and stops.
 #
 # Responsibilities:
 #   - Register SagaMapSystem, SagaBoardSystem, SagaGlorySystem,
-#     SagaTurnSystem, SagaMovementSystem.
-#   - Kick off turn 1's movement phase on enter.
 #   - Show whose turn it is to move and what regions they can reach.
 #   - Let the player click a region to move there, or press Pass.
 #   - Refresh after every move/pass; report when the movement phase ends.
+#   - Let the player open a dossier popup showing their own hero's data.
 
 class_name GameScene
 extends Scene
 
 
 # ---------------------------------------------------------------------------
+# Constants
+# ---------------------------------------------------------------------------
+const ARROW_GLYPH: String = "▶"
+# ---------------------------------------------------------------------------
+# Region row descriptor
+# ---------------------------------------------------------------------------
+
+
+## Represents one dynamically-built reachable-region row.
+class RegionRow:
+	var panel:       PanelContainer
+	var arrow_label: Label
+	var entity_id:   String
+	func _init(p: PanelContainer, a: Label, id: String) -> void:
+		panel       = p
+		arrow_label = a
+		entity_id   = id
+
+# ---------------------------------------------------------------------------
 # Node references
 # ---------------------------------------------------------------------------
 
-@onready var _status_label:   Label    = %StatusLabel
-@onready var _reachable_list: ItemList = %ReachableList
-@onready var _pass_btn:       Button   = %PassBtn
-@onready var _hero_info_btn:  Button     = %HeroInfoBtn
-@onready var _hero_info_popup: PopupPanel   = %HeroInfoPopup
-@onready var _hero_info_text: RichTextLabel = %HeroInfoText
-@onready var _hero_info_close_btn: Button   = %HeroInfoCloseBtn
+@onready var _banner_right:        Label          = %BannerRight
+@onready var _mover_label:         Label          = %MoverLabel
+@onready var _location_label:      Label          = %LocationLabel
+@onready var _regions_header:      Label          = %RegionsHeader
+@onready var _regions_scroll:      ScrollContainer = %RegionsScroll
+@onready var _region_list:         VBoxContainer  = %RegionList
+@onready var _pass_btn:            Button         = %PassBtn
+@onready var _hero_info_btn:       Button         = %HeroInfoBtn
+@onready var _hero_info_popup:     PopupPanel     = %HeroInfoPopup
+@onready var _hero_info_text:      RichTextLabel  = %HeroInfoText
+@onready var _hero_info_close_btn: Button         = %HeroInfoCloseBtn
 
 
 # ---------------------------------------------------------------------------
 # State
 # ---------------------------------------------------------------------------
 
-# Parallel to _reachable_list's rows: index -> destination entity_id.
-var _reachable_entity_ids: Array = []
+# Rebuilt every _refresh(). Rows are ephemeral — freed and recreated each
+# time, since the reachable set changes whenever the current mover changes.
+var _rows: Array[RegionRow] = []
 
 
 # ---------------------------------------------------------------------------
@@ -67,6 +98,7 @@ func _ready() -> void:
 
 func on_exit() -> void:
 	_unwire_ui()
+	_clear_region_rows()
 
 
 func do_action(_action: GameAction) -> void:
@@ -114,15 +146,12 @@ func _register_systems() -> void:
 # ---------------------------------------------------------------------------
 
 func _wire_ui() -> void:
-	_reachable_list.item_selected.connect(_on_region_selected)
 	_pass_btn.pressed.connect(_on_pass_pressed)
 	_hero_info_btn.pressed.connect(_on_hero_info_pressed)
 	_hero_info_close_btn.pressed.connect(_on_hero_info_close_pressed)
 
 
 func _unwire_ui() -> void:
-	if _reachable_list.item_selected.is_connected(_on_region_selected):
-		_reachable_list.item_selected.disconnect(_on_region_selected)
 	if _pass_btn.pressed.is_connected(_on_pass_pressed):
 		_pass_btn.pressed.disconnect(_on_pass_pressed)
 	if _hero_info_btn.pressed.is_connected(_on_hero_info_pressed):
@@ -146,32 +175,32 @@ func _start_movement_phase() -> void:
 func _refresh() -> void:
 	var movement_sys := get_registered_system(&"SagaMovementSystem") as SagaMovementSystem
 	var turn_sys := get_registered_system(&"SagaTurnSystem") as SagaTurnSystem
+	var turn: int = turn_sys.get_current_turn()
 
 	if movement_sys.is_movement_phase_complete():
-		_status_label.text = "Turn %d — movement phase complete. (Combat phase not yet implemented.)" % turn_sys.get_current_turn()
-		_reachable_list.clear()
-		_reachable_entity_ids.clear()
+		_banner_right.text = "TURN %d — COMPLETE" % turn
+		_mover_label.text = "MOVEMENT PHASE COMPLETE"
+		_location_label.text = "(COMBAT PHASE NOT YET IMPLEMENTED)"
+		_regions_header.visible = false
+		_regions_scroll.visible = false
+		_clear_region_rows()
 		_pass_btn.disabled = true
 		return
 
+	_banner_right.text = "TURN %d — MOVEMENT" % turn
+	_regions_header.visible = true
+	_regions_scroll.visible = true
+
 	var mover_id: String = movement_sys.get_current_mover()
 	var mover_name: String = _entity_display_name(mover_id)
-	_status_label.text = "Turn %d — %s's turn to move. Choose a region or Pass." % [turn_sys.get_current_turn(), mover_name]
+	_mover_label.text = "%s'S TURN TO MOVE" % mover_name.to_upper()
 
-	_reachable_entity_ids = movement_sys.get_reachable_regions(mover_id)
-	_reachable_list.clear()
-	for entity_id in _reachable_entity_ids:
-		_reachable_list.add_item(_entity_display_name(entity_id))
+	var board := get_registered_system(&"SagaBoardSystem") as SagaBoardSystem
+	var current_location := board.get_location_of(mover_id) if board else ""
+	_location_label.text = "AT: %s" % _entity_display_name(current_location).to_upper()
+	var reachable: Array = movement_sys.get_reachable_regions(mover_id)
+	_rebuild_region_rows(reachable)
 	_pass_btn.disabled = false
-
-
-func _on_region_selected(index: int) -> void:
-	var movement_sys := get_registered_system(&"SagaMovementSystem") as SagaMovementSystem
-	var mover_id: String = movement_sys.get_current_mover()
-	if mover_id == "" or index < 0 or index >= _reachable_entity_ids.size():
-		return
-	movement_sys.move_hero(mover_id, _reachable_entity_ids[index])
-	_refresh()
 
 
 func _on_pass_pressed() -> void:
@@ -182,9 +211,76 @@ func _on_pass_pressed() -> void:
 	movement_sys.pass_movement(mover_id)
 	_refresh()
 
+
+func _on_region_chosen(destination_entity_id: String) -> void:
+	var movement_sys := get_registered_system(&"SagaMovementSystem") as SagaMovementSystem
+	var mover_id: String = movement_sys.get_current_mover()
+	if mover_id == "":
+		return
+	movement_sys.move_hero(mover_id, destination_entity_id)
+	_refresh()
+
 #endregion
 
+# ---------------------------------------------------------------------------
+#region Region row list (dynamic, MenuItem-styled — same pattern as TitleScene)
+# ---------------------------------------------------------------------------
+func _clear_region_rows() -> void:
+	for row in _rows:
+		if is_instance_valid(row.panel):
+			row.panel.queue_free()
+	_rows.clear()
+	
 
+func _rebuild_region_rows(reachable_entity_ids: Array) -> void:
+	_clear_region_rows()
+	for entity_id in reachable_entity_ids:
+		_add_region_row(entity_id)
+		
+
+func _add_region_row(entity_id: String) -> void:
+	var panel := PanelContainer.new()
+	panel.theme_type_variation = &"MenuItemUnselected"
+	panel.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	var hbox := HBoxContainer.new()
+	hbox.add_theme_constant_override("separation", 6)
+	panel.add_child(hbox)
+	var arrow := Label.new()
+	arrow.custom_minimum_size = Vector2(16, 16)
+	arrow.add_theme_color_override("font_color", Color(1, 0.8862745, 0.2901961, 1))
+	arrow.add_theme_font_size_override("font_size", 14)
+	arrow.text = ""
+	hbox.add_child(arrow)
+	var label := Label.new()
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	label.theme_type_variation = &"MenuItem"
+	label.text = _entity_display_name(entity_id).to_upper()
+	hbox.add_child(label)
+	var row := RegionRow.new(panel, arrow, entity_id)
+	_rows.append(row)
+	_region_list.add_child(panel)
+	panel.gui_input.connect(_on_row_gui_input.bind(row))
+	panel.mouse_entered.connect(_on_row_mouse_entered.bind(row))
+	panel.mouse_exited.connect(_on_row_mouse_exited.bind(row))
+
+
+func _on_row_mouse_entered(row: RegionRow) -> void:
+	row.panel.theme_type_variation = &"MenuItemSelected"
+	row.arrow_label.text = ARROW_GLYPH
+	
+
+func _on_row_mouse_exited(row: RegionRow) -> void:
+	row.panel.theme_type_variation = &"MenuItemUnselected"
+	row.arrow_label.text = ""
+	
+
+func _on_row_gui_input(event: InputEvent, row: RegionRow) -> void:
+	if event is InputEventMouseButton:
+		var mb := event as InputEventMouseButton
+		if mb.button_index == MOUSE_BUTTON_LEFT and mb.pressed:
+			_on_region_chosen(row.entity_id)
+
+#endregion
 # ---------------------------------------------------------------------------
 #region Hero info popup
 # ---------------------------------------------------------------------------
@@ -193,10 +289,12 @@ func _on_pass_pressed() -> void:
 func _on_hero_info_pressed() -> void:
 	_hero_info_text.text = _build_hero_info_text()
 	_hero_info_popup.popup_centered()
+	
+	
 func _on_hero_info_close_pressed() -> void:
 	_hero_info_popup.hide()
 	
-
+	
 ## Gathers and formats the human player's hero data. Always shows THE
 ## player's hero specifically (TAG_PLAYER), regardless of whose turn it
 ## currently is to move.
@@ -246,7 +344,6 @@ func _sword_display_text(equip_comp: SagaEquipmentComponent) -> String:
 	if sword_comp:
 		return "%s (+%d combat)" % [sword_name, sword_comp.combat_bonus]
 	return sword_name
-
 #endregion
 
 # ---------------------------------------------------------------------------
