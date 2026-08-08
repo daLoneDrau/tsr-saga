@@ -39,13 +39,13 @@ enum Phase {
 }
 
 const _PHASE_SEQUENCE: Array = [
-							   Phase.MOVEMENT,
-							   Phase.COMBAT,
-							   Phase.TAXES,
-							   Phase.PLACE_MONSTERS,
-							   Phase.PLACE_JARLS,
-							   Phase.MARK_TURN,
-							   ]
+	Phase.MOVEMENT,
+	Phase.COMBAT,
+	Phase.TAXES,
+	Phase.PLACE_MONSTERS,
+	Phase.PLACE_JARLS,
+	Phase.MARK_TURN,
+]
 
 
 # ---------------------------------------------------------------------------
@@ -100,8 +100,8 @@ func handle_event(event_name: String, _payload: Dictionary = {}) -> bool:
 ## ties broken randomly. Called automatically on initialize and on every
 ## "start_turn" event (i.e. after mark_turn() advances to a new turn).
 func compute_turn_order() -> void:
-	var em := get_entity_manager()
-	var heroes: Array = em.get_entities_with_component("SagaHeroComponent") if em else []
+	print("SagaTurnSystem.compute_turn_order")
+	var heroes: Array = SagaEntityManager_auto.get_entities_with_component("SagaHeroComponent")
 
 	# Shuffle first, then sort by descending glory. Since the pre-sort order
 	# is randomized, any two heroes with equal glory end up in random

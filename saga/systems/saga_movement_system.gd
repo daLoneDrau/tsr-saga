@@ -131,18 +131,17 @@ func is_movement_phase_complete() -> bool:
 func get_reachable_regions(hero_entity_id: String) -> Array:
 	var board := get_system(&"SagaBoardSystem") as SagaBoardSystem
 	var map_sys := get_system(&"SagaMapSystem") as SagaMapSystem
-	var em := get_entity_manager()
-	if board == null or map_sys == null or em == null:
+	if board == null or map_sys == null:
 		return []
 
 	var current_location: String = board.get_location_of(hero_entity_id)
 	if current_location == "":
 		return []
 
-	var hero_entity := em.get_entity_by_id(hero_entity_id)
+	var hero_entity := SagaEntityManager_auto.get_entity_by_id(hero_entity_id)
 	if hero_entity == null:
 		return []
-	var stats: SagaStatsComponent = hero_entity.get_component("SagaStatsComponent") as SagaStatsComponent
+	var stats: SagaStatsComponent = hero_entity.get_component("StatsComponent") as SagaStatsComponent
 	if stats == null:
 		return []
 	var speed: int = stats.get_value(SagaStatsComponent.MOVEMENT_SPEED)

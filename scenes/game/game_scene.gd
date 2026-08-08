@@ -42,6 +42,19 @@ var _reachable_entity_ids: Array = []
 # Lifecycle
 # ---------------------------------------------------------------------------
 
+
+## Called when the node enters the [SceneTree].
+func _enter_tree() -> void:
+	# GameEngine.change_scene() only calls set_engine() via call_deferred(),
+	# which fires AFTER this scene's _ready() has already run synchronously.
+	# _ready() here calls _start_movement_phase() immediately (no user-input
+	# gate to wait out the deferred call, unlike SetupScene), so _game_engine
+	# would still be null the whole time without this. _enter_tree() always
+	# runs before _ready(), and SagaGameEngine_auto is a true autoload
+	# (initialized before any regular scene node), so this is always safe.
+	set_engine(SagaGameEngine_auto)
+	
+
 func _ready() -> void:
 	_register_systems()
 	_wire_ui()
