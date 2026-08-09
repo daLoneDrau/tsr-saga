@@ -1,0 +1,6 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://bra7acxl3cqn7"]
+
+[resource]
+resource_name = "Sea"
+cull_mode = 2
+albedo_color = Color(0.18031715, 0.27440655, 0.7686204, 1)

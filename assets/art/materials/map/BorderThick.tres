@@ -1,0 +1,6 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://cy54twvjpoyvs"]
+
+[resource]
+resource_name = "BorderThick"
+cull_mode = 2
+albedo_color = Color(0.15170372, 0.15170372, 0.15170372, 1)
