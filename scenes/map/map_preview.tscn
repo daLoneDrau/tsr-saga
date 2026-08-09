@@ -1,16 +1,13 @@
 [gd_scene format=3 uid="uid://ki21xxpk0dv2"]
 
-[ext_resource type="PackedScene" uid="uid://dvbu2ur2wv77l" path="res://assets/art/models/map/map.glb" id="1_nyb04"]
-[ext_resource type="Shader" uid="uid://c11vs2da1p8ku" path="res://scenes/map/dither.gdshader" id="2_vfh4r"]
+[ext_resource type="PackedScene" uid="uid://dhiq2iu58p6p1" path="res://assets/art/models/map/saga_map.glb" id="1_vfh4r"]
 
-[sub_resource type="Environment" id="Environment_rbr1p"]
+[sub_resource type="Environment" id="Environment_wy0tn"]
 background_mode = 1
-background_color = Color(0.24780053, 0.24780053, 0.3133042, 1)
+background_color = Color(0.42352942, 0.56078434, 0.8392157, 1)
 ambient_light_source = 2
-ambient_light_color = Color(0.5370987, 0.5370987, 0.58383155, 1)
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_nyb04"]
-shader = ExtResource("2_vfh4r")
+ambient_light_color = Color(1, 1, 1, 1)
+ambient_light_energy = 0.35
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_rbr1p"]
 viewport_path = NodePath("SubViewport")
@@ -20,25 +17,27 @@ viewport_path = NodePath("SubViewport")
 [node name="SubViewport" type="SubViewport" parent="." unique_id=876909579]
 size = Vector2i(640, 480)
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewport" unique_id=1653267123]
-environment = SubResource("Environment_rbr1p")
+[node name="saga_map" parent="SubViewport" unique_id=163580152 instance=ExtResource("1_vfh4r")]
 
-[node name="CameraPivot" type="Node3D" parent="SubViewport" unique_id=440921344]
-transform = Transform3D(0.70710677, -0.40860704, 0.5770964, 0, 0.8161376, 0.5778576, -0.70710677, -0.40860704, 0.5770964, 0, 0, 0)
-
-[node name="Camera3D" type="Camera3D" parent="SubViewport/CameraPivot" unique_id=1321293848]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15)
-projection = 1
-size = 4.0
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewport" unique_id=1295127952]
+[node name="Sun" type="DirectionalLight3D" parent="SubViewport" unique_id=51783633]
+transform = Transform3D(0.81915206, 0.43938506, -0.36868784, 0, 0.64278764, 0.76604444, 0.57357645, -0.62750685, 0.5265408, 0, 0, 0)
 light_energy = 1.2
-shadow_enabled = true
 
-[node name="Map" parent="SubViewport" unique_id=35034871 instance=ExtResource("1_nyb04")]
+[node name="Env" type="WorldEnvironment" parent="SubViewport" unique_id=1305568267]
+environment = SubResource("Environment_wy0tn")
+
+[node name="IsoCameraRig" type="Node3D" parent="SubViewport" unique_id=1443603436]
+transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 0, 0, 0)
+
+[node name="PitchPivot" type="Node3D" parent="SubViewport/IsoCameraRig" unique_id=2119695181]
+transform = Transform3D(1, 0, 0, 0, 0.8161376, 0.5778576, 0, -0.5778576, 0.8161376, 0, 0, 0)
+
+[node name="Camera3D" type="Camera3D" parent="SubViewport/IsoCameraRig/PitchPivot" unique_id=1652227594]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 120)
+projection = 1
+far = 360.0
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=25739476]
-material = SubResource("ShaderMaterial_nyb04")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
