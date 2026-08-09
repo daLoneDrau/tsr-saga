@@ -9,39 +9,26 @@ ambient_light_source = 2
 ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_energy = 0.35
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_rbr1p"]
-viewport_path = NodePath("SubViewport")
-
-[node name="Node3D" type="Node3D" unique_id=1155331291]
-
-[node name="SubViewport" type="SubViewport" parent="." unique_id=876909579]
+[node name="SubViewport" type="SubViewport" unique_id=876909579]
 size = Vector2i(640, 480)
 
-[node name="saga_map" parent="SubViewport" unique_id=163580152 instance=ExtResource("1_vfh4r")]
+[node name="saga_map" parent="." unique_id=163580152 instance=ExtResource("1_vfh4r")]
 
-[node name="Sun" type="DirectionalLight3D" parent="SubViewport" unique_id=51783633]
+[node name="Sun" type="DirectionalLight3D" parent="." unique_id=51783633]
 transform = Transform3D(0.81915206, 0.43938506, -0.36868784, 0, 0.64278764, 0.76604444, 0.57357645, -0.62750685, 0.5265408, 0, 0, 0)
 light_energy = 1.2
 
-[node name="Env" type="WorldEnvironment" parent="SubViewport" unique_id=1305568267]
+[node name="Env" type="WorldEnvironment" parent="." unique_id=1305568267]
 environment = SubResource("Environment_wy0tn")
 
-[node name="IsoCameraRig" type="Node3D" parent="SubViewport" unique_id=1443603436]
+[node name="IsoCameraRig" type="Node3D" parent="." unique_id=1443603436]
 transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 0, 0, 0)
 
-[node name="PitchPivot" type="Node3D" parent="SubViewport/IsoCameraRig" unique_id=2119695181]
+[node name="PitchPivot" type="Node3D" parent="IsoCameraRig" unique_id=2119695181]
 transform = Transform3D(1, 0, 0, 0, 0.8161376, 0.5778576, 0, -0.5778576, 0.8161376, 0, 0, 0)
 
-[node name="Camera3D" type="Camera3D" parent="SubViewport/IsoCameraRig/PitchPivot" unique_id=1652227594]
+[node name="Camera3D" type="Camera3D" parent="IsoCameraRig/PitchPivot" unique_id=1652227594]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 120)
 projection = 1
-size = 85.0
+size = 30.0
 far = 360.0
-
-[node name="TextureRect" type="TextureRect" parent="." unique_id=25739476]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = SubResource("ViewportTexture_rbr1p")

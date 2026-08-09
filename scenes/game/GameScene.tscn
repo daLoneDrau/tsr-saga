@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cixpjwltysnvj" path="res://scenes/game/game_scene.gd" id="1_script"]
 [ext_resource type="Shader" uid="uid://blf5bx1dkhqua" path="res://shaders/ctr_scanlines.gdshader" id="2_shader"]
+[ext_resource type="PackedScene" uid="uid://ki21xxpk0dv2" path="res://scenes/map/map_preview.tscn" id="2_vaave"]
 [ext_resource type="PackedScene" uid="uid://y7d27benixmg" path="res://scenes/setup/PortraitWidget.tscn" id="3_portrait"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bar"]
@@ -86,6 +87,8 @@ color = Color(0.42352942, 0.3882353, 0.8392157, 1)
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_middle")
+
+[node name="SubViewport" parent="UI/Main/Content/MiddlePane" unique_id=876909579 instance=ExtResource("2_vaave")]
 
 [node name="Center" type="CenterContainer" parent="UI/Main/Content/MiddlePane" unique_id=268530114]
 layout_mode = 1
