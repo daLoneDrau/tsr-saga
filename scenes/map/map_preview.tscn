@@ -35,6 +35,7 @@ transform = Transform3D(1, 0, 0, 0, 0.8161376, 0.5778576, 0, -0.5778576, 0.81613
 [node name="Camera3D" type="Camera3D" parent="SubViewport/IsoCameraRig/PitchPivot" unique_id=1652227594]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 120)
 projection = 1
+size = 85.0
 far = 360.0
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=25739476]
