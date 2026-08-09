@@ -56,6 +56,7 @@ const STUBBLE_BY_HAIR: Dictionary = {
 @onready var _mover_label:         Label          = %MoverLabel
 @onready var _location_label:      Label          = %LocationLabel
 @onready var _pass_btn:            Button         = %PassBtn
+@onready var _map_view:            MapPreview     = %MapView
 @onready var _hero_info_btn:       Button         = %HeroInfoBtn
 @onready var _hero_info_popup:     PopupPanel     = %HeroInfoPopup
 @onready var _hero_info_text:      RichTextLabel  = %HeroInfoText
@@ -147,6 +148,7 @@ func _wire_ui() -> void:
 	_pass_btn.pressed.connect(_on_pass_pressed)
 	_hero_info_btn.pressed.connect(_on_hero_info_pressed)
 	_hero_info_close_btn.pressed.connect(_on_hero_info_close_pressed)
+	_map_view.region_clicked.connect(_on_map_region_clicked)
 
 
 func _unwire_ui() -> void:
@@ -156,6 +158,8 @@ func _unwire_ui() -> void:
 		_hero_info_btn.pressed.disconnect(_on_hero_info_pressed)
 	if _hero_info_close_btn.pressed.is_connected(_on_hero_info_close_pressed):
 		_hero_info_close_btn.pressed.disconnect(_on_hero_info_close_pressed)
+	if _map_view.region_clicked.is_connected(_on_map_region_clicked):
+		_map_view.region_clicked.disconnect(_on_map_region_clicked)
 
 #endregion
 
@@ -193,11 +197,9 @@ func _refresh() -> void:
 
 	# NOTE: movement_sys.get_reachable_regions(mover_id) used to drive the
 	# on-screen region list here. That list is gone now that region
-	# selection is meant to happen by clicking the map directly — see the
-	# map widget roadmap, Phase 2 (click-to-select) and Phase 5 (reachable
-	# region highlighting). Until Phase 2 ships, there is no way to
-	# actually choose a destination through this UI; _on_region_chosen()
-	# below is unchanged and ready for the map's raycast hookup to call.
+	# selection happens by clicking the map directly — see
+	# _on_map_region_clicked below. Reachable-region highlighting on the
+	# map itself is still a later step (Phase 5 in the map widget roadmap).
 	_pass_btn.disabled = false
 
 
@@ -217,6 +219,17 @@ func _on_region_chosen(destination_entity_id: String) -> void:
 		return
 	movement_sys.move_hero(mover_id, destination_entity_id)
 	_refresh()
+
+
+## Called when the map widget reports a click on one of its `-colonly`
+## colliders. map_preview.gd only knows raw map.json region_id strings
+## (see its header comment) — resolving that to an entity_id is game-system
+## knowledge that belongs here, not in the rendering/input widget.
+func _on_map_region_clicked(region_id: String) -> void:
+	var map_sys := get_registered_system(&"SagaMapSystem") as SagaMapSystem
+	var entity_id: String = map_sys.get_entity_for_region_id(region_id) if map_sys else ""
+	if entity_id != "":
+		_on_region_chosen(entity_id)
 
 #endregion
 

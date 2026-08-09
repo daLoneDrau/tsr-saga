@@ -89,6 +89,7 @@ size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_middle")
 
 [node name="MapView" parent="UI/Main/Content/MiddlePane" unique_id=876909579 instance=ExtResource("2_vaave")]
+unique_name_in_owner = true
 layout_mode = 1
 
 [node name="Center" type="CenterContainer" parent="UI/Main/Content/MiddlePane" unique_id=268530114]

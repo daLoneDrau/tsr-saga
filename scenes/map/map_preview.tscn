@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://ki21xxpk0dv2"]
 
 [ext_resource type="PackedScene" uid="uid://dhiq2iu58p6p1" path="res://assets/art/models/map/saga_map.glb" id="1_vfh4r"]
+[ext_resource type="Script" path="res://scenes/map/map_preview.gd" id="2_click"]
 
 [sub_resource type="Environment" id="Environment_wy0tn"]
 background_mode = 1
@@ -10,6 +11,7 @@ ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_energy = 0.35
 
 [node name="SubViewportContainer" type="SubViewportContainer" unique_id=288283764]
+script = ExtResource("2_click")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
