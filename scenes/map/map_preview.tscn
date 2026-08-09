@@ -21,6 +21,7 @@ stretch = true
 handle_input_locally = false
 size = Vector2i(640, 480)
 render_target_update_mode = 4
+own_world_3d = true
 
 [node name="saga_map" parent="SubViewport" unique_id=163580152 instance=ExtResource("1_vfh4r")]
 
@@ -40,5 +41,5 @@ transform = Transform3D(1, 0, 0, 0, 0.8161376, 0.5778576, 0, -0.5778576, 0.81613
 [node name="Camera3D" type="Camera3D" parent="SubViewport/IsoCameraRig/PitchPivot" unique_id=1652227594]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 120)
 projection = 1
-size = 85.0
+size = 77.0
 far = 360.0

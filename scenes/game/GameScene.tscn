@@ -93,28 +93,26 @@ layout_mode = 1
 
 [node name="Center" type="CenterContainer" parent="UI/Main/Content/MiddlePane" unique_id=268530114]
 layout_mode = 1
-anchors_preset = 11
+anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-anchor_bottom = 1.0
 grow_horizontal = 0
-grow_vertical = 2
 
 [node name="Card" type="PanelContainer" parent="UI/Main/Content/MiddlePane/Center" unique_id=632709011]
-custom_minimum_size = Vector2(420, 0)
+custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 theme_type_variation = &"PanelBox"
 
 [node name="Pad" type="MarginContainer" parent="UI/Main/Content/MiddlePane/Center/Card" unique_id=1076852626]
 layout_mode = 2
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_top = 22
-theme_override_constants/margin_right = 24
-theme_override_constants/margin_bottom = 20
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 12
 
 [node name="Col" type="VBoxContainer" parent="UI/Main/Content/MiddlePane/Center/Card/Pad" unique_id=1744276504]
 layout_mode = 2
-theme_override_constants/separation = 14
+theme_override_constants/separation = 8
 
 [node name="MoverLabel" type="Label" parent="UI/Main/Content/MiddlePane/Center/Card/Pad/Col" unique_id=368070382]
 unique_name_in_owner = true
@@ -133,50 +131,34 @@ theme_type_variation = &"Status"
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="RegionsHeader" type="Label" parent="UI/Main/Content/MiddlePane/Center/Card/Pad/Col" unique_id=1932012053]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"MenuItem"
-theme_override_font_sizes/font_size = 12
-text = "REACHABLE REGIONS"
-
-[node name="RegionsScroll" type="ScrollContainer" parent="UI/Main/Content/MiddlePane/Center/Card/Pad/Col" unique_id=343685499]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 180)
-layout_mode = 2
-
-[node name="RegionList" type="VBoxContainer" parent="UI/Main/Content/MiddlePane/Center/Card/Pad/Col/RegionsScroll" unique_id=29363594]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 6
-
 [node name="ButtonRow" type="HBoxContainer" parent="UI/Main/Content/MiddlePane/Center/Card/Pad/Col" unique_id=318121343]
 layout_mode = 2
-theme_override_constants/separation = 16
+theme_override_constants/separation = 10
 alignment = 1
 
 [node name="PassBtn" type="Button" parent="UI/Main/Content/MiddlePane/Center/Card/Pad/Col/ButtonRow" unique_id=414353655]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Pass turn"
 mouse_default_cursor_shape = 2
 theme_type_variation = &"StepBtn"
 theme_override_colors/font_color = Color(0.545, 0.878, 0.878, 1)
 theme_override_colors/font_focus_color = Color(0.545, 0.878, 0.878, 1)
 theme_override_colors/font_hover_color = Color(0.545, 0.878, 0.878, 1)
 theme_override_font_sizes/font_size = 15
-text = "PASS"
+text = ">>"
 
 [node name="HeroInfoBtn" type="Button" parent="UI/Main/Content/MiddlePane/Center/Card/Pad/Col/ButtonRow" unique_id=1187707904]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Hero info"
 mouse_default_cursor_shape = 2
 theme_type_variation = &"GoldBtn"
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 15
-text = "HERO INFO"
+text = "i"
 
 [node name="Spacer2" type="ColorRect" parent="UI/Main/Content" unique_id=2009904619]
 custom_minimum_size = Vector2(0, 2)
