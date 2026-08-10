@@ -1,6 +1,10 @@
 # saga/data/monster_kind_table.gd
 class_name MonsterKindTable
 
+# Monster size constants
+const SIZE_SMALL = 0
+const SIZE_LARGE   = 1
+
 # Monster type constants
 const TYPE_DRAGON = 0
 const TYPE_DROW   = 1
@@ -11,12 +15,12 @@ const TYPE_WITCH  = 5
 
 # Per-type glory, luck rewards, and shared model
 const TYPE_DATA: Dictionary = {
-	TYPE_DRAGON: { "glory": 6, "luck": 5, "model": "res://assets/models/monsters/dragon.glb" },
-	TYPE_DROW:   { "glory": 3, "luck": 2, "model": "res://assets/models/monsters/drow.glb" },
-	TYPE_GHOST:  { "glory": 2, "luck": 2, "model": "res://assets/models/monsters/ghost.glb" },
-	TYPE_GIANT:  { "glory": 4, "luck": 3, "model": "res://assets/models/monsters/giant.glb" },
-	TYPE_TROLL:  { "glory": 3, "luck": 3, "model": "res://assets/models/monsters/troll.glb" },
-	TYPE_WITCH:  { "glory": 5, "luck": 4, "model": "res://assets/models/monsters/witch.glb" },
+	TYPE_DRAGON: { "glory": 6, "luck": 5, "model": "res://assets/models/monsters/dragon.glb", "size": SIZE_LARGE },
+	TYPE_DROW:   { "glory": 3, "luck": 2, "model": "res://assets/models/monsters/drow.glb",   "size": SIZE_SMALL },
+	TYPE_GHOST:  { "glory": 2, "luck": 2, "model": "res://assets/models/monsters/ghost.glb",  "size": SIZE_SMALL },
+	TYPE_GIANT:  { "glory": 4, "luck": 3, "model": "res://assets/models/monsters/giant.glb",  "size": SIZE_LARGE },
+	TYPE_TROLL:  { "glory": 3, "luck": 3, "model": "res://assets/models/monsters/troll.glb",  "size": SIZE_LARGE },
+	TYPE_WITCH:  { "glory": 5, "luck": 4, "model": "res://assets/models/monsters/witch.glb",  "size": SIZE_SMALL },
 }
 
 # Individual monster kind IDs
@@ -92,6 +96,9 @@ static func get_type_data(kind: int) -> Dictionary:
 
 static func get_model(kind: int) -> String:
 	return TYPE_DATA[TABLE[kind]["type"]]["model"]
+
+static func get_size(kind: int) -> int:
+	return TYPE_DATA[TABLE[kind]["type"]]["size"]
 
 static func all_kinds() -> Array:
 	return TABLE.keys()
