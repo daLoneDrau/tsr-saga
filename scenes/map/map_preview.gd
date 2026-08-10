@@ -36,7 +36,10 @@ var _highlight_material: StandardMaterial3D
 # destroyed/recreated every time, so occupants that haven't moved don't
 # visibly flicker.
 var _occupant_markers: Dictionary = {}
-var _occupant_mesh: CapsuleMesh
+var _hero_mesh: CapsuleMesh
+var _jarl_mesh: SphereMesh
+var _monster_mesh: BoxMesh
+var _outline_shader: Shader
 
 
 func _ready() -> void:
@@ -51,9 +54,22 @@ func _ready() -> void:
 	# the depth tie against both.
 	_highlight_material.render_priority = 2
 
-	_occupant_mesh = CapsuleMesh.new()
-	_occupant_mesh.radius = 0.6
-	_occupant_mesh.height = 2.0
+	_hero_mesh = CapsuleMesh.new()
+	_hero_mesh.radius = 0.3
+	_hero_mesh.height = 2.0
+
+	_jarl_mesh = SphereMesh.new()
+	_jarl_mesh.radius = 0.375
+	_jarl_mesh.height = 0.75
+
+	_monster_mesh = BoxMesh.new()
+	_monster_mesh.size = Vector3(0.75, 0.75, 0.75)
+
+	# Same inverted-hull outline technique already used on hero materials
+	# (see assets/art/materials/heroes/skin/*.tres for the established
+	# convention: base material's next_pass = a ShaderMaterial using this
+	# shader) — makes markers read clearly against the map's own colors.
+	_outline_shader = load("res://shaders/toon_outline.gdshader")
 
 
 func _gui_input(event: InputEvent) -> void:
@@ -232,13 +248,28 @@ func refresh_occupant_markers(occupants: Array, marker_system) -> void:
 			_occupant_markers.erase(entity_id)
 
 
+func _make_outline_material() -> ShaderMaterial:
+	var outline := ShaderMaterial.new()
+	outline.shader = _outline_shader
+	outline.set_shader_parameter("outline_width", 0.2)
+	outline.set_shader_parameter("outline_color", Color(0.05, 0.05, 0.05, 1))
+	return outline
+
+
 func _place_occupant_marker(entity_id: String, world_pos: Vector3, color: Color) -> void:
 	var marker: MeshInstance3D = _occupant_markers.get(entity_id)
 	if marker == null or not is_instance_valid(marker):
 		marker = MeshInstance3D.new()
-		marker.mesh = _occupant_mesh
+		var entity: Entity = SagaEntityManager_auto.get_entity_by_id(entity_id)
+		if entity.tags.has(SagaEntityManager.TAG_PLAYER):
+			marker.mesh = _hero_mesh
+		elif entity.tags.has(SagaEntityManager.TAG_JARL):
+			marker.mesh = _jarl_mesh
+		else:
+			marker.mesh = _monster_mesh
 		var mat := StandardMaterial3D.new()
 		mat.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL
+		mat.next_pass = _make_outline_material()
 		_svp.get_node_or_null("saga_map").add_child(marker)
 		marker.material_override = mat
 		_occupant_markers[entity_id] = marker
@@ -253,6 +284,13 @@ func _place_occupant_marker(entity_id: String, world_pos: Vector3, color: Color)
 ## to "face" (small: hero/jarl/small enemies) or "corner" (large enemies)
 ## per is_large. Node names look like "spawn_<region_id>_face03" /
 ## "spawn_<region_id>_corner03" — see the map widget roadmap, Phase 3.
+##
+## Sorted by numeric suffix rather than left in raw child order: adjacent
+## indices correspond to spatially adjacent points on the mesh (checked
+## directly against the glb — consecutive indices sit ~0.75 units apart,
+## vs. ~7 units for non-consecutive ones), which is what lets
+## SagaMapMarkerSystem's index-based spacing check act as a real proxy for
+## physical separation instead of an arbitrary ordering.
 func _candidate_marker_names(saga_map: Node, region_id: String, is_large: bool) -> Array:
 	var infix := "_corner" if is_large else "_face"
 	var prefix := "spawn_%s%s" % [region_id, infix]
@@ -260,6 +298,21 @@ func _candidate_marker_names(saga_map: Node, region_id: String, is_large: bool) 
 	for child in saga_map.get_children():
 		if child.name.begins_with(prefix):
 			result.append(child.name)
+	result.sort_custom(func(a: String, b: String):
+		return _marker_index(a) < _marker_index(b)
+	)
 	return result
+
+
+## Extracts the trailing numeric suffix from a marker node name, e.g.
+## "spawn_4_2_Armorica_face03" -> 3. Returns -1 if none found (sorts those
+## first, harmless — every real marker name has a numeric suffix).
+func _marker_index(marker_name: String) -> int:
+	var i: int = marker_name.length()
+	while i > 0 and marker_name[i - 1].is_valid_int():
+		i -= 1
+	if i == marker_name.length():
+		return -1
+	return marker_name.substr(i).to_int()
 
 #endregion

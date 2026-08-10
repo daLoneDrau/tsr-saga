@@ -31,7 +31,7 @@ func handle_event(_event_name: String, _payload: Dictionary = {}) -> bool:
 
 
 # ---------------------------------------------------------------------------
-# Public API
+#region Public API
 # ---------------------------------------------------------------------------
 
 ## Returns the marker node name entity_id should render at within
@@ -64,8 +64,35 @@ func get_or_assign_marker(entity_id: String, region_id: String, candidate_node_n
 		return comp.marker_node_name
 
 	var taken := _taken_marker_names(region_id, entity_id)
-	var free_candidates: Array = candidate_node_names.filter(func(n): return not taken.has(n))
-	var pool: Array = free_candidates if not free_candidates.is_empty() else candidate_node_names
+
+	# candidate_node_names is expected ordered so that adjacent entries are
+	# spatially adjacent (see map_preview.gd's _candidate_marker_names).
+	# Block each taken candidate's own index plus its immediate neighbours,
+	# so a fresh pick never lands right next to an already-occupied point.
+	var blocked_indices: Dictionary = {}
+	for i in range(candidate_node_names.size()):
+		if taken.has(candidate_node_names[i]):
+			blocked_indices[i] = true
+			if i > 0:
+				blocked_indices[i - 1] = true
+			if i < candidate_node_names.size() - 1:
+				blocked_indices[i + 1] = true
+
+	var spaced_free: Array = []
+	var any_free: Array = []
+	for i in range(candidate_node_names.size()):
+		var candidate_name: String = candidate_node_names[i]
+		if taken.has(candidate_name):
+			continue
+		any_free.append(candidate_name)
+		if not blocked_indices.has(i):
+			spaced_free.append(candidate_name)
+
+	var pool: Array = spaced_free
+	if pool.is_empty():
+		pool = any_free
+	if pool.is_empty():
+		pool = candidate_node_names
 
 	# Deterministic (not random) so the same entity+region always resolves
 	# the same way if this ever needs to be recomputed — makes this
@@ -91,9 +118,11 @@ func release_marker(entity_id: String) -> void:
 		comp.region_id = ""
 		comp.marker_node_name = ""
 
+#endregion
+
 
 # ---------------------------------------------------------------------------
-# Internal
+#region Internal
 # ---------------------------------------------------------------------------
 
 ## Returns the set of marker_node_names already claimed by other entities
@@ -108,3 +137,5 @@ func _taken_marker_names(region_id: String, exclude_entity_id: String) -> Dictio
 		if comp != null and comp.region_id == region_id and comp.marker_node_name != "":
 			taken[comp.marker_node_name] = true
 	return taken
+
+#endregion
