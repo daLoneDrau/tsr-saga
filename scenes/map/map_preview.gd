@@ -32,6 +32,12 @@ var _hovered_region_id: String = ""
 var _highlight_mesh: MeshInstance3D = null
 var _highlight_material: StandardMaterial3D
 
+# entity_id -> MeshInstance3D. Reused across refreshes rather than
+# destroyed/recreated every time, so occupants that haven't moved don't
+# visibly flicker.
+var _occupant_markers: Dictionary = {}
+var _occupant_mesh: CapsuleMesh
+
 
 func _ready() -> void:
 	_highlight_material = StandardMaterial3D.new()
@@ -44,6 +50,10 @@ func _ready() -> void:
 	# height as the terrain/border geometry, so it needs to reliably win
 	# the depth tie against both.
 	_highlight_material.render_priority = 2
+
+	_occupant_mesh = CapsuleMesh.new()
+	_occupant_mesh.radius = 0.6
+	_occupant_mesh.height = 2.0
 
 
 func _gui_input(event: InputEvent) -> void:
@@ -63,7 +73,7 @@ func _notification(what: int) -> void:
 
 
 # ---------------------------------------------------------------------------
-# Raycasting
+#region Raycasting
 # ---------------------------------------------------------------------------
 
 func _update_hover(local_pos: Vector2) -> void:
@@ -106,9 +116,11 @@ func _region_id_from_collider_name(node_name: String) -> String:
 		return node_name.substr(4)
 	return ""
 
+#endregion
+
 
 # ---------------------------------------------------------------------------
-# Hover highlight
+#region Hover highlight
 # ---------------------------------------------------------------------------
 
 func _set_highlight(region_id: String) -> void:
@@ -156,3 +168,98 @@ func _find_collider_for_region(region_id: String) -> StaticBody3D:
 	if node == null:
 		node = saga_map.get_node_or_null("sea_" + region_id)
 	return node as StaticBody3D
+
+#endregion
+
+
+# ---------------------------------------------------------------------------
+#region Occupant markers (Phase 3)
+# ---------------------------------------------------------------------------
+
+## Renders one placeholder marker per occupant entry. Each entry is a
+## Dictionary: {entity_id: String, region_id: String, is_large: bool,
+## color: Color}. Deliberately dumb about what these entities actually
+## are (hero/jarl/monster) — the caller decides is_large/color, this just
+## places colored capsules.
+##
+## marker_system is handed in rather than looked up, so this stays testable
+## without needing a full Scene/system-registry context (same reasoning as
+## why click handling only ever emits raw region_id strings) — this is the
+## one place this widget talks to a game system at all, and only ever
+## through get_or_assign_marker()'s narrow (entity_id, region_id,
+## candidate_names) -> node_name contract, never touching game state
+## directly.
+## marker_system is a SagaMapMarkerSystem, deliberately untyped here (see
+## the class header) — statically typing this parameter would force this
+## script to compile-time-resolve SagaMapMarkerSystem's full base class
+## chain (GameSystem -> Scene -> the autoload-dependent ECS framework)
+## every time this widget loads, which is exactly the coupling this file
+## is meant to avoid. Duck-typed .get_or_assign_marker() call instead.
+func refresh_occupant_markers(occupants: Array, marker_system) -> void:
+	var saga_map := _svp.get_node_or_null("saga_map")
+	if saga_map == null or marker_system == null:
+		return
+
+	var seen_entity_ids: Dictionary = {}
+
+	for entry in occupants:
+		var entity_id: String = entry.get("entity_id", "")
+		var region_id: String = entry.get("region_id", "")
+		var is_large: bool = entry.get("is_large", false)
+		var color: Color = entry.get("color", Color.WHITE)
+		if entity_id == "" or region_id == "":
+			continue
+
+		var candidates := _candidate_marker_names(saga_map, region_id, is_large)
+		var marker_node_name: String = marker_system.get_or_assign_marker(entity_id, region_id, candidates)
+		if marker_node_name == "":
+			continue
+
+		var anchor := saga_map.get_node_or_null(marker_node_name) as Node3D
+		if anchor == null:
+			continue
+
+		seen_entity_ids[entity_id] = true
+		_place_occupant_marker(entity_id, anchor.global_position, color)
+
+	# Drop markers for entities no longer in this refresh's occupant list
+	# (moved to a region with no line of sight from here, died, etc.).
+	for entity_id in _occupant_markers.keys().duplicate():
+		if not seen_entity_ids.has(entity_id):
+			var mesh: MeshInstance3D = _occupant_markers[entity_id]
+			if is_instance_valid(mesh):
+				mesh.queue_free()
+			_occupant_markers.erase(entity_id)
+
+
+func _place_occupant_marker(entity_id: String, world_pos: Vector3, color: Color) -> void:
+	var marker: MeshInstance3D = _occupant_markers.get(entity_id)
+	if marker == null or not is_instance_valid(marker):
+		marker = MeshInstance3D.new()
+		marker.mesh = _occupant_mesh
+		var mat := StandardMaterial3D.new()
+		mat.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL
+		_svp.get_node_or_null("saga_map").add_child(marker)
+		marker.material_override = mat
+		_occupant_markers[entity_id] = marker
+
+	(marker.material_override as StandardMaterial3D).albedo_color = color
+	# Capsule's own half-height keeps it from clipping into the terrain;
+	# lift slightly further so it visibly stands above ground level.
+	marker.global_position = world_pos + Vector3(0, 1.0, 0)
+
+
+## Enumerates this region's actual candidate marker node names, filtered
+## to "face" (small: hero/jarl/small enemies) or "corner" (large enemies)
+## per is_large. Node names look like "spawn_<region_id>_face03" /
+## "spawn_<region_id>_corner03" — see the map widget roadmap, Phase 3.
+func _candidate_marker_names(saga_map: Node, region_id: String, is_large: bool) -> Array:
+	var infix := "_corner" if is_large else "_face"
+	var prefix := "spawn_%s%s" % [region_id, infix]
+	var result: Array = []
+	for child in saga_map.get_children():
+		if child.name.begins_with(prefix):
+			result.append(child.name)
+	return result
+
+#endregion

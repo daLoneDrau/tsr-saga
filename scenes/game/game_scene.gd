@@ -45,8 +45,14 @@ const STUBBLE_BY_HAIR: Dictionary = {
 	"res://assets/art/materials/heroes/hair/red.tres": "res://assets/art/materials/heroes/stubble/stubble_red.tres",
 	"res://assets/art/materials/heroes/hair/black.tres": "res://assets/art/materials/heroes/stubble/stubble_black.tres",
 	"res://assets/art/materials/heroes/hair/platinum.tres": "res://assets/art/materials/heroes/stubble/stubble_platinum.tres",
-	}
+}
 
+# Placeholder occupant marker colors (Phase 3 — simple colored capsules
+# until real models are hooked up). Distinguishes at a glance who's who
+# on the map.
+const MARKER_COLOR_HERO: Color = Color(.247, 0.573, 0.922, 1)     # matches the UI's gold accent
+const MARKER_COLOR_JARL: Color = Color(0.322, 0.839, .42, 1)         # blue
+const MARKER_COLOR_MONSTER: Color = Color(0.8, 0.15, 0.15, 1)    # red
 
 # ---------------------------------------------------------------------------
 # Node references
@@ -108,6 +114,7 @@ func do_action(_action: GameAction) -> void:
 #region System registration
 # ---------------------------------------------------------------------------
 
+
 func _register_systems() -> void:
 	# Map and Board alias into SagaGameEngine_auto's persistent storage
 	# (see saga_map_system.gd / saga_board_system.gd headers) — this just
@@ -136,6 +143,11 @@ func _register_systems() -> void:
 	movement.name = "SagaMovementSystem"
 	add_child(movement)
 	register_system(movement)
+
+	var map_marker := SagaMapMarkerSystem.new()
+	map_marker.name = "SagaMapMarkerSystem"
+	add_child(map_marker)
+	register_system(map_marker)
 
 #endregion
 
@@ -175,6 +187,8 @@ func _start_movement_phase() -> void:
 
 
 func _refresh() -> void:
+	_refresh_occupant_markers()
+	
 	var movement_sys := get_registered_system(&"SagaMovementSystem") as SagaMovementSystem
 	var turn_sys := get_registered_system(&"SagaTurnSystem") as SagaTurnSystem
 	var turn: int = turn_sys.get_current_turn()
@@ -201,6 +215,65 @@ func _refresh() -> void:
 	# _on_map_region_clicked below. Reachable-region highlighting on the
 	# map itself is still a later step (Phase 5 in the map widget roadmap).
 	_pass_btn.disabled = false
+
+
+## Gathers every hero/jarl/monster currently on the board, resolves each
+## to (region_id, is_large, color), and hands the list to map_preview.gd
+## to render. See the map widget roadmap, Phase 3 — this is the
+## game-system side of that split; map_preview.gd never queries
+## SagaEntityManager/SagaBoardSystem/MonsterKindTable itself.
+func _refresh_occupant_markers() -> void:
+	var board := get_registered_system(&"SagaBoardSystem") as SagaBoardSystem
+	var map_sys := get_registered_system(&"SagaMapSystem") as SagaMapSystem
+	var marker_sys := get_registered_system(&"SagaMapMarkerSystem") as SagaMapMarkerSystem
+	if board == null or map_sys == null or marker_sys == null:
+		return
+
+	var occupants: Array = []
+	occupants.append_array(_occupant_entries_for("SagaHeroComponent", false, MARKER_COLOR_HERO, board, map_sys))
+	occupants.append_array(_occupant_entries_for("SagaJarlComponent", false, MARKER_COLOR_JARL, board, map_sys))
+	occupants.append_array(_monster_occupant_entries(board, map_sys))
+	_map_view.refresh_occupant_markers(occupants, marker_sys)
+
+
+func _occupant_entries_for(component_name: String, is_large: bool, color: Color, board: SagaBoardSystem, map_sys: SagaMapSystem) -> Array:
+	var entries: Array = []
+	var entities: Array[Entity] = SagaEntityManager_auto.get_entities_with_component(component_name)
+	for entity in entities:
+		var location_entity_id: String = board.get_location_of(entity.id)
+		if location_entity_id == "":
+			continue
+		var region_id: String = map_sys.get_region_id_for_entity(location_entity_id)
+		if region_id == "":
+			continue
+		entries.append({
+			"entity_id": entity.id,
+			"region_id": region_id,
+			"is_large": is_large,
+			"color": color,
+			})
+	return entries
+
+
+func _monster_occupant_entries(board: SagaBoardSystem, map_sys: SagaMapSystem) -> Array:
+	var entries: Array = []
+	var entities: Array[Entity] = SagaEntityManager_auto.get_entities_with_component("SagaMonsterComponent")
+	for entity in entities:
+		var location_entity_id: String = board.get_location_of(entity.id)
+		if location_entity_id == "":
+			continue
+		var region_id: String = map_sys.get_region_id_for_entity(location_entity_id)
+		if region_id == "":
+			continue
+		var monster_comp := entity.get_component("SagaMonsterComponent", false) as SagaMonsterComponent
+		var is_large: bool = MonsterKindTable.get_size(monster_comp.kind) == MonsterKindTable.SIZE_LARGE if monster_comp else false
+		entries.append({
+			"entity_id": entity.id,
+			"region_id": region_id,
+			"is_large": is_large,
+			"color": MARKER_COLOR_MONSTER,
+			})
+	return entries
 
 
 func _on_pass_pressed() -> void:
