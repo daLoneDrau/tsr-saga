@@ -213,11 +213,20 @@ func _refresh() -> void:
 	var mover_region_id: String = map_sys.get_region_id_for_entity(current_location) if map_sys and current_location != "" else ""
 	_map_view.center_on_region(mover_region_id)
 
+	var reachable_entity_ids: Array = movement_sys.get_reachable_regions(mover_id)
+	var reachable_region_ids: Array = []
+	for dest_entity_id in reachable_entity_ids:
+		var rid: String = map_sys.get_region_id_for_entity(dest_entity_id) if map_sys else ""
+		if rid != "":
+			reachable_region_ids.append(rid)
+	_map_view.set_reachable_regions(reachable_region_ids)
+
 	# NOTE: movement_sys.get_reachable_regions(mover_id) used to drive the
 	# on-screen region list here. That list is gone now that region
 	# selection happens by clicking the map directly — see
-	# _on_map_region_clicked below. Reachable-region highlighting on the
-	# map itself is still a later step (Phase 5 in the map widget roadmap).
+	# _on_map_region_clicked below. Reachable regions are now shown as a
+	# highlight directly on the map instead (see set_reachable_regions
+	# above) — the map widget roadmap's Phase 5.
 	_pass_btn.disabled = false
 
 

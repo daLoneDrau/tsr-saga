@@ -32,6 +32,8 @@ signal region_hover_changed(region_id: String)  # "" when hover leaves every reg
 var _hovered_region_id: String = ""
 var _highlight_mesh: MeshInstance3D = null
 var _highlight_material: StandardMaterial3D
+var _reachable_meshes: Dictionary = {}
+var _reachable_material: StandardMaterial3D
 
 # entity_id -> MeshInstance3D. Reused across refreshes rather than
 # destroyed/recreated every time, so occupants that haven't moved don't
@@ -50,6 +52,13 @@ var _camera_tween: Tween
 
 
 func _ready() -> void:
+	_reachable_material = StandardMaterial3D.new()
+	_reachable_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_reachable_material.albedo_color = Color(0.3, 1.0, 0.4, 0.35)
+	_reachable_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	_reachable_material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	_reachable_material.render_priority = 2
+
 	_highlight_material = StandardMaterial3D.new()
 	_highlight_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	_highlight_material.albedo_color = Color(1.0, 0.9, 0.3, 0.45)
@@ -154,27 +163,10 @@ func _set_highlight(region_id: String) -> void:
 	if region_id == "":
 		return
 
+	var mesh := _build_region_overlay_mesh(region_id)
+	if mesh == null:
+		return
 	var collider := _find_collider_for_region(region_id)
-	if collider == null:
-		return
-
-	var shape_node := collider.get_node_or_null("CollisionShape3D") as CollisionShape3D
-	if shape_node == null or shape_node.shape == null:
-		return
-
-	var concave := shape_node.shape as ConcavePolygonShape3D
-	if concave == null:
-		return
-
-	var faces: PackedVector3Array = concave.get_faces()
-	if faces.is_empty():
-		return
-
-	var arrays: Array = []
-	arrays.resize(Mesh.ARRAY_MAX)
-	arrays[Mesh.ARRAY_VERTEX] = faces
-	var mesh := ArrayMesh.new()
-	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
 
 	_highlight_mesh = MeshInstance3D.new()
 	_highlight_mesh.mesh = mesh
@@ -191,6 +183,74 @@ func _find_collider_for_region(region_id: String) -> StaticBody3D:
 	if node == null:
 		node = saga_map.get_node_or_null("sea_" + region_id)
 	return node as StaticBody3D
+
+
+## Reconstructs a renderable mesh from region_id's own collision shape
+## data — shared by the hover highlight and reachable-region highlight,
+## both of which need "a flat overlay covering exactly this region's
+## footprint" and neither of which has a ready-made visual mesh to use
+## (see the class header on why `-colonly` regions have none). Returns
+## null if region_id doesn't resolve to a real, shaped collider.
+func _build_region_overlay_mesh(region_id: String) -> ArrayMesh:
+	var collider := _find_collider_for_region(region_id)
+	if collider == null:
+		return null
+
+	var shape_node := collider.get_node_or_null("CollisionShape3D") as CollisionShape3D
+	if shape_node == null or shape_node.shape == null:
+		return null
+
+	var concave := shape_node.shape as ConcavePolygonShape3D
+	if concave == null:
+		return null
+
+	var faces: PackedVector3Array = concave.get_faces()
+	if faces.is_empty():
+		return null
+
+	var arrays: Array = []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = faces
+	var mesh := ArrayMesh.new()
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	return mesh
+
+#endregion
+
+# ---------------------------------------------------------------------------
+#region Reachable-region highlight (Phase 5)
+# ---------------------------------------------------------------------------
+
+## Highlights every region in region_ids (map.json keys) as reachable by
+## the current mover. Replaces whatever was highlighted before outright —
+## unlike occupant markers/hover, there's no reason to preserve identity
+## across calls here: the reachable set is fully recomputed by the caller
+## every time the mover or their position changes, not incrementally
+## updated, so diffing old-vs-new would just be extra bookkeeping for no
+## benefit. Pass an empty array to clear (e.g. when the movement phase is
+## over and nothing is reachable).
+func set_reachable_regions(region_ids: Array) -> void:
+	for mesh in _reachable_meshes.values():
+		if is_instance_valid(mesh):
+			mesh.queue_free()
+	_reachable_meshes.clear()
+
+	for region_id in region_ids:
+		var mesh := _build_region_overlay_mesh(region_id)
+		if mesh == null:
+			continue
+		var collider := _find_collider_for_region(region_id)
+
+		var overlay := MeshInstance3D.new()
+		overlay.mesh = mesh
+		overlay.material_override = _reachable_material
+		# Sits between the border network (no lift) and the hover
+		# highlight (0.05 lift) — see render_priority ordering in _ready():
+		# borders < reachable < hover, so hovering a reachable region still
+		# shows the hover effect on top rather than the two fighting.
+		overlay.position = Vector3(0, 0.03, 0)
+		collider.add_child(overlay)
+		_reachable_meshes[region_id] = overlay
 
 #endregion
 
