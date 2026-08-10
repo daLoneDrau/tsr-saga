@@ -117,8 +117,18 @@ func _update_hover_region(region_id: String) -> void:
 		return
 	_hovered_region_id = region_id
 	_set_highlight(region_id)
-	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND if region_id != "" else Control.CURSOR_ARROW
 	region_hover_changed.emit(region_id)
+
+
+## Overrides the virtual Control method Godot calls fresh for the exact
+## mouse position every time it needs to resolve the cursor icon — more
+## robust than reactively setting mouse_default_cursor_shape from
+## _gui_input, which depends on Godot's own event/caching timing rather
+## than being queried directly on demand.
+func _get_cursor_shape(position: Vector2) -> Control.CursorShape:
+	if _raycast_region_id(position) != "":
+		return Control.CURSOR_POINTING_HAND
+	return Control.CURSOR_ARROW
 
 
 ## Casts a ray from the camera through `local_pos` (in this Control's own
@@ -449,42 +459,38 @@ func center_on_region(region_id: String) -> void:
 ## i.e. the camera never pans far enough that the map's edge sits stranded
 ## in the middle of the frame with empty background filling the rest.
 ##
-## How far (world units) the camera is allowed to pan away from the
-## "can't avoid any whitespace" collapse point on an axis where the
-## footprint is wider than the map. Ordinary/central targets are already
-## within this zone and pass through _clamp_axis() completely unaffected;
-## only targets beyond it get pulled back — that's what keeps this a cap
-## on genuinely extreme corners rather than a blanket restriction on all
-## panning (see the map widget roadmap for the discussion — the earlier
-## zero-tolerance version pinned the camera near map-center for every
-## region, not just extreme ones, since the footprint currently exceeds
-## the map's own size on both axes at the established zoom level).
-const PAN_TOLERANCE_MARGIN: float = 20.0
+## How much of the map's own extent, per axis, is allowed as "acceptable"
+## background overhang at an extreme target before the camera pulls back
+## — expressed as a fraction of that axis's width rather than a flat
+## world-unit constant, since X and Z have quite different extents here
+## (a flat constant tuned for one axis was too tight for the other — see
+## the map widget roadmap for that discussion).
+const PAN_EDGE_TOLERANCE_FRACTION: float = 0.4
 
 func _clamp_pan_target(target: Vector3) -> Vector3:
 	var footprint := _pan_footprint_offsets()
 	var min_offset: Vector2 = footprint["min"]
 	var max_offset: Vector2 = footprint["max"]
 
+	var tolerance_x := (MAP_BOUNDS_MAX.x - MAP_BOUNDS_MIN.x) * PAN_EDGE_TOLERANCE_FRACTION
+	var tolerance_z := (MAP_BOUNDS_MAX.y - MAP_BOUNDS_MIN.y) * PAN_EDGE_TOLERANCE_FRACTION
+
 	var clamped := target
-	clamped.x = _clamp_axis(target.x, MAP_BOUNDS_MIN.x, MAP_BOUNDS_MAX.x, min_offset.x, max_offset.x)
-	clamped.z = _clamp_axis(target.z, MAP_BOUNDS_MIN.y, MAP_BOUNDS_MAX.y, min_offset.y, max_offset.y)
+	clamped.x = _clamp_axis(target.x, MAP_BOUNDS_MIN.x, MAP_BOUNDS_MAX.x, min_offset.x, max_offset.x, tolerance_x)
+	clamped.z = _clamp_axis(target.z, MAP_BOUNDS_MIN.y, MAP_BOUNDS_MAX.y, min_offset.y, max_offset.y, tolerance_z)
 	return clamped
 
 
 ## Clamps a single axis of a pan target against the range where the
-## visible footprint stays within [map_lo, map_hi]. If the footprint is
-## wider than the map on this axis (lo > hi — mathematically no position
-## shows zero whitespace), falls back to a tolerance zone of width
-## 2 * PAN_TOLERANCE_MARGIN centered on the collapse point instead of
-## pinning to that single point outright.
-func _clamp_axis(target_value: float, map_lo: float, map_hi: float, offset_lo: float, offset_hi: float) -> float:
-	var lo := map_lo - offset_lo
-	var hi := map_hi - offset_hi
+## visible footprint stays within [map_lo - tolerance, map_hi + tolerance].
+## Falls back to the map's own midpoint on this axis only if the
+## footprint exceeds the map by more than the tolerance allows even
+## there — a rare edge case at any reasonable zoom.
+func _clamp_axis(target_value: float, map_lo: float, map_hi: float, offset_lo: float, offset_hi: float, tolerance: float) -> float:
+	var lo := (map_lo - tolerance) - offset_lo
+	var hi := (map_hi + tolerance) - offset_hi
 	if lo > hi:
-		var collapse := (lo + hi) / 2.0
-		lo = collapse - PAN_TOLERANCE_MARGIN
-		hi = collapse + PAN_TOLERANCE_MARGIN
+		return (map_lo + map_hi) / 2.0
 	return clampf(target_value, lo, hi)
 
 
