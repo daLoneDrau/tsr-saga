@@ -230,13 +230,13 @@ func _refresh_occupant_markers() -> void:
 		return
 
 	var occupants: Array = []
-	occupants.append_array(_occupant_entries_for("SagaHeroComponent", false, MARKER_COLOR_HERO, board, map_sys))
-	occupants.append_array(_occupant_entries_for("SagaJarlComponent", false, MARKER_COLOR_JARL, board, map_sys))
+	occupants.append_array(_occupant_entries_for("SagaHeroComponent", false, MARKER_COLOR_HERO, &"hero",board, map_sys))
+	occupants.append_array(_occupant_entries_for("SagaJarlComponent", false, MARKER_COLOR_JARL, &"jarl", board, map_sys))
 	occupants.append_array(_monster_occupant_entries(board, map_sys))
 	_map_view.refresh_occupant_markers(occupants, marker_sys)
 
 
-func _occupant_entries_for(component_name: String, is_large: bool, color: Color, board: SagaBoardSystem, map_sys: SagaMapSystem) -> Array:
+func _occupant_entries_for(component_name: String, is_large: bool, color: Color, type: StringName, board: SagaBoardSystem, map_sys: SagaMapSystem) -> Array:
 	var entries: Array = []
 	var entities: Array[Entity] = SagaEntityManager_auto.get_entities_with_component(component_name)
 	for entity in entities:
@@ -251,6 +251,7 @@ func _occupant_entries_for(component_name: String, is_large: bool, color: Color,
 			"region_id": region_id,
 			"is_large": is_large,
 			"color": color,
+			"type": type,
 			})
 	return entries
 
@@ -272,6 +273,7 @@ func _monster_occupant_entries(board: SagaBoardSystem, map_sys: SagaMapSystem) -
 			"region_id": region_id,
 			"is_large": is_large,
 			"color": MARKER_COLOR_MONSTER,
+			"type": &"monster",
 			})
 	return entries
 

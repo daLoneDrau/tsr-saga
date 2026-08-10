@@ -220,6 +220,7 @@ func refresh_occupant_markers(occupants: Array, marker_system) -> void:
 
 	for entry in occupants:
 		var entity_id: String = entry.get("entity_id", "")
+		var entity_type: String = entry.get("type", "")
 		var region_id: String = entry.get("region_id", "")
 		var is_large: bool = entry.get("is_large", false)
 		var color: Color = entry.get("color", Color.WHITE)
@@ -236,7 +237,7 @@ func refresh_occupant_markers(occupants: Array, marker_system) -> void:
 			continue
 
 		seen_entity_ids[entity_id] = true
-		_place_occupant_marker(entity_id, anchor.global_position, color)
+		_place_occupant_marker(entity_id, entity_type, anchor.global_position, color)
 
 	# Drop markers for entities no longer in this refresh's occupant list
 	# (moved to a region with no line of sight from here, died, etc.).
@@ -256,17 +257,18 @@ func _make_outline_material() -> ShaderMaterial:
 	return outline
 
 
-func _place_occupant_marker(entity_id: String, world_pos: Vector3, color: Color) -> void:
+func _place_occupant_marker(entity_id: String, entity_type: StringName, world_pos: Vector3, color: Color) -> void:
 	var marker: MeshInstance3D = _occupant_markers.get(entity_id)
 	if marker == null or not is_instance_valid(marker):
 		marker = MeshInstance3D.new()
-		var entity: Entity = SagaEntityManager_auto.get_entity_by_id(entity_id)
-		if entity.tags.has(SagaEntityManager.TAG_PLAYER):
+		if entity_type == &"hero":
 			marker.mesh = _hero_mesh
-		elif entity.tags.has(SagaEntityManager.TAG_JARL):
+		elif entity_type == &"jarl":
 			marker.mesh = _jarl_mesh
-		else:
+		elif entity_type == &"monster":
 			marker.mesh = _monster_mesh
+		else:
+			push_error("map_preview._place_occupant_marker() invalid entity_type")
 		var mat := StandardMaterial3D.new()
 		mat.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL
 		mat.next_pass = _make_outline_material()
