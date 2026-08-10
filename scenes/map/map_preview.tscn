@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://ki21xxpk0dv2"]
 
 [ext_resource type="PackedScene" uid="uid://dhiq2iu58p6p1" path="res://assets/art/models/map/saga_map.glb" id="1_vfh4r"]
-[ext_resource type="Script" path="res://scenes/map/map_preview.gd" id="2_click"]
+[ext_resource type="Script" uid="uid://dxg5t5mupcj0o" path="res://scenes/map/map_preview.gd" id="2_click"]
 
 [sub_resource type="Environment" id="Environment_wy0tn"]
 background_mode = 1
@@ -11,19 +11,19 @@ ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_energy = 0.35
 
 [node name="SubViewportContainer" type="SubViewportContainer" unique_id=288283764]
-script = ExtResource("2_click")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 stretch = true
+script = ExtResource("2_click")
 
 [node name="SubViewport" type="SubViewport" parent="." unique_id=876909579]
+own_world_3d = true
 handle_input_locally = false
 size = Vector2i(640, 480)
 render_target_update_mode = 4
-own_world_3d = true
 
 [node name="saga_map" parent="SubViewport" unique_id=163580152 instance=ExtResource("1_vfh4r")]
 

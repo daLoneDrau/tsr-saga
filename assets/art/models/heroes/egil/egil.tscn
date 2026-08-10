@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://dgh0w2ulti5b7"]
 
-[ext_resource type="PackedScene" uid="uid://bj7cdn7v1pmvt" path="res://assets/art/models/heroes/egil/egil.glb" id="1_s60t0"]
+[ext_resource type="PackedScene" uid="uid://bsbu5xkdepkwy" path="res://assets/art/models/heroes/egil/egil.glb" id="1_s60t0"]
 
 [node name="egil2" unique_id=384119615 instance=ExtResource("1_s60t0")]
 
-[node name="Skeleton3D" parent="egil" parent_id_path=PackedInt32Array(1382230051) index="0" unique_id=782878672]
+[node name="Skeleton3D" parent="egil" parent_id_path=PackedInt32Array(760725246) index="0" unique_id=1447445163]
 bones/2/scale = Vector3(1.0530049, 1, 1.0530049)
