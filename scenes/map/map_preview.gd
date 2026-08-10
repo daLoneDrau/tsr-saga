@@ -27,6 +27,7 @@ signal region_hover_changed(region_id: String)  # "" when hover leaves every reg
 
 @onready var _svp: SubViewport = $SubViewport
 @onready var _cam: Camera3D = $SubViewport/IsoCameraRig/PitchPivot/Camera3D
+@onready var _camera_rig: Node3D = $SubViewport/IsoCameraRig
 
 var _hovered_region_id: String = ""
 var _highlight_mesh: MeshInstance3D = null
@@ -40,6 +41,12 @@ var _hero_mesh: CapsuleMesh
 var _jarl_mesh: SphereMesh
 var _monster_mesh: BoxMesh
 var _outline_shader: Shader
+
+# Phase 4 — camera centering. Tracks the last region actually centered on
+# so repeated _refresh() calls with an unchanged mover don't retrigger a
+# pan every time (same stability principle as occupant markers).
+var _centered_region_id: String = ""
+var _camera_tween: Tween
 
 
 func _ready() -> void:
@@ -316,5 +323,50 @@ func _marker_index(marker_name: String) -> int:
 	if i == marker_name.length():
 		return -1
 	return marker_name.substr(i).to_int()
+
+#endregion
+
+
+# ---------------------------------------------------------------------------
+#region Camera centering (Phase 4)
+# ---------------------------------------------------------------------------
+
+## Smoothly pans the camera rig so region_id sits centered in frame,
+## keeping the same fixed isometric angle/zoom — this moves the whole rig
+## (IsoCameraRig), not the camera's own rotation, so nothing about the
+## "look" established in Phase 1 changes, only what point it's aimed at.
+##
+## No-ops if region_id is already what's centered (same stability
+## principle as occupant markers: repeated _refresh() calls with an
+## unchanged mover shouldn't retrigger a pan every time).
+##
+## Uses the region's "banner_<region_id>" anchor as the centering point —
+## a single canonical point per land region already authored for the
+## conquest-banner feature (held for a later phase), reused here rather
+## than computing a centroid ourselves. Sea regions have no banner anchor,
+## but movers are always land-placed (see saga_setup_system.gd's
+## random_land_location() calls), so this should always resolve in
+## practice; no-ops harmlessly if it doesn't.
+func center_on_region(region_id: String) -> void:
+	if region_id == "" or region_id == _centered_region_id:
+		return
+
+	var saga_map := _svp.get_node_or_null("saga_map")
+	if saga_map == null:
+		return
+	var anchor := saga_map.get_node_or_null("banner_" + region_id) as Node3D
+	if anchor == null:
+		return
+
+	var target := Vector3(anchor.global_position.x, _camera_rig.position.y, anchor.global_position.z)
+
+	if _camera_tween != null and _camera_tween.is_valid():
+		_camera_tween.kill()
+	_camera_tween = create_tween()
+	_camera_tween.set_ease(Tween.EASE_IN_OUT)
+	_camera_tween.set_trans(Tween.TRANS_SINE)
+	_camera_tween.tween_property(_camera_rig, "position", target, 0.5)
+
+	_centered_region_id = region_id
 
 #endregion

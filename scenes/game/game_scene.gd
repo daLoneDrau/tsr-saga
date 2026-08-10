@@ -209,6 +209,10 @@ func _refresh() -> void:
 	var current_location := board.get_location_of(mover_id) if board else ""
 	_location_label.text = _entity_display_name(current_location).to_upper()
 
+	var map_sys := get_registered_system(&"SagaMapSystem") as SagaMapSystem
+	var mover_region_id: String = map_sys.get_region_id_for_entity(current_location) if map_sys and current_location != "" else ""
+	_map_view.center_on_region(mover_region_id)
+
 	# NOTE: movement_sys.get_reachable_regions(mover_id) used to drive the
 	# on-screen region list here. That list is gone now that region
 	# selection happens by clicking the map directly — see
