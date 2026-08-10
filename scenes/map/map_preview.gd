@@ -117,6 +117,15 @@ func _update_hover_region(region_id: String) -> void:
 		return
 	_hovered_region_id = region_id
 	_set_highlight(region_id)
+	# Belt-and-braces alongside _get_cursor_shape() below: that override
+	# tests logically correct (verified via get_cursor_shape() returning
+	# the right value on demand) but wasn't visibly changing the OS
+	# cursor in practice. This is a second, more direct mechanism —
+	# imperatively pushing the shape via Input rather than waiting for
+	# Godot to resolve it per-position — called from code already
+	# confirmed to run on every hover change (the highlight update right
+	# above uses the same path).
+	Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND if region_id != "" else Input.CURSOR_ARROW)
 	region_hover_changed.emit(region_id)
 
 
@@ -124,7 +133,10 @@ func _update_hover_region(region_id: String) -> void:
 ## mouse position every time it needs to resolve the cursor icon — more
 ## robust than reactively setting mouse_default_cursor_shape from
 ## _gui_input, which depends on Godot's own event/caching timing rather
-## than being queried directly on demand.
+## than being queried directly on demand. Kept alongside the
+## Input.set_default_cursor_shape() call above since it's still correct
+## on its own terms (see map widget roadmap) even though it alone wasn't
+## enough.
 func _get_cursor_shape(position: Vector2) -> Control.CursorShape:
 	if _raycast_region_id(position) != "":
 		return Control.CURSOR_POINTING_HAND
