@@ -117,6 +117,7 @@ func _update_hover_region(region_id: String) -> void:
 		return
 	_hovered_region_id = region_id
 	_set_highlight(region_id)
+	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND if region_id != "" else Control.CURSOR_ARROW
 	region_hover_changed.emit(region_id)
 
 
@@ -391,6 +392,14 @@ func _marker_index(marker_name: String) -> int:
 #region Camera centering (Phase 4)
 # ---------------------------------------------------------------------------
 
+# Combined visual AABB of the map's terrain (Region_Borders + Grid_001),
+## measured directly against the glb — see the map widget roadmap. Used
+## to keep the camera from panning so far toward an edge region that the
+## map's own boundary ends up stranded in the middle of the frame with
+## empty background filling the rest.
+const MAP_BOUNDS_MIN := Vector2(-32.33642, -23.33373)
+const MAP_BOUNDS_MAX := Vector2(32.33663, 23.33679)
+
 ## Smoothly pans the camera rig so region_id sits centered in frame,
 ## keeping the same fixed isometric angle/zoom — this moves the whole rig
 ## (IsoCameraRig), not the camera's own rotation, so nothing about the
@@ -407,6 +416,10 @@ func _marker_index(marker_name: String) -> int:
 ## but movers are always land-placed (see saga_setup_system.gd's
 ## random_land_location() calls), so this should always resolve in
 ## practice; no-ops harmlessly if it doesn't.
+##
+## The raw target is clamped (see _clamp_pan_target) so centering on an
+## edge/corner region doesn't push the map's own edge toward the center of
+## the screen, leaving empty background filling the rest of the frame.
 func center_on_region(region_id: String) -> void:
 	if region_id == "" or region_id == _centered_region_id:
 		return
@@ -419,6 +432,7 @@ func center_on_region(region_id: String) -> void:
 		return
 
 	var target := Vector3(anchor.global_position.x, _camera_rig.position.y, anchor.global_position.z)
+	target = _clamp_pan_target(target)
 
 	if _camera_tween != null and _camera_tween.is_valid():
 		_camera_tween.kill()
@@ -428,5 +442,83 @@ func center_on_region(region_id: String) -> void:
 	_camera_tween.tween_property(_camera_rig, "position", target, 0.5)
 
 	_centered_region_id = region_id
+
+
+## Clamps a candidate camera-rig target so the visible ground footprint
+## (see _pan_footprint_offsets) never extends past the map's own bounds —
+## i.e. the camera never pans far enough that the map's edge sits stranded
+## in the middle of the frame with empty background filling the rest.
+##
+## How far (world units) the camera is allowed to pan away from the
+## "can't avoid any whitespace" collapse point on an axis where the
+## footprint is wider than the map. Ordinary/central targets are already
+## within this zone and pass through _clamp_axis() completely unaffected;
+## only targets beyond it get pulled back — that's what keeps this a cap
+## on genuinely extreme corners rather than a blanket restriction on all
+## panning (see the map widget roadmap for the discussion — the earlier
+## zero-tolerance version pinned the camera near map-center for every
+## region, not just extreme ones, since the footprint currently exceeds
+## the map's own size on both axes at the established zoom level).
+const PAN_TOLERANCE_MARGIN: float = 20.0
+
+func _clamp_pan_target(target: Vector3) -> Vector3:
+	var footprint := _pan_footprint_offsets()
+	var min_offset: Vector2 = footprint["min"]
+	var max_offset: Vector2 = footprint["max"]
+
+	var clamped := target
+	clamped.x = _clamp_axis(target.x, MAP_BOUNDS_MIN.x, MAP_BOUNDS_MAX.x, min_offset.x, max_offset.x)
+	clamped.z = _clamp_axis(target.z, MAP_BOUNDS_MIN.y, MAP_BOUNDS_MAX.y, min_offset.y, max_offset.y)
+	return clamped
+
+
+## Clamps a single axis of a pan target against the range where the
+## visible footprint stays within [map_lo, map_hi]. If the footprint is
+## wider than the map on this axis (lo > hi — mathematically no position
+## shows zero whitespace), falls back to a tolerance zone of width
+## 2 * PAN_TOLERANCE_MARGIN centered on the collapse point instead of
+## pinning to that single point outright.
+func _clamp_axis(target_value: float, map_lo: float, map_hi: float, offset_lo: float, offset_hi: float) -> float:
+	var lo := map_lo - offset_lo
+	var hi := map_hi - offset_hi
+	if lo > hi:
+		var collapse := (lo + hi) / 2.0
+		lo = collapse - PAN_TOLERANCE_MARGIN
+		hi = collapse + PAN_TOLERANCE_MARGIN
+	return clampf(target_value, lo, hi)
+
+
+## Casts a ray from each of the current viewport's four screen corners
+## through the camera, intersecting the ground plane at the rig's own
+## current height, and returns how far those intersection points sit from
+## the rig's own position (min/max per axis). Because the camera's
+## rotation and size are fixed, this offset shape is invariant under
+## translation — it's recomputed from the LIVE current camera/viewport
+## state each call (cheap: 4 raycasts) rather than cached, so it stays
+## correct even if the viewport is ever resized at runtime.
+func _pan_footprint_offsets() -> Dictionary:
+	var svp_size: Vector2 = _svp.size
+	var corners := [
+		Vector2(0, 0), Vector2(svp_size.x, 0),
+		Vector2(0, svp_size.y), Vector2(svp_size.x, svp_size.y),
+		]
+	var rig_pos: Vector3 = _camera_rig.position
+	var min_offset := Vector2(INF, INF)
+	var max_offset := Vector2(-INF, -INF)
+
+	for corner in corners:
+		var from: Vector3 = _cam.project_ray_origin(corner)
+		var dir: Vector3 = _cam.project_ray_normal(corner)
+		if absf(dir.y) < 0.0001:
+			continue
+		var t: float = (rig_pos.y - from.y) / dir.y
+		var point: Vector3 = from + dir * t
+		var offset := Vector2(point.x - rig_pos.x, point.z - rig_pos.z)
+		min_offset.x = minf(min_offset.x, offset.x)
+		min_offset.y = minf(min_offset.y, offset.y)
+		max_offset.x = maxf(max_offset.x, offset.x)
+		max_offset.y = maxf(max_offset.y, offset.y)
+
+	return {"min": min_offset, "max": max_offset}
 
 #endregion
