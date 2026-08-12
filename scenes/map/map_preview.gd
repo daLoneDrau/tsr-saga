@@ -35,6 +35,11 @@ var _hovered_region_id: String = ""
 var _highlight_mesh: MeshInstance3D = null
 var _highlight_material: StandardMaterial3D
 var _reachable_meshes: Dictionary = {}
+# Last region_ids passed to set_reachable_regions(), remembered so
+# exit_close_up() can restore the highlight itself rather than depending
+# on GameScene happening to call _refresh() again right after — that only
+# runs on actual turn/mover changes, not just because close-up closed.
+var _cached_reachable_region_ids: Array = []
 var _reachable_material: StandardMaterial3D
 
 # entity_id -> MeshInstance3D. Reused across refreshes rather than
@@ -313,10 +318,8 @@ func _build_region_overlay_mesh(region_id: String) -> ArrayMesh:
 ## benefit. Pass an empty array to clear (e.g. when the movement phase is
 ## over and nothing is reachable).
 func set_reachable_regions(region_ids: Array) -> void:
-	for mesh in _reachable_meshes.values():
-		if is_instance_valid(mesh):
-			mesh.queue_free()
-	_reachable_meshes.clear()
+	_cached_reachable_region_ids = region_ids.duplicate()
+	_clear_reachable_meshes()
 
 	if _inspecting_region_id != "":
 		return  # No highlights while in close-up — see map widget roadmap.
@@ -337,6 +340,18 @@ func set_reachable_regions(region_ids: Array) -> void:
 		overlay.position = Vector3(0, 0.03, 0)
 		collider.add_child(overlay)
 		_reachable_meshes[region_id] = overlay
+
+
+## Frees the currently-rendered reachable-region overlays without
+## touching _cached_reachable_region_ids — used by _enter_close_up() to
+## visually clear the highlight while preserving what to restore later,
+## as opposed to set_reachable_regions([]), which would overwrite the
+## cache with an empty set and lose it permanently.
+func _clear_reachable_meshes() -> void:
+	for mesh in _reachable_meshes.values():
+		if is_instance_valid(mesh):
+			mesh.queue_free()
+	_reachable_meshes.clear()
 
 #endregion
 
@@ -635,7 +650,7 @@ func _enter_close_up(region_id: String) -> void:
 	# whatever was already showing immediately, rather than waiting for
 	# the next hover/refresh to naturally clear it.
 	_update_hover_region("")
-	set_reachable_regions([])
+	_clear_reachable_meshes()
 
 	var target := Vector3(anchor.global_position.x, _camera_rig.position.y, anchor.global_position.z)
 
@@ -660,6 +675,12 @@ func exit_close_up() -> void:
 	_inspecting_region_id = ""
 	_clear_close_up_occupants()
 	_update_occupant_hover_id("")
+
+	# Restore whatever reachable-region highlight was showing before (or
+	# requested during) close-up — nothing else re-triggers this on its
+	# own, since GameScene only calls set_reachable_regions() again on an
+	# actual turn/mover change, not just because close-up closed.
+	set_reachable_regions(_cached_reachable_region_ids)
 
 	if _camera_tween != null and _camera_tween.is_valid():
 		_camera_tween.kill()
