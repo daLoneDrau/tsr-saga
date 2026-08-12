@@ -109,6 +109,9 @@ func _gui_input(event: InputEvent) -> void:
 	elif event is InputEventMouseButton:
 		var mb := event as InputEventMouseButton
 		if mb.button_index == MOUSE_BUTTON_LEFT and mb.pressed:
+			if _inspecting_region_id != "":
+				exit_close_up()
+				return
 			var region_id := _raycast_region_id(event.position)
 			if region_id != "":
 				region_clicked.emit(region_id)
@@ -134,6 +137,7 @@ func _notification(what: int) -> void:
 func _update_hover(local_pos: Vector2) -> void:
 	if _inspecting_region_id != "":
 		_update_occupant_hover(local_pos)
+		return  # No region hover/highlight while in close-up — see map widget roadmap.
 	_update_hover_region(_raycast_region_id(local_pos))
 
 
@@ -313,6 +317,9 @@ func set_reachable_regions(region_ids: Array) -> void:
 		if is_instance_valid(mesh):
 			mesh.queue_free()
 	_reachable_meshes.clear()
+
+	if _inspecting_region_id != "":
+		return  # No highlights while in close-up — see map widget roadmap.
 
 	for region_id in region_ids:
 		var mesh := _build_region_overlay_mesh(region_id)
@@ -624,6 +631,12 @@ func _enter_close_up(region_id: String) -> void:
 	_saved_camera_size = _cam.size
 	_inspecting_region_id = region_id
 
+	# No highlights while in close-up — see map widget roadmap. Clears
+	# whatever was already showing immediately, rather than waiting for
+	# the next hover/refresh to naturally clear it.
+	_update_hover_region("")
+	set_reachable_regions([])
+
 	var target := Vector3(anchor.global_position.x, _camera_rig.position.y, anchor.global_position.z)
 
 	if _camera_tween != null and _camera_tween.is_valid():
@@ -697,6 +710,13 @@ func show_close_up_occupants(entries: Array) -> void:
 		if is_instance_valid(marker):
 			marker.visible = false
 
+	# Positioned at the exact SAME point as this entity's eagle's-eye
+	# marker (its stable SagaMapMarkerSystem-assigned spawn point) rather
+	# than a freshly-computed layout — using a different position scheme
+	# for close-up than for eagle's-eye was exactly what made the model
+	# look like it was "moving around" relative to where the primitive
+	# had been. Falls back to a radial spread around the region's banner
+	# point only if an entity somehow has no eagle's-eye marker yet.
 	var anchor := saga_map.get_node_or_null("banner_" + _inspecting_region_id) as Node3D
 	var center: Vector3 = anchor.global_position if anchor else Vector3.ZERO
 
@@ -705,12 +725,17 @@ func show_close_up_occupants(entries: Array) -> void:
 		var entity_id: String = entry.get("entity_id", "")
 		if entity_id == "":
 			continue
-		# Simple radial spread so multiple occupants in one region don't
-		# overlap — close-up framing has plenty of room for this, unlike
-		# the tightly-packed eagle's-eye candidate points.
-		var angle: float = i * 2.4
-		var offset := Vector3(cos(angle) * 1.8, 0, sin(angle) * 1.8)
-		_place_close_up_occupant(entity_id, entry, center + offset)
+
+		var world_pos: Vector3
+		var existing_marker: Node3D = _occupant_markers.get(entity_id)
+		if existing_marker != null and is_instance_valid(existing_marker):
+			world_pos = existing_marker.global_position
+		else:
+			var angle: float = i * 2.4
+			var offset := Vector3(cos(angle) * 1.8, 0, sin(angle) * 1.8)
+			world_pos = center + offset
+
+		_place_close_up_occupant(entity_id, entry, world_pos)
 		i += 1
 
 
