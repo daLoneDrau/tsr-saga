@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://ru3v7qiey87j"]
+
+[ext_resource type="PackedScene" uid="uid://spbctagdgqw3" path="res://assets/art/models/heroes/m_hero_base.tscn" id="1_qifjx"]
+[ext_resource type="PackedScene" uid="uid://2t6v76gxbyae" path="res://assets/art/models/heroes/m_hero_base_grease.tscn" id="2_br1e5"]
+[ext_resource type="PackedScene" uid="uid://rdt4nxwbflny" path="res://assets/art/models/heroes/m_muscular_base.tscn" id="3_4nmm5"]
+[ext_resource type="Shader" uid="uid://db4am4ktk2rv6" path="res://assets/art/models/heroes/checkerboard.gdshader" id="4_br1e5"]
+[ext_resource type="PackedScene" uid="uid://bb71e0hmfyq41" path="res://assets/art/models/monsters/dragon/dragon.tscn" id="5_4nmm5"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_wy0tn"]
+size = Vector2(8, 8)
+subdivide_width = 7
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ewsnx"]
+render_priority = 0
+shader = ExtResource("4_br1e5")
+shader_parameter/cells = 8
+shader_parameter/color_a = Color(1, 1, 1, 1)
+shader_parameter/color_b = Color(0, 0, 0, 1)
+
+[node name="Node3D" type="Node3D" unique_id=2101998051]
+
+[node name="checkerboard" type="MeshInstance3D" parent="." unique_id=1932312558]
+mesh = SubResource("PlaneMesh_wy0tn")
+surface_material_override/0 = SubResource("ShaderMaterial_ewsnx")
+
+[node name="m_hero_base" parent="." unique_id=2027737598 instance=ExtResource("1_qifjx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 0, 3.5)
+
+[node name="m_hero_base_grease" parent="." unique_id=76213764 instance=ExtResource("2_br1e5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 0, 3.5)
+
+[node name="m_muscular_base" parent="." unique_id=544408394 instance=ExtResource("3_4nmm5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0, 3.5)
+
+[node name="dragon" parent="." unique_id=1794285600 instance=ExtResource("5_4nmm5")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 3)

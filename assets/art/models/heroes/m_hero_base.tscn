@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://spbctagdgqw3"]
+
+[ext_resource type="PackedScene" uid="uid://bpc46rivdguub" path="res://assets/art/models/heroes/m_hero_base.glb" id="1_kjhdb"]
+[ext_resource type="Material" uid="uid://q27qjl2tgau7" path="res://assets/art/materials/heroes/skin/fair_rosy.tres" id="2_ct5iy"]
+
+[node name="m_hero_base" unique_id=2027737598 instance=ExtResource("1_kjhdb")]
+
+[node name="Cylinder" parent="." index="0" unique_id=991872197]
+surface_material_override/0 = ExtResource("2_ct5iy")

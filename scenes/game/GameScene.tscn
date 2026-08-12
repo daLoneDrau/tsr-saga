@@ -4,6 +4,8 @@
 [ext_resource type="Shader" uid="uid://blf5bx1dkhqua" path="res://shaders/ctr_scanlines.gdshader" id="2_shader"]
 [ext_resource type="PackedScene" uid="uid://ki21xxpk0dv2" path="res://scenes/map/map_preview.tscn" id="2_vaave"]
 [ext_resource type="PackedScene" uid="uid://y7d27benixmg" path="res://scenes/setup/PortraitWidget.tscn" id="3_portrait"]
+[ext_resource type="Script" uid="uid://d0qbyapv7rvov" path="res://scenes/game/region_close_up_modal.gd" id="4_closeup_modal"]
+[ext_resource type="Script" uid="uid://bynu1yh0daort" path="res://scenes/game/region_close_up_viewport.gd" id="5_closeup_viewport"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bar"]
 bg_color = Color(0, 0, 0, 1)
@@ -160,69 +162,6 @@ theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 15
 text = "i"
-
-[node name="CloseUpPanel" type="PanelContainer" parent="UI/Main/Content/MiddlePane" unique_id=-473962784]
-unique_name_in_owner = true
-visible = false
-layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-grow_vertical = 0
-theme_type_variation = &"PanelBox"
-
-[node name="CloseUpPad" type="MarginContainer" parent="UI/Main/Content/MiddlePane/CloseUpPanel" unique_id=-473962783]
-layout_mode = 2
-theme_override_constants/margin_left = 14
-theme_override_constants/margin_top = 12
-theme_override_constants/margin_right = 14
-theme_override_constants/margin_bottom = 12
-
-[node name="CloseUpCol" type="VBoxContainer" parent="UI/Main/Content/MiddlePane/CloseUpPanel/CloseUpPad" unique_id=-473962782]
-custom_minimum_size = Vector2(180, 0)
-layout_mode = 2
-theme_override_constants/separation = 6
-
-[node name="CloseUpNameLabel" type="Label" parent="UI/Main/Content/MiddlePane/CloseUpPanel/CloseUpPad/CloseUpCol" unique_id=-473962781]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"HeroSubtitle"
-theme_override_colors/font_color = Color(1, 0.886, 0.286, 1)
-theme_override_font_sizes/font_size = 15
-text = "REGION NAME"
-autowrap_mode = 2
-
-[node name="CloseUpTypeLabel" type="Label" parent="UI/Main/Content/MiddlePane/CloseUpPanel/CloseUpPad/CloseUpCol" unique_id=-473962780]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"Status"
-text = "LAND"
-
-[node name="CloseUpTaxLabel" type="Label" parent="UI/Main/Content/MiddlePane/CloseUpPanel/CloseUpPad/CloseUpCol" unique_id=-473962779]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"Status"
-text = "TAX VALUE: 0"
-
-[node name="CloseUpStatusLabel" type="Label" parent="UI/Main/Content/MiddlePane/CloseUpPanel/CloseUpPad/CloseUpCol" unique_id=-473962778]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"Status"
-text = "NEUTRAL"
-
-[node name="CloseUpOccupantsLabel" type="Label" parent="UI/Main/Content/MiddlePane/CloseUpPanel/CloseUpPad/CloseUpCol" unique_id=-473962777]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"Status"
-text = "NO ONE HERE"
-autowrap_mode = 2
-
-[node name="CloseUpHoveredLabel" type="Label" parent="UI/Main/Content/MiddlePane/CloseUpPanel/CloseUpPad/CloseUpCol" unique_id=-473962776]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"HeroSubtitle"
-theme_override_colors/font_color = Color(0.545, 0.878, 0.878, 1)
-autowrap_mode = 2
 
 [node name="Spacer2" type="ColorRect" parent="UI/Main/Content" unique_id=2009904619]
 custom_minimum_size = Vector2(0, 2)
@@ -405,6 +344,129 @@ bbcode_enabled = true
 fit_content = true
 
 [node name="HeroInfoCloseBtn" type="Button" parent="UI/HeroInfoPopup/Margin/VBox" unique_id=826099955]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_type_variation = &"StepBtn"
+theme_override_colors/font_color = Color(0.545, 0.878, 0.878, 1)
+theme_override_colors/font_focus_color = Color(0.545, 0.878, 0.878, 1)
+theme_override_colors/font_hover_color = Color(0.545, 0.878, 0.878, 1)
+text = "CLOSE"
+
+[node name="RegionCloseUpDim" type="ColorRect" parent="UI" unique_id=581402213]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.6)
+
+[node name="RegionCloseUpPopup" type="PopupPanel" parent="UI" unique_id=581402214]
+unique_name_in_owner = true
+oversampling_override = 1.0
+size = Vector2i(520, 400)
+theme_override_styles/panel = SubResource("StyleBoxFlat_popup")
+script = ExtResource("4_closeup_modal")
+
+[node name="ScaleRoot" type="MarginContainer" parent="UI/RegionCloseUpPopup" unique_id=581402215]
+offset_left = 3.0
+offset_top = 3.0
+offset_right = 517.0
+offset_bottom = 397.0
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 14
+
+[node name="HBox" type="HBoxContainer" parent="UI/RegionCloseUpPopup/ScaleRoot" unique_id=581402216]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="ViewportFrame" type="PanelContainer" parent="UI/RegionCloseUpPopup/ScaleRoot/HBox" unique_id=581402217]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"PanelBox"
+
+[node name="ViewportContainer" type="SubViewportContainer" parent="UI/RegionCloseUpPopup/ScaleRoot/HBox/ViewportFrame" unique_id=581402218]
+layout_mode = 2
+stretch = true
+script = ExtResource("5_closeup_viewport")
+
+[node name="CloseUpSubViewport" type="SubViewport" parent="UI/RegionCloseUpPopup/ScaleRoot/HBox/ViewportFrame/ViewportContainer" unique_id=581402219]
+handle_input_locally = false
+size = Vector2i(268, 360)
+render_target_update_mode = 0
+
+[node name="IsoCameraRig" type="Node3D" parent="UI/RegionCloseUpPopup/ScaleRoot/HBox/ViewportFrame/ViewportContainer/CloseUpSubViewport" unique_id=581402220]
+transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 0, 0, 0)
+
+[node name="PitchPivot" type="Node3D" parent="UI/RegionCloseUpPopup/ScaleRoot/HBox/ViewportFrame/ViewportContainer/CloseUpSubViewport/IsoCameraRig" unique_id=581402221]
+transform = Transform3D(1, 0, 0, 0, 0.8161376, 0.5778576, 0, -0.5778576, 0.8161376, 0, 0, 0)
+
+[node name="Camera3D" type="Camera3D" parent="UI/RegionCloseUpPopup/ScaleRoot/HBox/ViewportFrame/ViewportContainer/CloseUpSubViewport/IsoCameraRig/PitchPivot" unique_id=581402222]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 120)
+projection = 1
+size = 15.0
+far = 360.0
+
+[node name="InfoPanel" type="PanelContainer" parent="UI/RegionCloseUpPopup/ScaleRoot/HBox" unique_id=581402223]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+theme_type_variation = &"PanelBox"
+
+[node name="Pad" type="MarginContainer" parent="UI/RegionCloseUpPopup/ScaleRoot/HBox/InfoPanel" unique_id=581402224]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="Col" type="VBoxContainer" parent="UI/RegionCloseUpPopup/ScaleRoot/HBox/InfoPanel/Pad" unique_id=581402225]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="ModalNameLabel" type="Label" parent="UI/RegionCloseUpPopup/ScaleRoot/HBox/InfoPanel/Pad/Col" unique_id=581402226]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HeroSubtitle"
+theme_override_colors/font_color = Color(1, 0.886, 0.286, 1)
+theme_override_font_sizes/font_size = 15
+text = "REGION NAME"
+autowrap_mode = 2
+
+[node name="ModalTypeLabel" type="Label" parent="UI/RegionCloseUpPopup/ScaleRoot/HBox/InfoPanel/Pad/Col" unique_id=581402227]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Status"
+text = "LAND"
+
+[node name="ModalTaxLabel" type="Label" parent="UI/RegionCloseUpPopup/ScaleRoot/HBox/InfoPanel/Pad/Col" unique_id=581402228]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Status"
+text = "TAX VALUE: 0"
+
+[node name="ModalStatusLabel" type="Label" parent="UI/RegionCloseUpPopup/ScaleRoot/HBox/InfoPanel/Pad/Col" unique_id=581402229]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Status"
+text = "NEUTRAL"
+
+[node name="ModalOccupantsLabel" type="Label" parent="UI/RegionCloseUpPopup/ScaleRoot/HBox/InfoPanel/Pad/Col" unique_id=581402230]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Status"
+text = "NO ONE HERE"
+autowrap_mode = 2
+
+[node name="ModalHoveredLabel" type="Label" parent="UI/RegionCloseUpPopup/ScaleRoot/HBox/InfoPanel/Pad/Col" unique_id=581402231]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HeroSubtitle"
+theme_override_colors/font_color = Color(0.545, 0.878, 0.878, 1)
+autowrap_mode = 2
+
+[node name="ModalCloseBtn" type="Button" parent="UI/RegionCloseUpPopup/ScaleRoot/HBox/InfoPanel/Pad/Col" unique_id=581402232]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_default_cursor_shape = 2

@@ -10,4 +10,5 @@ shader_parameter/outline_color = Color(0.18, 0.13, 0.1, 1)
 
 [resource]
 next_pass = SubResource("ShaderMaterial_6k5qw")
+shading_mode = 0
 albedo_color = Color(0.9490196, 0.7764706, 0.627451, 1)

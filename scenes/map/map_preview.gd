@@ -1,6 +1,6 @@
 class_name MapPreview
 extends SubViewportContainer
-## SAGA Map View — Phase 2: click-to-select + hover raycasting.
+## SAGA Map View — eagle's-eye click-to-select + hover raycasting.
 ##
 ## Purely a rendering/input widget — knows nothing about game systems.
 ## Raycasts against the map's `-colonly` collision bodies (imported as
@@ -20,11 +20,23 @@ extends SubViewportContainer
 ## ready-made mesh to just toggle visible. Building one on demand from the
 ## collision shape's own face data keeps this to a single dynamic overlay
 ## mesh rather than 66 pre-built ones sitting in memory unused.
+##
+## Region close-up used to live in this file (camera zoom + occupant
+## models in-place), but moved out entirely into its own modal
+## (region_close_up_modal.gd) — a separate SubViewport/camera sharing this
+## one's World3D, shown in a PopupPanel. That's a real simplification here:
+## right-click just reports which region was clicked (region_right_clicked)
+## and this widget's own camera/highlights never change at all anymore,
+## which is what let several guard clauses and a whole cache/restore
+## mechanic for reachable-region highlighting get deleted outright — see
+## the map widget roadmap for that discussion. get_world_viewport() and
+## the occupant-marker visibility helpers below exist so the modal can
+## share this viewport's World3D and temporarily hide the small eagle's-eye
+## markers while showing full-size versions of the same occupants itself.
 
 signal region_clicked(region_id: String)
+signal region_right_clicked(region_id: String)
 signal region_hover_changed(region_id: String)  # "" when hover leaves every region
-signal region_inspect_changed(region_id: String)  # "" when close-up view exits (Phase 3.5)
-signal occupant_hover_changed(entity_id: String)  # "" when hover leaves every occupant, only active in close-up
 
 
 @onready var _svp: SubViewport = $SubViewport
@@ -35,11 +47,6 @@ var _hovered_region_id: String = ""
 var _highlight_mesh: MeshInstance3D = null
 var _highlight_material: StandardMaterial3D
 var _reachable_meshes: Dictionary = {}
-# Last region_ids passed to set_reachable_regions(), remembered so
-# exit_close_up() can restore the highlight itself rather than depending
-# on GameScene happening to call _refresh() again right after — that only
-# runs on actual turn/mover changes, not just because close-up closed.
-var _cached_reachable_region_ids: Array = []
 var _reachable_material: StandardMaterial3D
 
 # entity_id -> MeshInstance3D. Reused across refreshes rather than
@@ -51,24 +58,11 @@ var _jarl_mesh: SphereMesh
 var _monster_mesh: BoxMesh
 var _outline_shader: Shader
 
-# Phase 4 — camera centering. Tracks the last region actually centered on
-# so repeated _refresh() calls with an unchanged mover don't retrigger a
-# pan every time (same stability principle as occupant markers).
+# Camera centering. Tracks the last region actually centered on so
+# repeated _refresh() calls with an unchanged mover don't retrigger a pan
+# every time (same stability principle as occupant markers).
 var _centered_region_id: String = ""
 var _camera_tween: Tween
-
-# Phase 3.5 — region close-up view. "" means eagle's-eye (normal) view.
-var _inspecting_region_id: String = ""
-var _saved_camera_position: Vector3
-var _saved_camera_size: float
-var _hovered_occupant_id: String = ""
-# entity_id -> Node3D (real model, or fallback primitive) shown only
-# while inspecting that entity's region — separate from _occupant_markers
-# (the always-on small eagle's-eye markers), which stay untouched/hidden
-# underneath during close-up rather than being repurposed.
-var _close_up_models: Dictionary = {}
-const CLOSE_UP_CAMERA_SIZE: float = 10.0
-const OCCUPANT_HOVER_PIXEL_RADIUS: float = 40.0
 
 
 func _ready() -> void:
@@ -85,10 +79,10 @@ func _ready() -> void:
 	_highlight_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	_highlight_material.cull_mode = BaseMaterial3D.CULL_DISABLED
 	# Same trick used to fix Region_Borders vs. Grid_001 z-fighting — see
-	# BorderThick.tres/BorderThin.tres. The highlight sits at the same
-	# height as the terrain/border geometry, so it needs to reliably win
-	# the depth tie against both.
-	_highlight_material.render_priority = 2
+	# BorderThick.tres/BorderThin.tres. Priority order is deliberate:
+	# borders(1) < reachable(2) < hover(3), so hovering a reachable region
+	# still shows the hover effect on top instead of the two fighting.
+	_highlight_material.render_priority = 3
 
 	_hero_mesh = CapsuleMesh.new()
 	_hero_mesh.radius = 0.3
@@ -114,25 +108,18 @@ func _gui_input(event: InputEvent) -> void:
 	elif event is InputEventMouseButton:
 		var mb := event as InputEventMouseButton
 		if mb.button_index == MOUSE_BUTTON_LEFT and mb.pressed:
-			if _inspecting_region_id != "":
-				exit_close_up()
-				return
 			var region_id := _raycast_region_id(event.position)
 			if region_id != "":
 				region_clicked.emit(region_id)
 		elif mb.button_index == MOUSE_BUTTON_RIGHT and mb.pressed:
-			if _inspecting_region_id != "":
-				exit_close_up()
-			else:
-				var region_id := _raycast_region_id(event.position)
-				if region_id != "":
-					_enter_close_up(region_id)
+			var region_id := _raycast_region_id(event.position)
+			if region_id != "":
+				region_right_clicked.emit(region_id)
 
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_MOUSE_EXIT:
 		_update_hover_region("")
-		_update_occupant_hover_id("")
 
 
 # ---------------------------------------------------------------------------
@@ -140,41 +127,7 @@ func _notification(what: int) -> void:
 # ---------------------------------------------------------------------------
 
 func _update_hover(local_pos: Vector2) -> void:
-	if _inspecting_region_id != "":
-		_update_occupant_hover(local_pos)
-		return  # No region hover/highlight while in close-up — see map widget roadmap.
 	_update_hover_region(_raycast_region_id(local_pos))
-
-
-## Finds whichever close-up occupant model sits nearest the mouse on
-## screen (within OCCUPANT_HOVER_PIXEL_RADIUS), and emits
-## occupant_hover_changed if that's different from last frame. Only
-## meaningful while _inspecting_region_id is set — eagle's-eye markers
-## are small/numerous enough that per-pixel hover isn't attempted there.
-## Screen-space proximity rather than a physics raycast since close-up
-## occupants (real models or fallback primitives) don't carry collision
-## shapes of their own — simpler to add than real colliders for what's
-## at most a handful of occupants in one region at a time.
-func _update_occupant_hover(local_pos: Vector2) -> void:
-	var nearest_id := ""
-	var nearest_dist := OCCUPANT_HOVER_PIXEL_RADIUS
-	for entity_id in _close_up_models.keys():
-		var node: Node3D = _close_up_models[entity_id]
-		if not is_instance_valid(node):
-			continue
-		var screen_pos: Vector2 = _cam.unproject_position(node.global_position)
-		var dist: float = screen_pos.distance_to(local_pos)
-		if dist < nearest_dist:
-			nearest_dist = dist
-			nearest_id = entity_id
-	_update_occupant_hover_id(nearest_id)
-
-
-func _update_occupant_hover_id(entity_id: String) -> void:
-	if entity_id == _hovered_occupant_id:
-		return
-	_hovered_occupant_id = entity_id
-	occupant_hover_changed.emit(entity_id)
 
 
 func _update_hover_region(region_id: String) -> void:
@@ -200,8 +153,7 @@ func _update_hover_region(region_id: String) -> void:
 ## _gui_input, which depends on Godot's own event/caching timing rather
 ## than being queried directly on demand. Kept alongside the
 ## Input.set_default_cursor_shape() call above since it's still correct
-## on its own terms (see map widget roadmap) even though it alone wasn't
-## enough.
+## on its own terms even though it alone wasn't enough.
 func _get_cursor_shape(position: Vector2) -> Control.CursorShape:
 	if _raycast_region_id(position) != "":
 		return Control.CURSOR_POINTING_HAND
@@ -305,8 +257,9 @@ func _build_region_overlay_mesh(region_id: String) -> ArrayMesh:
 
 #endregion
 
+
 # ---------------------------------------------------------------------------
-#region Reachable-region highlight (Phase 5)
+#region Reachable-region highlight
 # ---------------------------------------------------------------------------
 
 ## Highlights every region in region_ids (map.json keys) as reachable by
@@ -318,11 +271,10 @@ func _build_region_overlay_mesh(region_id: String) -> ArrayMesh:
 ## benefit. Pass an empty array to clear (e.g. when the movement phase is
 ## over and nothing is reachable).
 func set_reachable_regions(region_ids: Array) -> void:
-	_cached_reachable_region_ids = region_ids.duplicate()
-	_clear_reachable_meshes()
-
-	if _inspecting_region_id != "":
-		return  # No highlights while in close-up — see map widget roadmap.
+	for mesh in _reachable_meshes.values():
+		if is_instance_valid(mesh):
+			mesh.queue_free()
+	_reachable_meshes.clear()
 
 	for region_id in region_ids:
 		var mesh := _build_region_overlay_mesh(region_id)
@@ -341,30 +293,18 @@ func set_reachable_regions(region_ids: Array) -> void:
 		collider.add_child(overlay)
 		_reachable_meshes[region_id] = overlay
 
-
-## Frees the currently-rendered reachable-region overlays without
-## touching _cached_reachable_region_ids — used by _enter_close_up() to
-## visually clear the highlight while preserving what to restore later,
-## as opposed to set_reachable_regions([]), which would overwrite the
-## cache with an empty set and lose it permanently.
-func _clear_reachable_meshes() -> void:
-	for mesh in _reachable_meshes.values():
-		if is_instance_valid(mesh):
-			mesh.queue_free()
-	_reachable_meshes.clear()
-
 #endregion
 
 
 # ---------------------------------------------------------------------------
-#region Occupant markers (Phase 3)
+#region Occupant markers
 # ---------------------------------------------------------------------------
 
 ## Renders one placeholder marker per occupant entry. Each entry is a
 ## Dictionary: {entity_id: String, region_id: String, is_large: bool,
-## color: Color}. Deliberately dumb about what these entities actually
-## are (hero/jarl/monster) — the caller decides is_large/color, this just
-## places colored capsules.
+## color: Color, type}. Deliberately dumb about what these entities
+## actually are — the caller decides is_large/color/type, this just
+## places colored capsules/spheres/boxes.
 ##
 ## marker_system is handed in rather than looked up, so this stays testable
 ## without needing a full Scene/system-registry context (same reasoning as
@@ -372,13 +312,11 @@ func _clear_reachable_meshes() -> void:
 ## one place this widget talks to a game system at all, and only ever
 ## through get_or_assign_marker()'s narrow (entity_id, region_id,
 ## candidate_names) -> node_name contract, never touching game state
-## directly.
-## marker_system is a SagaMapMarkerSystem, deliberately untyped here (see
-## the class header) — statically typing this parameter would force this
-## script to compile-time-resolve SagaMapMarkerSystem's full base class
-## chain (GameSystem -> Scene -> the autoload-dependent ECS framework)
-## every time this widget loads, which is exactly the coupling this file
-## is meant to avoid. Duck-typed .get_or_assign_marker() call instead.
+## directly. Deliberately untyped (see the class header) — statically
+## typing this parameter would force this script to compile-time-resolve
+## SagaMapMarkerSystem's full base class chain (GameSystem -> Scene -> the
+## autoload-dependent ECS framework) every time this widget loads, which is
+## exactly the coupling this file is meant to avoid.
 func refresh_occupant_markers(occupants: Array, marker_system) -> void:
 	var saga_map := _svp.get_node_or_null("saga_map")
 	if saga_map == null or marker_system == null:
@@ -453,7 +391,7 @@ func _place_occupant_marker(entity_id: String, entity_type: StringName, world_po
 ## Enumerates this region's actual candidate marker node names, filtered
 ## to "face" (small: hero/jarl/small enemies) or "corner" (large enemies)
 ## per is_large. Node names look like "spawn_<region_id>_face03" /
-## "spawn_<region_id>_corner03" — see the map widget roadmap, Phase 3.
+## "spawn_<region_id>_corner03" — see the map widget roadmap.
 ##
 ## Sorted by numeric suffix rather than left in raw child order: adjacent
 ## indices correspond to spatially adjacent points on the mesh (checked
@@ -485,11 +423,37 @@ func _marker_index(marker_name: String) -> int:
 		return -1
 	return marker_name.substr(i).to_int()
 
+
+## Hides the eagle's-eye markers for the given entity_ids and returns
+## their current world positions, keyed by entity_id — used by the region
+## close-up modal so it can show a bigger version of the same occupant at
+## the EXACT same stable position, rather than computing an independent
+## layout that could visibly disagree with where the primitive had been.
+## Entities with no current marker are simply omitted from the result.
+func hide_occupant_markers_and_get_positions(entity_ids: Array) -> Dictionary:
+	var positions: Dictionary = {}
+	for entity_id in entity_ids:
+		var marker: Node3D = _occupant_markers.get(entity_id)
+		if marker != null and is_instance_valid(marker):
+			marker.visible = false
+			positions[entity_id] = marker.global_position
+	return positions
+
+
+## Restores every eagle's-eye marker's visibility — called by the close-up
+## modal on close. Unconditional (not scoped to a specific entity list) so
+## it's safe to call even if the modal's own occupant list changed while
+## open, without needing to track exactly which markers it hid.
+func show_all_occupant_markers() -> void:
+	for marker in _occupant_markers.values():
+		if is_instance_valid(marker):
+			marker.visible = true
+
 #endregion
 
 
 # ---------------------------------------------------------------------------
-#region Camera centering (Phase 4)
+#region Camera centering
 # ---------------------------------------------------------------------------
 
 # Combined visual AABB of the map's terrain (Region_Borders + Grid_001),
@@ -503,7 +467,7 @@ const MAP_BOUNDS_MAX := Vector2(32.33663, 23.33679)
 ## Smoothly pans the camera rig so region_id sits centered in frame,
 ## keeping the same fixed isometric angle/zoom — this moves the whole rig
 ## (IsoCameraRig), not the camera's own rotation, so nothing about the
-## "look" established in Phase 1 changes, only what point it's aimed at.
+## established "look" changes, only what point it's aimed at.
 ##
 ## No-ops if region_id is already what's centered (same stability
 ## principle as occupant markers: repeated _refresh() calls with an
@@ -511,11 +475,10 @@ const MAP_BOUNDS_MAX := Vector2(32.33663, 23.33679)
 ##
 ## Uses the region's "banner_<region_id>" anchor as the centering point —
 ## a single canonical point per land region already authored for the
-## conquest-banner feature (held for a later phase), reused here rather
-## than computing a centroid ourselves. Sea regions have no banner anchor,
-## but movers are always land-placed (see saga_setup_system.gd's
-## random_land_location() calls), so this should always resolve in
-## practice; no-ops harmlessly if it doesn't.
+## conquest-banner feature, reused here rather than computing a centroid
+## ourselves. Sea regions have no banner anchor, but movers are always
+## land-placed (see saga_setup_system.gd's random_land_location() calls),
+## so this should always resolve in practice; no-ops harmlessly if not.
 ##
 ## The raw target is clamped (see _clamp_pan_target) so centering on an
 ## edge/corner region doesn't push the map's own edge toward the center of
@@ -523,8 +486,6 @@ const MAP_BOUNDS_MAX := Vector2(32.33663, 23.33679)
 func center_on_region(region_id: String) -> void:
 	if region_id == "" or region_id == _centered_region_id:
 		return
-	if _inspecting_region_id != "":
-		return  # Phase 3.5 close-up owns the camera while active; see enter/exit below.
 
 	var saga_map := _svp.get_node_or_null("saga_map")
 	if saga_map == null:
@@ -546,17 +507,10 @@ func center_on_region(region_id: String) -> void:
 	_centered_region_id = region_id
 
 
-## Clamps a candidate camera-rig target so the visible ground footprint
-## (see _pan_footprint_offsets) never extends past the map's own bounds —
-## i.e. the camera never pans far enough that the map's edge sits stranded
-## in the middle of the frame with empty background filling the rest.
-##
 ## How much of the map's own extent, per axis, is allowed as "acceptable"
 ## background overhang at an extreme target before the camera pulls back
 ## — expressed as a fraction of that axis's width rather than a flat
-## world-unit constant, since X and Z have quite different extents here
-## (a flat constant tuned for one axis was too tight for the other — see
-## the map widget roadmap for that discussion).
+## world-unit constant, since X and Z have quite different extents here.
 const PAN_EDGE_TOLERANCE_FRACTION: float = 0.4
 
 func _clamp_pan_target(target: Vector3) -> Vector3:
@@ -623,264 +577,32 @@ func _pan_footprint_offsets() -> Dictionary:
 
 
 # ---------------------------------------------------------------------------
-#region Region close-up view (Phase 3.5)
+#region Access for the region close-up modal
 # ---------------------------------------------------------------------------
 
-## Right-click a region to enter close-up (tight camera framing on that
-## region); right-click again (anywhere, while inspecting) to exit back to
-## the normal eagle's-eye view — see the map widget roadmap.
-##
-## Saves the exact pre-close-up camera position/size and tweens back to
-## them on exit, rather than re-deriving "where should the camera be now"
-## from the current mover — keeps this fully self-contained, no dependency
-## on GameScene re-driving center_on_region() to recover afterward.
-func _enter_close_up(region_id: String) -> void:
+## Exposes this widget's own SubViewport so the close-up modal can share
+## its World3D (own_world_3d = false, world_3d assigned to
+## get_world_viewport().find_world_3d()) — the same technique
+## PortraitWidget already uses, just deliberate this time. Lets the modal
+## render the same saga_map geometry and occupant markers from its own
+## camera without reloading/duplicating any of it.
+func get_world_viewport() -> SubViewport:
+	return _svp
+
+
+## Returns region_id's "banner_<region_id>" anchor position in world
+## space, or null if it doesn't resolve. Sharing world_3d (see
+## get_world_viewport() above) shares the rendering scenario, not the
+## actual node tree — the close-up viewport has no "saga_map" child of
+## its own to query, so it asks this widget (which does) for the position
+## directly instead.
+func get_region_anchor_position(region_id: String) -> Variant:
 	var saga_map := _svp.get_node_or_null("saga_map")
 	if saga_map == null:
-		return
+		return null
 	var anchor := saga_map.get_node_or_null("banner_" + region_id) as Node3D
 	if anchor == null:
-		return
-
-	_saved_camera_position = _camera_rig.position
-	_saved_camera_size = _cam.size
-	_inspecting_region_id = region_id
-
-	# No highlights while in close-up — see map widget roadmap. Clears
-	# whatever was already showing immediately, rather than waiting for
-	# the next hover/refresh to naturally clear it.
-	_update_hover_region("")
-	_clear_reachable_meshes()
-
-	var target := Vector3(anchor.global_position.x, _camera_rig.position.y, anchor.global_position.z)
-
-	if _camera_tween != null and _camera_tween.is_valid():
-		_camera_tween.kill()
-	_camera_tween = create_tween()
-	_camera_tween.set_ease(Tween.EASE_IN_OUT)
-	_camera_tween.set_trans(Tween.TRANS_SINE)
-	_camera_tween.set_parallel(true)
-	_camera_tween.tween_property(_camera_rig, "position", target, 0.5)
-	_camera_tween.tween_property(_cam, "size", CLOSE_UP_CAMERA_SIZE, 0.5)
-
-	region_inspect_changed.emit(region_id)
-
-
-## Exits close-up back to the exact camera state saved on entry. Safe to
-## call when not currently inspecting (no-ops).
-func exit_close_up() -> void:
-	if _inspecting_region_id == "":
-		return
-
-	_inspecting_region_id = ""
-	_clear_close_up_occupants()
-	_update_occupant_hover_id("")
-
-	# Restore whatever reachable-region highlight was showing before (or
-	# requested during) close-up — nothing else re-triggers this on its
-	# own, since GameScene only calls set_reachable_regions() again on an
-	# actual turn/mover change, not just because close-up closed.
-	set_reachable_regions(_cached_reachable_region_ids)
-
-	if _camera_tween != null and _camera_tween.is_valid():
-		_camera_tween.kill()
-	_camera_tween = create_tween()
-	_camera_tween.set_ease(Tween.EASE_IN_OUT)
-	_camera_tween.set_trans(Tween.TRANS_SINE)
-	_camera_tween.set_parallel(true)
-	_camera_tween.tween_property(_camera_rig, "position", _saved_camera_position, 0.5)
-	_camera_tween.tween_property(_cam, "size", _saved_camera_size, 0.5)
-
-	# Force the next ordinary center_on_region() call to actually run —
-	# otherwise it would see whatever region was centered before close-up
-	# started and wrongly no-op, even though the camera just moved away
-	# from that position during the close-up tween.
-	_centered_region_id = ""
-
-	region_inspect_changed.emit("")
-
-
-## Shows real 3D models — falling back to a bigger version of the same
-## primitive used at eagle's-eye scale when no model is available yet
-## (see the map widget roadmap for the current per-type asset gap) — for
-## every occupant of the currently-inspected region. Called by GameScene
-## in response to region_inspect_changed(region_id) with region_id != "".
-##
-## Each entry: {entity_id, type ("hero"/"jarl"/"monster"), color,
-## model_path, skin_path, hair_path}. model_path/skin_path/hair_path may
-## be "" — skin/hair only ever apply to heroes (see
-## _apply_hero_palette, mirroring PortraitWidget's established
-## convention: surface 0 = skin, surface 1 = hair).
-##
-## Deliberately separate from the always-on eagle's-eye _occupant_markers
-## — those stay exactly as they are, just hidden underneath while their
-## region is being inspected, rather than being repurposed/mutated. This
-## keeps eagle's-eye view visually consistent the moment close-up exits,
-## with no special-case "restore" logic needed.
-func show_close_up_occupants(entries: Array) -> void:
-	_clear_close_up_occupants()
-	if _inspecting_region_id == "":
-		return
-
-	var saga_map := _svp.get_node_or_null("saga_map")
-	if saga_map == null:
-		return
-
-	for entity_id in _occupant_markers:
-		var marker: Node3D = _occupant_markers[entity_id]
-		if is_instance_valid(marker):
-			marker.visible = false
-
-	# Positioned at the exact SAME point as this entity's eagle's-eye
-	# marker (its stable SagaMapMarkerSystem-assigned spawn point) rather
-	# than a freshly-computed layout — using a different position scheme
-	# for close-up than for eagle's-eye was exactly what made the model
-	# look like it was "moving around" relative to where the primitive
-	# had been. Falls back to a radial spread around the region's banner
-	# point only if an entity somehow has no eagle's-eye marker yet.
-	var anchor := saga_map.get_node_or_null("banner_" + _inspecting_region_id) as Node3D
-	var center: Vector3 = anchor.global_position if anchor else Vector3.ZERO
-
-	var i := 0
-	for entry in entries:
-		var entity_id: String = entry.get("entity_id", "")
-		if entity_id == "":
-			continue
-
-		var world_pos: Vector3
-		var existing_marker: Node3D = _occupant_markers.get(entity_id)
-		if existing_marker != null and is_instance_valid(existing_marker):
-			world_pos = existing_marker.global_position
-		else:
-			var angle: float = i * 2.4
-			var offset := Vector3(cos(angle) * 1.8, 0, sin(angle) * 1.8)
-			world_pos = center + offset
-
-		_place_close_up_occupant(entity_id, entry, world_pos)
-		i += 1
-
-
-func _place_close_up_occupant(entity_id: String, entry: Dictionary, world_pos: Vector3) -> void:
-	var model_path: String = entry.get("model_path", "")
-	var node: Node3D = null
-
-	if model_path != "" and ResourceLoader.exists(model_path):
-		var packed: PackedScene = load(model_path) as PackedScene
-		if packed != null:
-			node = packed.instantiate() as Node3D
-			if node == null:
-				push_error("map_preview: close-up model root is not Node3D at %s" % model_path)
-
-	if node != null:
-		_apply_hero_palette(node, entry)
-		_play_counter_pose(node)
-	else:
-		node = _build_fallback_close_up_mesh(entry)
-
-	var saga_map := _svp.get_node_or_null("saga_map")
-	saga_map.add_child(node)
-	node.global_position = world_pos
-	_close_up_models[entity_id] = node
-
-
-## Mirrors PortraitWidget._apply_palette()'s convention exactly (surface 0
-## = skin, surface 1 = hair) — skin_path/hair_path are only ever non-empty
-## for hero entries, so this is a no-op for jarls/monsters.
-func _apply_hero_palette(node: Node3D, entry: Dictionary) -> void:
-	var skin_path: String = entry.get("skin_path", "")
-	var hair_path: String = entry.get("hair_path", "")
-	if skin_path == "" and hair_path == "":
-		return
-
-	var mesh_node := _find_mesh_instance(node)
-	if mesh_node == null:
-		return
-
-	if skin_path != "" and ResourceLoader.exists(skin_path):
-		var skin_mat := load(skin_path) as Material
-		if skin_mat != null:
-			mesh_node.set_surface_override_material(0, skin_mat)
-
-	if hair_path != "" and ResourceLoader.exists(hair_path):
-		var hair_mat := load(hair_path) as Material
-		if hair_mat != null:
-			mesh_node.set_surface_override_material(1, hair_mat)
-
-
-func _find_mesh_instance(node: Node) -> MeshInstance3D:
-	if node is MeshInstance3D:
-		return node as MeshInstance3D
-	for child in node.get_children():
-		var result := _find_mesh_instance(child)
-		if result != null:
-			return result
-	return null
-
-
-## Plays "counter_pose" if the model has one — a combat-ready stance,
-## fitting for "here's who/what stands in this region" (as opposed to
-## PortraitWidget's "idle", right for its passive dossier context but not
-## this one). Held rather than forced to loop: it reads as a pose, not a
-## cycle. Silently does nothing if the clip isn't present — not every
-## model is guaranteed to have it yet (see the map widget roadmap).
-func _play_counter_pose(node: Node3D) -> void:
-	var anim_player := _find_animation_player(node)
-	if anim_player == null or not anim_player.has_animation("counter_pose"):
-		return
-	anim_player.play("counter_pose")
-
-
-func _find_animation_player(node: Node) -> AnimationPlayer:
-	if node is AnimationPlayer:
-		return node as AnimationPlayer
-	for child in node.get_children():
-		var result := _find_animation_player(child)
-		if result != null:
-			return result
-	return null
-
-
-## Bigger version of the same capsule/sphere/box used at eagle's-eye scale
-## — used when an occupant has no real model yet, so close-up still shows
-## something distinct per type rather than nothing.
-func _build_fallback_close_up_mesh(entry: Dictionary) -> MeshInstance3D:
-	var entity_type: String = entry.get("type", "")
-	var color: Color = entry.get("color", Color.WHITE)
-
-	var mesh := MeshInstance3D.new()
-	if entity_type == "hero":
-		var capsule := CapsuleMesh.new()
-		capsule.radius = 0.9
-		capsule.height = 3.0
-		mesh.mesh = capsule
-	elif entity_type == "jarl":
-		var sphere := SphereMesh.new()
-		sphere.radius = 1.0
-		sphere.height = 2.0
-		mesh.mesh = sphere
-	else:
-		var box := BoxMesh.new()
-		box.size = Vector3(2.0, 2.0, 2.0)
-		mesh.mesh = box
-
-	var mat := StandardMaterial3D.new()
-	mat.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL
-	mat.albedo_color = color
-	mat.next_pass = _make_outline_material()
-	mesh.material_override = mat
-	return mesh
-
-
-func _clear_close_up_occupants() -> void:
-	for entity_id in _close_up_models:
-		var node: Node3D = _close_up_models[entity_id]
-		if is_instance_valid(node):
-			node.queue_free()
-	_close_up_models.clear()
-
-	for entity_id in _occupant_markers:
-		var marker: Node3D = _occupant_markers[entity_id]
-		if is_instance_valid(marker):
-			marker.visible = true
+		return null
+	return anchor.global_position
 
 #endregion

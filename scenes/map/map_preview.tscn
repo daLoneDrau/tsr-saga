@@ -2,6 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://dhiq2iu58p6p1" path="res://assets/art/models/map/saga_map.glb" id="1_vfh4r"]
 [ext_resource type="Script" uid="uid://dxg5t5mupcj0o" path="res://scenes/map/map_preview.gd" id="2_click"]
+[ext_resource type="PackedScene" uid="uid://bb71e0hmfyq41" path="res://assets/art/models/monsters/dragon/dragon.tscn" id="3_1nhvc"]
 
 [sub_resource type="Environment" id="Environment_wy0tn"]
 background_mode = 1
@@ -45,3 +46,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 120)
 projection = 1
 size = 25.0
 far = 360.0
+
+[node name="dragon" parent="SubViewport" unique_id=1794285600 instance=ExtResource("3_1nhvc")]
+transform = Transform3D(-2.1855694e-08, 0, 0.5, 0, 0.5, 0, -0.5, 0, -2.1855694e-08, 11.00061, 1.3750763, -5.775319)

@@ -58,25 +58,19 @@ const MARKER_COLOR_MONSTER: Color = Color(0.8, 0.15, 0.15, 1)    # red
 # Node references
 # ---------------------------------------------------------------------------
 
-@onready var _banner_right:        Label          = %BannerRight
-@onready var _mover_label:         Label          = %MoverLabel
-@onready var _location_label:      Label          = %LocationLabel
-@onready var _pass_btn:            Button         = %PassBtn
-@onready var _map_view:            MapPreview     = %MapView
-@onready var _hero_info_btn:       Button         = %HeroInfoBtn
-@onready var _hero_info_popup:     PopupPanel     = %HeroInfoPopup
-@onready var _hero_info_text:      RichTextLabel  = %HeroInfoText
-@onready var _hero_info_close_btn: Button         = %HeroInfoCloseBtn
-@onready var _combat_pips:         HBoxContainer  = %CombatPips
-@onready var _speed_pips:          HBoxContainer  = %SpeedPips
-@onready var _portrait_widget:     PortraitWidget = %PortraitWidget
-@onready var _close_up_panel:            PanelContainer = %CloseUpPanel
-@onready var _close_up_name_label:       Label          = %CloseUpNameLabel
-@onready var _close_up_type_label:       Label          = %CloseUpTypeLabel
-@onready var _close_up_tax_label:        Label          = %CloseUpTaxLabel
-@onready var _close_up_status_label:     Label          = %CloseUpStatusLabel
-@onready var _close_up_occupants_label:  Label          = %CloseUpOccupantsLabel
-@onready var _close_up_hovered_label:    Label          = %CloseUpHoveredLabel
+@onready var _banner_right:        Label              = %BannerRight
+@onready var _mover_label:         Label              = %MoverLabel
+@onready var _location_label:      Label              = %LocationLabel
+@onready var _pass_btn:            Button             = %PassBtn
+@onready var _map_view:            MapPreview         = %MapView
+@onready var _hero_info_btn:       Button             = %HeroInfoBtn
+@onready var _hero_info_popup:     PopupPanel         = %HeroInfoPopup
+@onready var _hero_info_text:      RichTextLabel      = %HeroInfoText
+@onready var _hero_info_close_btn: Button             = %HeroInfoCloseBtn
+@onready var _combat_pips:         HBoxContainer      = %CombatPips
+@onready var _speed_pips:          HBoxContainer      = %SpeedPips
+@onready var _portrait_widget:     PortraitWidget     = %PortraitWidget
+@onready var _close_up_modal:      RegionCloseUpModal = %RegionCloseUpPopup
 
 # Cached by _refresh_occupant_markers(), consumed by the Phase 3.5
 # close-up view's region_inspect_changed handler — see that method.
@@ -172,8 +166,9 @@ func _wire_ui() -> void:
 	_hero_info_btn.pressed.connect(_on_hero_info_pressed)
 	_hero_info_close_btn.pressed.connect(_on_hero_info_close_pressed)
 	_map_view.region_clicked.connect(_on_map_region_clicked)
-	_map_view.region_inspect_changed.connect(_on_region_inspect_changed)
-	_map_view.occupant_hover_changed.connect(_on_occupant_hover_changed)
+	_map_view.region_right_clicked.connect(_on_map_region_right_clicked)
+	_close_up_modal.closed.connect(_on_close_up_modal_closed)
+	_close_up_modal.occupant_hover_changed.connect(_on_occupant_hover_changed)
 
 
 func _unwire_ui() -> void:
@@ -185,10 +180,12 @@ func _unwire_ui() -> void:
 		_hero_info_close_btn.pressed.disconnect(_on_hero_info_close_pressed)
 	if _map_view.region_clicked.is_connected(_on_map_region_clicked):
 		_map_view.region_clicked.disconnect(_on_map_region_clicked)
-	if _map_view.region_inspect_changed.is_connected(_on_region_inspect_changed):
-		_map_view.region_inspect_changed.disconnect(_on_region_inspect_changed)
-	if _map_view.occupant_hover_changed.is_connected(_on_occupant_hover_changed):
-		_map_view.occupant_hover_changed.disconnect(_on_occupant_hover_changed)
+	if _map_view.region_right_clicked.is_connected(_on_map_region_right_clicked):
+		_map_view.region_right_clicked.disconnect(_on_map_region_right_clicked)
+	if _close_up_modal.closed.is_connected(_on_close_up_modal_closed):
+		_close_up_modal.closed.disconnect(_on_close_up_modal_closed)
+	if _close_up_modal.occupant_hover_changed.is_connected(_on_occupant_hover_changed):
+		_close_up_modal.occupant_hover_changed.disconnect(_on_occupant_hover_changed)
 
 #endregion
 
@@ -253,7 +250,7 @@ func _refresh() -> void:
 ## game-system side of that split; map_preview.gd never queries
 ## SagaEntityManager/SagaBoardSystem/MonsterKindTable itself.
 ##
-## Cached in _all_occupants so _on_region_inspect_changed (Phase 3.5) can
+## Cached in _all_occupants so _on_map_region_right_clicked can
 ## filter the same data down to one region without a second full query.
 func _refresh_occupant_markers() -> void:
 	var board := get_registered_system(&"SagaBoardSystem") as SagaBoardSystem
@@ -368,20 +365,17 @@ func _on_map_region_clicked(region_id: String) -> void:
 
 
 # ---------------------------------------------------------------------------
-#region Region close-up view (Phase 3.5)
+#region Region close-up view
 # ---------------------------------------------------------------------------
 
-## Fires from map_preview.gd on right-click enter ("" -> region_id) or
-## right-click exit (region_id -> ""). Populates/hides the close-up info
-## overlay and hands map_preview.gd this region's occupants (with model
-## paths this time — see _occupant_entries_for) so it can show real
-## models/fallback primitives in place of the eagle's-eye markers.
-func _on_region_inspect_changed(region_id: String) -> void:
-	if region_id == "":
-		_close_up_panel.visible = false
-		_map_view.show_close_up_occupants([])
-		return
-
+## Fires from map_preview.gd on right-click. Gathers region + occupant
+## data (game-system knowledge the modal itself never touches — see its
+## own header) and hands it to the modal to display. Occupant models are
+## positioned via the exact same spots their eagle's-eye markers already
+## occupy (see MapPreview.hide_occupant_markers_and_get_positions), which
+## also hides those markers for the duration — restored on close via
+## _on_close_up_modal_closed().
+func _on_map_region_right_clicked(region_id: String) -> void:
 	var map_sys := get_registered_system(&"SagaMapSystem") as SagaMapSystem
 	var location_entity_id: String = map_sys.get_entity_for_region_id(region_id) if map_sys else ""
 	var entity: Entity = SagaEntityManager_auto.get_entity_by_id(location_entity_id) if location_entity_id != "" else null
@@ -391,43 +385,52 @@ func _on_region_inspect_changed(region_id: String) -> void:
 	var land_comp := entity.get_component("SagaLandComponent", false) as SagaLandComponent
 	var sea_comp := entity.get_component("SagaSeaComponent", false) as SagaSeaComponent
 
+	var region_info: Dictionary = {}
 	if land_comp != null:
-		_close_up_name_label.text = land_comp.name.to_upper()
-		_close_up_type_label.text = "LAND"
-		_close_up_tax_label.text = "TAX VALUE: %d" % land_comp.tax_value
-		_close_up_tax_label.visible = true
+		region_info["name"] = land_comp.name.to_upper()
+		region_info["type"] = "LAND"
+		region_info["tax_text"] = "TAX VALUE: %d" % land_comp.tax_value
 		# No owner name yet — SagaLandComponent's ownership is documented
 		# as "managed by KingdomSystem", which doesn't exist in the
 		# codebase yet. is_neutral is real data; who owns a claimed
 		# territory isn't queryable until that system exists.
-		_close_up_status_label.text = "NEUTRAL" if land_comp.is_neutral else "CLAIMED"
-		_close_up_status_label.visible = true
+		region_info["status_text"] = "NEUTRAL" if land_comp.is_neutral else "CLAIMED"
 	elif sea_comp != null:
-		_close_up_name_label.text = sea_comp.name.to_upper()
-		_close_up_type_label.text = "SEA"
-		_close_up_tax_label.visible = false
-		_close_up_status_label.visible = false
+		region_info["name"] = sea_comp.name.to_upper()
+		region_info["type"] = "SEA"
+		region_info["tax_text"] = ""
+		region_info["status_text"] = ""
 	else:
 		return
 
 	var region_occupants: Array = _all_occupants.filter(func(e): return e.get("region_id", "") == region_id)
 	if region_occupants.is_empty():
-		_close_up_occupants_label.text = "NO ONE HERE"
+		region_info["occupants_text"] = "NO ONE HERE"
 	else:
 		var names: Array = []
 		for entry in region_occupants:
 			names.append(_entity_display_name(entry["entity_id"]))
-		_close_up_occupants_label.text = "HERE: " + ", ".join(names)
+		region_info["occupants_text"] = "HERE: " + ", ".join(names)
 
-	_close_up_hovered_label.text = ""
-	_close_up_panel.visible = true
-	_map_view.show_close_up_occupants(region_occupants)
+	var entity_ids: Array = region_occupants.map(func(e): return e["entity_id"])
+	var marker_positions: Dictionary = _map_view.hide_occupant_markers_and_get_positions(entity_ids)
+
+	var anchor_position: Variant = _map_view.get_region_anchor_position(region_id)
+	if anchor_position == null:
+		return
+
+	_close_up_modal.open(anchor_position, _map_view.get_world_viewport(), region_info, region_occupants, marker_positions)
 
 
-## Fires from map_preview.gd whenever hover moves onto/off a close-up
-## occupant model. Only ever emitted while a close-up is active.
+func _on_close_up_modal_closed() -> void:
+	_map_view.show_all_occupant_markers()
+
+
+## Fires from the modal whenever hover moves onto/off a close-up occupant
+## model. The modal only knows entity_id; resolving a display name is
+## game-system knowledge, so it's handed back rather than done there.
 func _on_occupant_hover_changed(entity_id: String) -> void:
-	_close_up_hovered_label.text = _entity_display_name(entity_id).to_upper() if entity_id != "" else ""
+	_close_up_modal.set_hovered_occupant_name(_entity_display_name(entity_id).to_upper() if entity_id != "" else "")
 
 #endregion
 
