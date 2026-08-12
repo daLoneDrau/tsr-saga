@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://rdt4nxwbflny"]
 
 [ext_resource type="PackedScene" uid="uid://bshqc4jwvu6p3" path="res://assets/art/models/heroes/m_muscular_base.glb" id="1_4r8oe"]
-[ext_resource type="Material" uid="uid://q27qjl2tgau7" path="res://assets/art/materials/heroes/skin/fair_rosy.tres" id="2_sdxie"]
+[ext_resource type="Material" uid="uid://b2v3ns1fbexi6" path="res://assets/art/materials/heroes/skin_toon/fair_rosy_toon.tres" id="2_4r8oe"]
 
 [node name="m_muscular_base" unique_id=544408394 instance=ExtResource("1_4r8oe")]
 
 [node name="Cube" parent="." index="0" unique_id=1048414041]
-surface_material_override/0 = ExtResource("2_sdxie")
+surface_material_override/0 = ExtResource("2_4r8oe")

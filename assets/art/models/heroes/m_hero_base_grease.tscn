@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://2t6v76gxbyae"]
 
 [ext_resource type="PackedScene" uid="uid://br5xygi7x5tj6" path="res://assets/art/models/heroes/m_hero_base_grease.glb" id="1_6tu1v"]
-[ext_resource type="Material" uid="uid://q27qjl2tgau7" path="res://assets/art/materials/heroes/skin/fair_rosy.tres" id="2_isvvo"]
+[ext_resource type="Material" uid="uid://q27qjl2tgau7" path="res://assets/art/materials/heroes/skin/fair_rosy.tres" id="2_6tu1v"]
 
 [node name="m_hero_base_grease" unique_id=76213764 instance=ExtResource("1_6tu1v")]
 
-[node name="Cylinder" parent="GPencil" parent_id_path=PackedInt32Array(725363246) index="0" unique_id=1529449900]
-surface_material_override/0 = ExtResource("2_isvvo")
+[node name="Cylinder" parent="GPencil" parent_id_path=PackedInt32Array(117867259) index="0" unique_id=890547414]
+surface_material_override/0 = ExtResource("2_6tu1v")

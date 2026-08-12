@@ -17,6 +17,13 @@ shader_parameter/cells = 8
 shader_parameter/color_a = Color(1, 1, 1, 1)
 shader_parameter/color_b = Color(0, 0, 0, 1)
 
+[sub_resource type="Environment" id="Environment_4nmm5"]
+background_mode = 1
+background_color = Color(0.42352942, 0.56078434, 0.8392157, 1)
+ambient_light_source = 2
+ambient_light_color = Color(1, 1, 1, 1)
+ambient_light_energy = 0.35
+
 [node name="Node3D" type="Node3D" unique_id=2101998051]
 
 [node name="checkerboard" type="MeshInstance3D" parent="." unique_id=1932312558]
@@ -30,7 +37,14 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 0, 3.5)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 0, 3.5)
 
 [node name="m_muscular_base" parent="." unique_id=544408394 instance=ExtResource("3_4nmm5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0, 3.5)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -1.5, 0, 3.5)
 
 [node name="dragon" parent="." unique_id=1794285600 instance=ExtResource("5_4nmm5")]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 3)
+
+[node name="Sun" type="DirectionalLight3D" parent="." unique_id=1640577555]
+transform = Transform3D(0.81915206, 0.43938506, -0.36868784, 0, 0.64278764, 0.76604444, 0.57357645, -0.62750685, 0.5265408, 0, 0, 0)
+light_energy = 1.2
+
+[node name="Env" type="WorldEnvironment" parent="." unique_id=10607019]
+environment = SubResource("Environment_4nmm5")

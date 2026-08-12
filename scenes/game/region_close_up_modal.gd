@@ -14,7 +14,7 @@ extends PopupPanel
 signal closed()
 signal occupant_hover_changed(entity_id: String)
 
-const SCALE_IN_DURATION: float = 0.25
+const SCALE_IN_DURATION: float = 0.5
 
 @onready var _dim: ColorRect = get_node("../RegionCloseUpDim")
 @onready var _scale_root: Control = $ScaleRoot

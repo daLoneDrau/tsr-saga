@@ -394,7 +394,7 @@ script = ExtResource("5_closeup_viewport")
 
 [node name="CloseUpSubViewport" type="SubViewport" parent="UI/RegionCloseUpPopup/ScaleRoot/HBox/ViewportFrame/ViewportContainer" unique_id=581402219]
 handle_input_locally = false
-size = Vector2i(268, 360)
+size = Vector2i(2, 2)
 render_target_update_mode = 0
 
 [node name="IsoCameraRig" type="Node3D" parent="UI/RegionCloseUpPopup/ScaleRoot/HBox/ViewportFrame/ViewportContainer/CloseUpSubViewport" unique_id=581402220]

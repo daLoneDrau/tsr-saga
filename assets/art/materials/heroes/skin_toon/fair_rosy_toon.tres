@@ -1,0 +1,19 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://b2v3ns1fbexi6"]
+
+[ext_resource type="Shader" uid="uid://dqrlhui7g4fbu" path="res://shaders/toon_outline.gdshader" id="1_h6gfa"]
+[ext_resource type="Shader" uid="uid://b3w1spojdb8vq" path="res://shaders/toon_character.gdshader" id="1_qp8yo"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ruavc"]
+render_priority = 0
+shader = ExtResource("1_h6gfa")
+shader_parameter/outline_width = 0.015
+shader_parameter/outline_color = Color(0.18, 0.13, 0.1, 1)
+
+[resource]
+render_priority = 0
+next_pass = SubResource("ShaderMaterial_ruavc")
+shader = ExtResource("1_qp8yo")
+shader_parameter/albedo = Color(0.9490196, 0.7764706, 0.627451, 1)
+shader_parameter/shadow_strength = 0.45
+shader_parameter/shadow_cool = 0.08
+shader_parameter/shadow_threshold = 0.05

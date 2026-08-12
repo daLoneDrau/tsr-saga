@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://levtfr7taowm"]
 
-[ext_resource type="PackedScene" uid="uid://b55flej7ntfai" path="res://assets/art/models/heroes/siegfried/siegfried_full.glb" id="1_xytls"]
+[ext_resource type="PackedScene" uid="uid://cocaqk8esd22l" path="res://assets/art/models/heroes/siegfried/siegfried_full.glb" id="1_xytls"]
 [ext_resource type="Shader" uid="uid://b3w1spojdb8vq" path="res://shaders/toon_character.gdshader" id="2_xytls"]
 [ext_resource type="Material" uid="uid://d2jl281uoyq3h" path="res://assets/art/materials/heroes/hair/blonde.tres" id="3_7ahos"]
 [ext_resource type="Material" uid="uid://yyu2odfr5h0c" path="res://assets/art/materials/heroes/clothing/pants_neutral.tres" id="4_02m5g"]
@@ -29,7 +29,7 @@ shader_parameter/shadow_threshold = 0.05
 
 [node name="siegfried_full" unique_id=820972963 instance=ExtResource("1_xytls")]
 
-[node name="siegfried_export" parent="." index="0" unique_id=2076600217]
+[node name="siegfried_export" parent="." index="0" unique_id=1823655205]
 surface_material_override/0 = SubResource("ShaderMaterial_7y10m")
 surface_material_override/1 = ExtResource("3_7ahos")
 surface_material_override/2 = ExtResource("4_02m5g")
