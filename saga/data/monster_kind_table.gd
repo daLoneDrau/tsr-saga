@@ -15,12 +15,12 @@ const TYPE_WITCH  = 5
 
 # Per-type glory, luck rewards, and shared model
 const TYPE_DATA: Dictionary = {
-	TYPE_DRAGON: { "glory": 6, "luck": 5, "model": "res://assets/models/monsters/dragon.glb", "size": SIZE_LARGE },
-	TYPE_DROW:   { "glory": 3, "luck": 2, "model": "res://assets/models/monsters/drow.glb",   "size": SIZE_SMALL },
-	TYPE_GHOST:  { "glory": 2, "luck": 2, "model": "res://assets/models/monsters/ghost.glb",  "size": SIZE_SMALL },
-	TYPE_GIANT:  { "glory": 4, "luck": 3, "model": "res://assets/models/monsters/giant.glb",  "size": SIZE_LARGE },
-	TYPE_TROLL:  { "glory": 3, "luck": 3, "model": "res://assets/models/monsters/troll.glb",  "size": SIZE_LARGE },
-	TYPE_WITCH:  { "glory": 5, "luck": 4, "model": "res://assets/models/monsters/witch.glb",  "size": SIZE_SMALL },
+	TYPE_DRAGON: { "glory": 6, "luck": 5, "model": "res://assets/art/models/monsters/dragon/dragon.tscn", "size": SIZE_LARGE },
+	TYPE_DROW:   { "glory": 3, "luck": 2, "model": "res://assets/art/models/monsters/monster_stand_in.glb",   "size": SIZE_SMALL },
+	TYPE_GHOST:  { "glory": 2, "luck": 2, "model": "res://assets/art/models/monsters/monster_stand_in.glb",  "size": SIZE_SMALL },
+	TYPE_GIANT:  { "glory": 4, "luck": 3, "model": "res://assets/art/models/monsters/monster_stand_in.glb",  "size": SIZE_LARGE },
+	TYPE_TROLL:  { "glory": 3, "luck": 3, "model": "res://assets/art/models/monsters/monster_stand_in.glb",  "size": SIZE_LARGE },
+	TYPE_WITCH:  { "glory": 5, "luck": 4, "model": "res://assets/art/models/monsters/monster_stand_in.glb",  "size": SIZE_SMALL },
 }
 
 # Individual monster kind IDs

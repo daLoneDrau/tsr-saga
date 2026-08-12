@@ -161,6 +161,69 @@ theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 15
 text = "i"
 
+[node name="CloseUpPanel" type="PanelContainer" parent="UI/Main/Content/MiddlePane" unique_id=-473962784]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+grow_vertical = 0
+theme_type_variation = &"PanelBox"
+
+[node name="CloseUpPad" type="MarginContainer" parent="UI/Main/Content/MiddlePane/CloseUpPanel" unique_id=-473962783]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 12
+
+[node name="CloseUpCol" type="VBoxContainer" parent="UI/Main/Content/MiddlePane/CloseUpPanel/CloseUpPad" unique_id=-473962782]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="CloseUpNameLabel" type="Label" parent="UI/Main/Content/MiddlePane/CloseUpPanel/CloseUpPad/CloseUpCol" unique_id=-473962781]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HeroSubtitle"
+theme_override_colors/font_color = Color(1, 0.886, 0.286, 1)
+theme_override_font_sizes/font_size = 15
+text = "REGION NAME"
+autowrap_mode = 2
+
+[node name="CloseUpTypeLabel" type="Label" parent="UI/Main/Content/MiddlePane/CloseUpPanel/CloseUpPad/CloseUpCol" unique_id=-473962780]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Status"
+text = "LAND"
+
+[node name="CloseUpTaxLabel" type="Label" parent="UI/Main/Content/MiddlePane/CloseUpPanel/CloseUpPad/CloseUpCol" unique_id=-473962779]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Status"
+text = "TAX VALUE: 0"
+
+[node name="CloseUpStatusLabel" type="Label" parent="UI/Main/Content/MiddlePane/CloseUpPanel/CloseUpPad/CloseUpCol" unique_id=-473962778]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Status"
+text = "NEUTRAL"
+
+[node name="CloseUpOccupantsLabel" type="Label" parent="UI/Main/Content/MiddlePane/CloseUpPanel/CloseUpPad/CloseUpCol" unique_id=-473962777]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Status"
+text = "NO ONE HERE"
+autowrap_mode = 2
+
+[node name="CloseUpHoveredLabel" type="Label" parent="UI/Main/Content/MiddlePane/CloseUpPanel/CloseUpPad/CloseUpCol" unique_id=-473962776]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HeroSubtitle"
+theme_override_colors/font_color = Color(0.545, 0.878, 0.878, 1)
+autowrap_mode = 2
+
 [node name="Spacer2" type="ColorRect" parent="UI/Main/Content" unique_id=2009904619]
 custom_minimum_size = Vector2(0, 2)
 layout_mode = 2

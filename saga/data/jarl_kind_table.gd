@@ -2,7 +2,7 @@
 class_name JarlKindTable
 
 # Shared model — palette assigned randomly at spawn time
-const MODEL: String = "res://assets/models/jarls/jarl.glb"
+const MODEL: String = "res://assets/art/models/monsters/monster_stand_in.glb"
 
 # Individual jarl kind IDs
 const KARI       = 0
@@ -43,7 +43,7 @@ const TABLE: Dictionary = {
 	HAGEN:      { "name": "Hagen",      "combat_strength": 2, "movement_speed": 2 },
 	EYJOLF:     { "name": "Eyjolf",     "combat_strength": 2, "movement_speed": 2 },
 	HORSA:      { "name": "Horsa",      "combat_strength": 2, "movement_speed": 2 },
-}
+	}
 
 # Rewards are derived at runtime from combat_strength by CombatSystem.
 # After defeating a jarl the player chooses glory or luck — not stored here.

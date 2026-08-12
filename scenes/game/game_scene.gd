@@ -45,7 +45,7 @@ const STUBBLE_BY_HAIR: Dictionary = {
 	"res://assets/art/materials/heroes/hair/red.tres": "res://assets/art/materials/heroes/stubble/stubble_red.tres",
 	"res://assets/art/materials/heroes/hair/black.tres": "res://assets/art/materials/heroes/stubble/stubble_black.tres",
 	"res://assets/art/materials/heroes/hair/platinum.tres": "res://assets/art/materials/heroes/stubble/stubble_platinum.tres",
-}
+	}
 
 # Placeholder occupant marker colors (Phase 3 — simple colored capsules
 # until real models are hooked up). Distinguishes at a glance who's who
@@ -70,6 +70,17 @@ const MARKER_COLOR_MONSTER: Color = Color(0.8, 0.15, 0.15, 1)    # red
 @onready var _combat_pips:         HBoxContainer  = %CombatPips
 @onready var _speed_pips:          HBoxContainer  = %SpeedPips
 @onready var _portrait_widget:     PortraitWidget = %PortraitWidget
+@onready var _close_up_panel:            PanelContainer = %CloseUpPanel
+@onready var _close_up_name_label:       Label          = %CloseUpNameLabel
+@onready var _close_up_type_label:       Label          = %CloseUpTypeLabel
+@onready var _close_up_tax_label:        Label          = %CloseUpTaxLabel
+@onready var _close_up_status_label:     Label          = %CloseUpStatusLabel
+@onready var _close_up_occupants_label:  Label          = %CloseUpOccupantsLabel
+@onready var _close_up_hovered_label:    Label          = %CloseUpHoveredLabel
+
+# Cached by _refresh_occupant_markers(), consumed by the Phase 3.5
+# close-up view's region_inspect_changed handler — see that method.
+var _all_occupants: Array = []
 
 
 # ---------------------------------------------------------------------------
@@ -161,6 +172,8 @@ func _wire_ui() -> void:
 	_hero_info_btn.pressed.connect(_on_hero_info_pressed)
 	_hero_info_close_btn.pressed.connect(_on_hero_info_close_pressed)
 	_map_view.region_clicked.connect(_on_map_region_clicked)
+	_map_view.region_inspect_changed.connect(_on_region_inspect_changed)
+	_map_view.occupant_hover_changed.connect(_on_occupant_hover_changed)
 
 
 func _unwire_ui() -> void:
@@ -172,6 +185,10 @@ func _unwire_ui() -> void:
 		_hero_info_close_btn.pressed.disconnect(_on_hero_info_close_pressed)
 	if _map_view.region_clicked.is_connected(_on_map_region_clicked):
 		_map_view.region_clicked.disconnect(_on_map_region_clicked)
+	if _map_view.region_inspect_changed.is_connected(_on_region_inspect_changed):
+		_map_view.region_inspect_changed.disconnect(_on_region_inspect_changed)
+	if _map_view.occupant_hover_changed.is_connected(_on_occupant_hover_changed):
+		_map_view.occupant_hover_changed.disconnect(_on_occupant_hover_changed)
 
 #endregion
 
@@ -188,7 +205,7 @@ func _start_movement_phase() -> void:
 
 func _refresh() -> void:
 	_refresh_occupant_markers()
-	
+
 	var movement_sys := get_registered_system(&"SagaMovementSystem") as SagaMovementSystem
 	var turn_sys := get_registered_system(&"SagaTurnSystem") as SagaTurnSystem
 	var turn: int = turn_sys.get_current_turn()
@@ -235,6 +252,9 @@ func _refresh() -> void:
 ## to render. See the map widget roadmap, Phase 3 — this is the
 ## game-system side of that split; map_preview.gd never queries
 ## SagaEntityManager/SagaBoardSystem/MonsterKindTable itself.
+##
+## Cached in _all_occupants so _on_region_inspect_changed (Phase 3.5) can
+## filter the same data down to one region without a second full query.
 func _refresh_occupant_markers() -> void:
 	var board := get_registered_system(&"SagaBoardSystem") as SagaBoardSystem
 	var map_sys := get_registered_system(&"SagaMapSystem") as SagaMapSystem
@@ -242,13 +262,18 @@ func _refresh_occupant_markers() -> void:
 	if board == null or map_sys == null or marker_sys == null:
 		return
 
-	var occupants: Array = []
-	occupants.append_array(_occupant_entries_for("SagaHeroComponent", false, MARKER_COLOR_HERO, &"hero",board, map_sys))
-	occupants.append_array(_occupant_entries_for("SagaJarlComponent", false, MARKER_COLOR_JARL, &"jarl", board, map_sys))
-	occupants.append_array(_monster_occupant_entries(board, map_sys))
-	_map_view.refresh_occupant_markers(occupants, marker_sys)
+	_all_occupants = []
+	_all_occupants.append_array(_occupant_entries_for("SagaHeroComponent", false, MARKER_COLOR_HERO, &"hero", board, map_sys))
+	_all_occupants.append_array(_occupant_entries_for("SagaJarlComponent", false, MARKER_COLOR_JARL, &"jarl", board, map_sys))
+	_all_occupants.append_array(_monster_occupant_entries(board, map_sys))
+	_map_view.refresh_occupant_markers(_all_occupants, marker_sys)
 
 
+## model_path/skin_path/hair_path are only consumed by the Phase 3.5
+## close-up view (refresh_occupant_markers ignores them entirely) — kept
+## on the same entries rather than queried separately so there's one
+## source of truth per occupant instead of two gathering passes that
+## could drift out of sync with each other.
 func _occupant_entries_for(component_name: String, is_large: bool, color: Color, type: StringName, board: SagaBoardSystem, map_sys: SagaMapSystem) -> Array:
 	var entries: Array = []
 	var entities: Array[Entity] = SagaEntityManager_auto.get_entities_with_component(component_name)
@@ -259,12 +284,28 @@ func _occupant_entries_for(component_name: String, is_large: bool, color: Color,
 		var region_id: String = map_sys.get_region_id_for_entity(location_entity_id)
 		if region_id == "":
 			continue
+
+		var model_path: String = ""
+		var skin_path: String = ""
+		var hair_path: String = ""
+		if type == &"hero":
+			var hero_comp := entity.get_component("SagaHeroComponent", false) as SagaHeroComponent
+			if hero_comp != null and hero_comp.kind_id >= 0:
+				model_path = HeroKindTable.get_hero(hero_comp.kind_id).get("model", "")
+				skin_path = hero_comp.skin_material_path
+				hair_path = hero_comp.hair_material_path
+		elif type == &"jarl":
+			model_path = JarlKindTable.MODEL
+
 		entries.append({
 			"entity_id": entity.id,
 			"region_id": region_id,
 			"is_large": is_large,
 			"color": color,
 			"type": type,
+			"model_path": model_path,
+			"skin_path": skin_path,
+			"hair_path": hair_path,
 			})
 	return entries
 
@@ -281,12 +322,16 @@ func _monster_occupant_entries(board: SagaBoardSystem, map_sys: SagaMapSystem) -
 			continue
 		var monster_comp := entity.get_component("SagaMonsterComponent", false) as SagaMonsterComponent
 		var is_large: bool = MonsterKindTable.get_size(monster_comp.kind) == MonsterKindTable.SIZE_LARGE if monster_comp else false
+		var model_path: String = MonsterKindTable.get_model(monster_comp.kind) if monster_comp else ""
 		entries.append({
 			"entity_id": entity.id,
 			"region_id": region_id,
 			"is_large": is_large,
 			"color": MARKER_COLOR_MONSTER,
 			"type": &"monster",
+			"model_path": model_path,
+			"skin_path": "",
+			"hair_path": "",
 			})
 	return entries
 
@@ -318,6 +363,71 @@ func _on_map_region_clicked(region_id: String) -> void:
 	var entity_id: String = map_sys.get_entity_for_region_id(region_id) if map_sys else ""
 	if entity_id != "":
 		_on_region_chosen(entity_id)
+
+#endregion
+
+
+# ---------------------------------------------------------------------------
+#region Region close-up view (Phase 3.5)
+# ---------------------------------------------------------------------------
+
+## Fires from map_preview.gd on right-click enter ("" -> region_id) or
+## right-click exit (region_id -> ""). Populates/hides the close-up info
+## overlay and hands map_preview.gd this region's occupants (with model
+## paths this time — see _occupant_entries_for) so it can show real
+## models/fallback primitives in place of the eagle's-eye markers.
+func _on_region_inspect_changed(region_id: String) -> void:
+	if region_id == "":
+		_close_up_panel.visible = false
+		_map_view.show_close_up_occupants([])
+		return
+
+	var map_sys := get_registered_system(&"SagaMapSystem") as SagaMapSystem
+	var location_entity_id: String = map_sys.get_entity_for_region_id(region_id) if map_sys else ""
+	var entity: Entity = SagaEntityManager_auto.get_entity_by_id(location_entity_id) if location_entity_id != "" else null
+	if entity == null:
+		return
+
+	var land_comp := entity.get_component("SagaLandComponent", false) as SagaLandComponent
+	var sea_comp := entity.get_component("SagaSeaComponent", false) as SagaSeaComponent
+
+	if land_comp != null:
+		_close_up_name_label.text = land_comp.name.to_upper()
+		_close_up_type_label.text = "LAND"
+		_close_up_tax_label.text = "TAX VALUE: %d" % land_comp.tax_value
+		_close_up_tax_label.visible = true
+		# No owner name yet — SagaLandComponent's ownership is documented
+		# as "managed by KingdomSystem", which doesn't exist in the
+		# codebase yet. is_neutral is real data; who owns a claimed
+		# territory isn't queryable until that system exists.
+		_close_up_status_label.text = "NEUTRAL" if land_comp.is_neutral else "CLAIMED"
+		_close_up_status_label.visible = true
+	elif sea_comp != null:
+		_close_up_name_label.text = sea_comp.name.to_upper()
+		_close_up_type_label.text = "SEA"
+		_close_up_tax_label.visible = false
+		_close_up_status_label.visible = false
+	else:
+		return
+
+	var region_occupants: Array = _all_occupants.filter(func(e): return e.get("region_id", "") == region_id)
+	if region_occupants.is_empty():
+		_close_up_occupants_label.text = "NO ONE HERE"
+	else:
+		var names: Array = []
+		for entry in region_occupants:
+			names.append(_entity_display_name(entry["entity_id"]))
+		_close_up_occupants_label.text = "HERE: " + ", ".join(names)
+
+	_close_up_hovered_label.text = ""
+	_close_up_panel.visible = true
+	_map_view.show_close_up_occupants(region_occupants)
+
+
+## Fires from map_preview.gd whenever hover moves onto/off a close-up
+## occupant model. Only ever emitted while a close-up is active.
+func _on_occupant_hover_changed(entity_id: String) -> void:
+	_close_up_hovered_label.text = _entity_display_name(entity_id).to_upper() if entity_id != "" else ""
 
 #endregion
 
