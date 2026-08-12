@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://spbctagdgqw3" path="res://assets/art/models/heroes/m_hero_base.tscn" id="1_qifjx"]
 [ext_resource type="PackedScene" uid="uid://2t6v76gxbyae" path="res://assets/art/models/heroes/m_hero_base_grease.tscn" id="2_br1e5"]
 [ext_resource type="PackedScene" uid="uid://rdt4nxwbflny" path="res://assets/art/models/heroes/m_muscular_base.tscn" id="3_4nmm5"]
-[ext_resource type="Shader" uid="uid://db4am4ktk2rv6" path="res://assets/art/models/heroes/checkerboard.gdshader" id="4_br1e5"]
+[ext_resource type="Shader" uid="uid://bu13twrddx671" path="res://assets/art/models/heroes/checkerboard.gdshader" id="4_br1e5"]
 [ext_resource type="PackedScene" uid="uid://bb71e0hmfyq41" path="res://assets/art/models/monsters/dragon/dragon.tscn" id="5_4nmm5"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_wy0tn"]
