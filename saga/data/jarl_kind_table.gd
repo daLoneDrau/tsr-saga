@@ -2,7 +2,7 @@
 class_name JarlKindTable
 
 # Shared model — palette assigned randomly at spawn time
-const MODEL: String = "res://assets/art/models/heroes/m_hero_base_grease.tscn"
+const MODEL: String = "res://assets/art/models/heroes/jarl.tscn"
 
 # Individual jarl kind IDs
 const KARI       = 0
