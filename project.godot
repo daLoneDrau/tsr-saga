@@ -30,6 +30,10 @@ window/size/window_width_override=1280
 window/size/window_height_override=960
 window/stretch/mode="viewport"
 
+[filesystem]
+
+import/blender/enabled=false
+
 [gui]
 
 theme/custom="uid://keeb65md1grm"

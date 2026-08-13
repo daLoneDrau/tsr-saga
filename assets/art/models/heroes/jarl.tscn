@@ -2,12 +2,20 @@
 
 [ext_resource type="PackedScene" uid="uid://be3bas4pd0kdw" path="res://assets/art/models/heroes/jarl.glb" id="1_sunuu"]
 [ext_resource type="Texture2D" uid="uid://bkiue6vukn7v5" path="res://assets/art/models/heroes/jarl_fair_rosy.png" id="2_73vla"]
+[ext_resource type="Shader" uid="uid://dqrlhui7g4fbu" path="res://shaders/toon_outline.gdshader" id="3_73vla"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dxwj6"]
+render_priority = 0
+shader = ExtResource("3_73vla")
+shader_parameter/outline_width = 0.015
+shader_parameter/outline_color = Color(0.18, 0.13, 0.1, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dxwj6"]
+next_pass = SubResource("ShaderMaterial_dxwj6")
 shading_mode = 0
 albedo_texture = ExtResource("2_73vla")
 
 [node name="jarl" unique_id=834340707 instance=ExtResource("1_sunuu")]
 
-[node name="body" parent="." index="0" unique_id=387629230]
+[node name="body" parent="." index="0" unique_id=2016740946]
 surface_material_override/0 = SubResource("StandardMaterial3D_dxwj6")
