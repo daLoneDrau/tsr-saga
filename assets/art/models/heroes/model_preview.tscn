@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://rdt4nxwbflny" path="res://assets/art/models/heroes/m_muscular_base.tscn" id="3_4nmm5"]
 [ext_resource type="Shader" uid="uid://db4am4ktk2rv6" path="res://assets/art/models/heroes/checkerboard.gdshader" id="4_br1e5"]
 [ext_resource type="PackedScene" uid="uid://bb71e0hmfyq41" path="res://assets/art/models/monsters/dragon/dragon.tscn" id="5_4nmm5"]
-[ext_resource type="PackedScene" uid="uid://di41ud4ounixg" path="res://assets/art/models/heroes/jarl.tscn" id="6_fuwp8"]
+[ext_resource type="PackedScene" uid="uid://btx2ah2ddkvyc" path="res://assets/art/models/heroes/jarl.tscn" id="6_fuwp8"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_wy0tn"]
 size = Vector2(8, 8)
@@ -43,7 +43,7 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -1.5
 [node name="dragon" parent="." unique_id=1794285600 instance=ExtResource("5_4nmm5")]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 3)
 
-[node name="jarl" parent="." unique_id=834340707 instance=ExtResource("6_fuwp8")]
+[node name="jarl2" parent="." unique_id=2119823809 instance=ExtResource("6_fuwp8")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, 3.5)
 
 [node name="Sun" type="DirectionalLight3D" parent="." unique_id=1640577555]
