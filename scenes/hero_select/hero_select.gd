@@ -43,7 +43,7 @@
 # than a NinePatchRect):
 #   - PresentationFrame (TextureRect): the full-screen frame render.
 
-class_name HeroSelectScene
+class_name HeroSelect
 extends Scene
 
 
@@ -59,3 +59,35 @@ extends Scene
 @onready var _title_ornament_left: TextureRect = %TitleOrnamentLeft
 @onready var _title_ornament_right: TextureRect = %TitleOrnamentRight
 @onready var _title_label: Label = %TitleLabel
+
+
+# ---------------------------------------------------------------------------
+# Scene overrides
+# ---------------------------------------------------------------------------
+
+## REQUIRED — Scene marks this @abstract, so a concrete Scene subclass will
+## not even parse/load without an override. No actions are registered yet
+## at this stage of the rebuild (nothing calls register_action() here), so
+## there's nothing to route to — this stays a no-op stub until gallery
+## browsing / SELECT HERO / BACK come back into scope.
+func do_action(_action: GameAction) -> void:
+	pass
+
+
+## Optional hook — Scene's base implementation is already a no-op ("pass"),
+## so this stub isn't strictly required, but it's kept here as the landing
+## spot for resetting roster/palette state once the gallery is rebuilt.
+func on_enter() -> void:
+	pass
+
+
+## Optional hook — same as on_enter: Scene's base is a no-op. Landing spot
+## for disconnecting any wired input once the gallery/actions are rebuilt.
+func on_exit() -> void:
+	pass
+
+	# NOTE: on_pause() / on_resume() are intentionally NOT stubbed here. Unlike
+	# on_enter/on_exit, Scene's base implementations aren't no-ops — they set
+	# `paused = true` / `paused = false`. An empty override would silently
+	# break pausing for this scene, so they're left unoverridden until there's
+	# scene-specific pause behavior actually needed.
