@@ -30,6 +30,8 @@ ambient_light_source = 2
 ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_energy = 0.6
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_arrow"]
+
 [node name="HeroSelect" type="Control" unique_id=791748886]
 clip_contents = true
 layout_mode = 3
@@ -201,6 +203,7 @@ light_energy = 1.2
 shadow_enabled = true
 
 [node name="CharacterMark" type="Node3D" parent="HeroGallery/NextHeroSlot/NextHeroViewportContainer/NextHeroDisplay" unique_id=2100000008]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25, 0, 0)
 
 [node name="egil" parent="HeroGallery/NextHeroSlot/NextHeroViewportContainer/NextHeroDisplay/CharacterMark" unique_id=1475983548 instance=ExtResource("6_egil")]
 
@@ -242,6 +245,7 @@ light_energy = 1.2
 shadow_enabled = true
 
 [node name="CharacterMark" type="Node3D" parent="HeroGallery/PrevHeroSlot/PrevHeroViewportContainer/PrevHeroDisplay" unique_id=2100000012]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 0, 0)
 
 [node name="ragnar" parent="HeroGallery/PrevHeroSlot/PrevHeroViewportContainer/PrevHeroDisplay/CharacterMark" unique_id=747991854 instance=ExtResource("7_ragnar")]
 
@@ -249,24 +253,34 @@ shadow_enabled = true
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 14.0
-offset_top = 127.5
+offset_top = 171.0
 offset_right = 46.0
-offset_bottom = 167.5
+offset_bottom = 211.0
 mouse_default_cursor_shape = 2
 theme_override_colors/font_color = Color(0.9411765, 0.8862745, 0.7372549, 1)
 theme_override_fonts/font = ExtResource("9_nb12y")
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 36
+theme_override_styles/normal = SubResource("StyleBoxEmpty_arrow")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_arrow")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_arrow")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_arrow")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_arrow")
 text = "‹"
 
 [node name="NextArrow" type="Button" parent="HeroGallery" unique_id=1101620024]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 594.0
-offset_top = 127.5
+offset_top = 171.0
 offset_right = 626.0
-offset_bottom = 167.5
+offset_bottom = 211.0
 mouse_default_cursor_shape = 2
 theme_override_colors/font_color = Color(0.9411765, 0.8862745, 0.7372549, 1)
 theme_override_fonts/font = ExtResource("9_nb12y")
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 36
+theme_override_styles/normal = SubResource("StyleBoxEmpty_arrow")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_arrow")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_arrow")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_arrow")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_arrow")
 text = "›"
