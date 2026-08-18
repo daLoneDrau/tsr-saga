@@ -6,6 +6,20 @@
 [ext_resource type="Texture2D" uid="uid://bgemnq4wx4rhi" path="res://assets/art/ui/frame.png" id="3_hye7y"]
 [ext_resource type="Texture2D" uid="uid://bilsx1k6uk1hh" path="res://assets/art/ui/wolf_right.png" id="4_00mn2"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ornamentbacking"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.10980392, 0.2784314, 0.47058824, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_titlebacking"]
+content_margin_left = 8.0
+content_margin_top = 4.0
+content_margin_right = 8.0
+content_margin_bottom = 4.0
+bg_color = Color(0.10980392, 0.2784314, 0.47058824, 1)
+
 [node name="HeroSelect" type="Control" unique_id=791748886]
 clip_contents = true
 layout_mode = 3
@@ -19,53 +33,71 @@ layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-color = Color(0.145, 0.204, 0.502, 1)
+color = Color(0.10980392, 0.2784314, 0.47058824, 1)
 
 [node name="PresentationFrame" type="TextureRect" parent="." unique_id=301573403]
 unique_name_in_owner = true
+modulate = Color(0.77254903, 0.6392157, 0.3529412, 1)
 layout_mode = 0
 offset_right = 640.0
 offset_bottom = 480.0
+mouse_filter = 2
 texture = ExtResource("3_hye7y")
 
-[node name="TitleBacking" type="ColorRect" parent="." unique_id=437441560]
+[node name="TitleGroup" type="HBoxContainer" parent="." unique_id=1408632168]
 unique_name_in_owner = true
-layout_mode = 0
-offset_left = 110.0
-offset_right = 530.0
-offset_bottom = 56.0
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+grow_horizontal = 2
 mouse_filter = 2
-color = Color(0.145, 0.204, 0.502, 1)
+theme_override_constants/separation = 0
+alignment = 1
 
-[node name="TitleOrnamentLeft" type="TextureRect" parent="." unique_id=758246409]
+[node name="OrnamentPanelLeft" type="PanelContainer" parent="TitleGroup" unique_id=1096356168]
 unique_name_in_owner = true
-layout_mode = 0
-offset_left = 70.0
-offset_top = 8.0
-offset_right = 110.0
-offset_bottom = 48.0
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ornamentbacking")
+
+[node name="TitleOrnamentLeft" type="TextureRect" parent="TitleGroup/OrnamentPanelLeft" unique_id=663169412]
+unique_name_in_owner = true
+modulate = Color(0.77254903, 0.6392157, 0.3529412, 1)
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
 mouse_filter = 2
 texture = ExtResource("3_2fj4q")
 
-[node name="TitleOrnamentRight" type="TextureRect" parent="." unique_id=1969889706]
+[node name="TitleBackingPanel" type="PanelContainer" parent="TitleGroup" unique_id=1158163357]
 unique_name_in_owner = true
-layout_mode = 0
-offset_left = 530.0
-offset_top = 8.0
-offset_right = 570.0
-offset_bottom = 48.0
+layout_mode = 2
+size_flags_vertical = 4
 mouse_filter = 2
-texture = ExtResource("4_00mn2")
+theme_override_styles/panel = SubResource("StyleBoxFlat_titlebacking")
 
-[node name="TitleLabel" type="Label" parent="." unique_id=261985356]
+[node name="TitleLabel" type="Label" parent="TitleGroup/TitleBackingPanel" unique_id=880931497]
 unique_name_in_owner = true
-layout_mode = 0
-offset_left = 110.0
-offset_right = 530.0
-offset_bottom = 56.0
-theme_override_colors/font_color = Color(0.9098, 0.8235, 0.2902, 1)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.77254903, 0.6392157, 0.3529412, 1)
 theme_override_fonts/font = ExtResource("2_2ftf5")
 theme_override_font_sizes/font_size = 24
 text = "CHOOSE YOUR HERO"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="OrnamentPanelRight" type="PanelContainer" parent="TitleGroup" unique_id=1958182750]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ornamentbacking")
+
+[node name="TitleOrnamentRight" type="TextureRect" parent="TitleGroup/OrnamentPanelRight" unique_id=401253494]
+unique_name_in_owner = true
+modulate = Color(0.77254903, 0.6392157, 0.3529412, 1)
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("4_00mn2")
