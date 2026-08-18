@@ -284,3 +284,23 @@ theme_override_styles/hover = SubResource("StyleBoxEmpty_arrow")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_arrow")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_arrow")
 text = "›"
+
+[node name="HeroIdentity" type="Control" parent="." unique_id=514251905]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_top = 351.0
+offset_right = 640.0
+offset_bottom = 395.0
+mouse_filter = 2
+
+[node name="HeroNameLabel" type="Label" parent="HeroIdentity" unique_id=262636676]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_colors/font_color = Color(0.9411765, 0.8862745, 0.7372549, 1)
+theme_override_fonts/font = ExtResource("2_2ftf5")
+theme_override_font_sizes/font_size = 20
+text = "—◇— BEOWULF —◇—"
+horizontal_alignment = 1
+vertical_alignment = 1
