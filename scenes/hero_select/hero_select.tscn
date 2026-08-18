@@ -1,6 +1,10 @@
 [gd_scene format=3 uid="uid://cvi8s7p8jejo"]
 
 [ext_resource type="Script" uid="uid://w5yiy6syrsi7" path="res://scenes/hero_select/hero_select.gd" id="1_a6aad"]
+[ext_resource type="FontFile" uid="uid://qe33fb4bklxf" path="res://assets/fonts/NorseBold-2Kge.otf" id="2_2ftf5"]
+[ext_resource type="Texture2D" uid="uid://da4lq33uypix" path="res://assets/art/ui/wolf_left.png" id="3_2fj4q"]
+[ext_resource type="Texture2D" uid="uid://bgemnq4wx4rhi" path="res://assets/art/ui/frame.png" id="3_hye7y"]
+[ext_resource type="Texture2D" uid="uid://bilsx1k6uk1hh" path="res://assets/art/ui/wolf_right.png" id="4_00mn2"]
 
 [node name="HeroSelect" type="Control" unique_id=791748886]
 clip_contents = true
@@ -16,3 +20,52 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 color = Color(0.145, 0.204, 0.502, 1)
+
+[node name="PresentationFrame" type="TextureRect" parent="." unique_id=301573403]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 640.0
+offset_bottom = 480.0
+texture = ExtResource("3_hye7y")
+
+[node name="TitleBacking" type="ColorRect" parent="." unique_id=437441560]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 110.0
+offset_right = 530.0
+offset_bottom = 56.0
+mouse_filter = 2
+color = Color(0.145, 0.204, 0.502, 1)
+
+[node name="TitleOrnamentLeft" type="TextureRect" parent="." unique_id=758246409]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 70.0
+offset_top = 8.0
+offset_right = 110.0
+offset_bottom = 48.0
+mouse_filter = 2
+texture = ExtResource("3_2fj4q")
+
+[node name="TitleOrnamentRight" type="TextureRect" parent="." unique_id=1969889706]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 530.0
+offset_top = 8.0
+offset_right = 570.0
+offset_bottom = 48.0
+mouse_filter = 2
+texture = ExtResource("4_00mn2")
+
+[node name="TitleLabel" type="Label" parent="." unique_id=261985356]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 110.0
+offset_right = 530.0
+offset_bottom = 56.0
+theme_override_colors/font_color = Color(0.9098, 0.8235, 0.2902, 1)
+theme_override_fonts/font = ExtResource("2_2ftf5")
+theme_override_font_sizes/font_size = 24
+text = "CHOOSE YOUR HERO"
+horizontal_alignment = 1
+vertical_alignment = 1
