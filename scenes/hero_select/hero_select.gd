@@ -66,6 +66,8 @@ const B_NAME_ORNAMENT_COLOR := Color("59442d")
 
 const HERO_NAME_ORNAMENT := "—◇—"
 
+const TITLE_SCENE_PATH: String = "res://scenes/title/TitleScene.tscn"
+
 # ---------------------------------------------------------------------------
 # Roster & palette — canonical order per HeroKindTable's declared order
 # (matches the earlier decision this whole rebuild has used throughout).
@@ -265,9 +267,9 @@ func _register_actions() -> void:
 func _wire_input() -> void:
 	# connect UI button clicks to trigger the same actions as keybooard shortcuts
 	if _prev_arrow:
-		_prev_arrow.pressed.connect(_on_arrow_button_input.bind("browse_prev"))
+		_prev_arrow.pressed.connect(_on_button_input.bind("browse_prev"))
 	if _next_arrow:
-		_next_arrow.pressed.connect(_on_arrow_button_input.bind("browse_next"))
+		_next_arrow.pressed.connect(_on_button_input.bind("browse_next"))
 
 	# Adjacent-hero click-to-focus (spec 1.12) — clicking the prev/next
 	# hero itself brings it into focus, same as clicking the arrow that
@@ -279,8 +281,13 @@ func _wire_input() -> void:
 	if _next_hero_slot:
 		_next_hero_slot.gui_input.connect(_on_adjacent_slot_gui_input.bind("browse_next"))
 
+	# BACK (spec 1.21) — same routing as the arrows, no separate handler
+	# needed since it's a single fire-and-forget action.
+	if _back_button:
+		_back_button.pressed.connect(_on_button_input.bind("back"))
 
-func _on_arrow_button_input(action_name: String) -> void:
+
+func _on_button_input(action_name: String) -> void:
 	# trigger the action via do_action (same as keyboard shortcut)
 	do_action(GameAction.new(action_name, GameAction.PHASE_END))
 
@@ -677,6 +684,8 @@ func do_action(action: GameAction) -> void:
 			_navigate(-1)
 		"browse_next":
 			_navigate(1)
+		"back":
+			_go_back()
 		"any_key":
 			match action.phase:
 				"END":
@@ -688,6 +697,21 @@ func do_action(action: GameAction) -> void:
 							_navigate(1)
 						_:
 							pass
+
+
+## Spec 1.21 — returns to TitleScene without selecting a hero or beginning
+## the game. Mirrors title_scene.gd's own "new_saga" handler exactly
+## (same change_scene() call shape, just the reverse direction), so this
+## screen's exit path is symmetric with how it was entered. No
+## confirmation dialog, per spec — BACK is deliberately subordinate to
+## SELECT HERO and fires immediately, same as every other action here.
+## Guarded against firing mid-transition, same as _navigate(), since
+## leaving the scene while a tween is still animating stage nodes would
+## just be wasted work on a scene about to be torn down anyway.
+func _go_back() -> void:
+	if _is_transitioning:
+		return
+	SagaGameEngine_auto.change_scene("TitleScene", TITLE_SCENE_PATH)
 
 
 ## Optional hook — Scene's base implementation is already a no-op ("pass"),
