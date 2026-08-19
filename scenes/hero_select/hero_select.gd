@@ -67,6 +67,7 @@ const B_NAME_ORNAMENT_COLOR := Color("59442d")
 const HERO_NAME_ORNAMENT := "—◇—"
 
 const TITLE_SCENE_PATH: String = "res://scenes/title/TitleScene.tscn"
+const GAME_SCENE_PATH: String = "res://scenes/game/GameScene.tscn"
 
 # ---------------------------------------------------------------------------
 # Roster & palette — canonical order per HeroKindTable's declared order
@@ -85,7 +86,7 @@ const ROSTER_KIND_IDS: Array[int] = [
 	HeroKindTable.SIEGFRIED,
 	HeroKindTable.STARKAD,
 	HeroKindTable.RAGNAR,
-]
+	]
 
 # Palette pools — ported from SetupScene.gd so both screens roll from the
 # same source of truth. If SetupScene's pools ever change, update both
@@ -96,18 +97,18 @@ const SKIN_MATERIAL_PATHS: Array[String] = [
 	"res://assets/art/materials/heroes/skin/light_tan.tres",
 	"res://assets/art/materials/heroes/skin/florid.tres",
 	"res://assets/art/materials/heroes/skin/olive.tres",
-]
+	]
 const HAIR_MATERIAL_PATHS: Array[String] = [
 	"res://assets/art/materials/heroes/hair/blonde.tres",
 	"res://assets/art/materials/heroes/hair/auburn.tres",
 	"res://assets/art/materials/heroes/hair/red.tres",
 	"res://assets/art/materials/heroes/hair/black.tres",
 	"res://assets/art/materials/heroes/hair/platinum.tres",
-]
+	]
 const HAIR_MATERIAL_PATHS_OLIVE: Array[String] = [
 	"res://assets/art/materials/heroes/hair/auburn.tres",
 	"res://assets/art/materials/heroes/hair/black.tres",
-]
+	]
 # Maps scalp hair material path -> matching stubble path for Starkad.
 const STUBBLE_BY_HAIR: Dictionary = {
 	"res://assets/art/materials/heroes/hair/blonde.tres": "res://assets/art/materials/heroes/stubble/stubble_blonde.tres",
@@ -115,7 +116,7 @@ const STUBBLE_BY_HAIR: Dictionary = {
 	"res://assets/art/materials/heroes/hair/red.tres": "res://assets/art/materials/heroes/stubble/stubble_red.tres",
 	"res://assets/art/materials/heroes/hair/black.tres": "res://assets/art/materials/heroes/stubble/stubble_black.tres",
 	"res://assets/art/materials/heroes/hair/platinum.tres": "res://assets/art/materials/heroes/stubble/stubble_platinum.tres",
-}
+	}
 
 
 # ---------------------------------------------------------------------------
@@ -130,6 +131,7 @@ const STUBBLE_BY_HAIR: Dictionary = {
 @onready var _ornament_panel_left: PanelContainer = %OrnamentPanelLeft
 @onready var _ornament_panel_right: PanelContainer = %OrnamentPanelRight
 @onready var _title_ornament_left: TextureRect = %TitleOrnamentLeft
+@warning_ignore("unused_private_class_variable")
 @onready var _title_ornament_right: TextureRect = %TitleOrnamentRight
 @onready var _ornament_material: ShaderMaterial = _title_ornament_left.material
 @onready var _frame_material: ShaderMaterial = _presentation_frame.material
@@ -138,6 +140,7 @@ const STUBBLE_BY_HAIR: Dictionary = {
 @onready var _prev_arrow: Button = %PrevArrow
 @onready var _next_arrow: Button = %NextArrow
 @onready var _back_button: Button = %BackButton
+@onready var _select_hero_button: Button = %SelectHeroButton
 @onready var _gallery_stage: Node3D = %GalleryStage
 @onready var _next_hero_slot: Control = %NextHeroSlot
 @onready var _prev_hero_slot: Control = %PrevHeroSlot
@@ -195,6 +198,14 @@ const TRANSITION_SECONDS: float = 0.2
 
 var _is_transitioning: bool = false
 
+# --- Setup handoff -----------------------------------------------------
+# Set once by _register_systems() in _ready(). Guards against SELECT HERO
+# firing twice (which would create two hero entities via a second run()
+# call) — set true the moment _select_hero() commits, checked at its
+# entry alongside the transition guard.
+var _setup_system: SagaSetupSystem = null
+var _hero_selected: bool = false
+
 # The three hero "holders" currently on stage — plain Node3D wrappers, each
 # with one hero model instanced as a child (same convention the old
 # CharacterMark nodes used). Reassigned at the end of each transition
@@ -236,6 +247,14 @@ func _ready() -> void:
 
 	# connect UI button elements to trigger actions
 	_wire_input()
+
+	# Registers SagaMapSystem/SagaBoardSystem/SagaEquipmentSystem/
+	# SagaGlorySystem/SagaSetupSystem — same set, same order, as
+	# SetupScene._register_systems(). SagaSetupSystem.run() broadcasts
+	# events (equip_item, place_entity) that only the other four systems
+	# actually handle; without them registered here too, SELECT HERO would
+	# call run() but board/equipment placement would silently no-op.
+	_register_systems()
 
 	_roll_palette()
 	_populate_stage()
@@ -285,6 +304,47 @@ func _wire_input() -> void:
 	# needed since it's a single fire-and-forget action.
 	if _back_button:
 		_back_button.pressed.connect(_on_button_input.bind("back"))
+
+	if _select_hero_button:
+		_select_hero_button.pressed.connect(_on_button_input.bind("select_hero"))
+
+
+## Registers the same system set, in the same order, as
+## SetupScene._register_systems() — SagaMapSystem must come before
+## SagaBoardSystem (board placement needs land entities to already exist),
+## and SagaSetupSystem last since its run() depends on all the others
+## being reachable via broadcast_event() when it fires equip_item/
+## place_entity. Mirrors that function's exact construction pattern
+## (new() -> name -> add_child() -> register_system()) rather than
+## reinventing a different one for this scene.
+func _register_systems() -> void:
+	var map := SagaMapSystem.new()
+	map.name = "SagaMapSystem"
+	add_child(map)
+	register_system(map)
+
+	var board := SagaBoardSystem.new()
+	board.name = "SagaBoardSystem"
+	add_child(board)
+	register_system(board)
+
+	var equipment := SagaEquipmentSystem.new()
+	equipment.name = "SagaEquipmentSystem"
+	add_child(equipment)
+	register_system(equipment)
+
+	var glory := SagaGlorySystem.new()
+	glory.name = "SagaGlorySystem"
+	add_child(glory)
+	register_system(glory)
+
+	var setup := SagaSetupSystem.new()
+	setup.name = "SagaSetupSystem"
+	add_child(setup)
+	register_system(setup)
+
+	_setup_system = setup
+	_setup_system.setup_complete.connect(_on_setup_complete)
 
 
 func _on_button_input(action_name: String) -> void:
@@ -686,6 +746,8 @@ func do_action(action: GameAction) -> void:
 			_navigate(1)
 		"back":
 			_go_back()
+		"select_hero":
+			_select_hero()
 		"any_key":
 			match action.phase:
 				"END":
@@ -712,6 +774,51 @@ func _go_back() -> void:
 	if _is_transitioning:
 		return
 	SagaGameEngine_auto.change_scene("TitleScene", TITLE_SCENE_PATH)
+
+
+## Commits the currently-focused hero as the player's pick.
+##   1. Saves every roster hero's rolled skin/hair/stubble to
+##      SagaGameEngine_auto.hero_appearances — not just the chosen one, so
+##      the other five heroes' appearances survive the scene transition
+##      SagaSetupSystem.run() triggers (only the chosen hero becomes an
+##      entity at setup time; the rest have nowhere else to persist).
+##   2. Calls SagaSetupSystem.run() with the focused hero and its rolled
+##      skin/hair paths — everything else (sword, board placement, home
+##      country) happens inside run() itself.
+## Guarded the same way as every other action here (ignored mid-
+## transition), plus a one-shot guard since calling run() twice would
+## create two hero entities.
+func _select_hero() -> void:
+	if _is_transitioning or _hero_selected:
+		return
+
+	for i in ROSTER_KIND_IDS.size():
+		SagaGameEngine_auto.set_hero_appearance(
+				ROSTER_KIND_IDS[i], _hero_skin_paths[i], _hero_hair_paths[i], _hero_stubble_paths[i]
+		)
+
+	if _setup_system == null:
+		push_error("HeroSelect: SagaSetupSystem not registered")
+		return
+
+	_hero_selected = true
+
+	var chosen_kind_id: int = ROSTER_KIND_IDS[_focused_idx]
+	# total_players: SagaSetupSystem.run() currently hardcodes
+	# player_count = 1 internally regardless of this argument (see its own
+	# source — the real total_players line is commented out pending an
+	# opponent-count step this screen doesn't have). Passing 1 here is a
+	# placeholder that matches current behavior, not a real setting.
+	_setup_system.run(chosen_kind_id, 1, _hero_skin_paths[_focused_idx], _hero_hair_paths[_focused_idx])
+# Transition happens in _on_setup_complete once run() emits setup_complete
+# — same pattern SetupScene uses for the same signal.
+
+
+## Board/equipment/hero placement is done once this fires. Mirrors
+## SetupScene._on_setup_complete() exactly, including the same stub-path
+## note — GameScene is a placeholder destination, not yet built out.
+func _on_setup_complete(_payload: Dictionary) -> void:
+	SagaGameEngine_auto.change_scene("GameScene", GAME_SCENE_PATH)
 
 
 ## Optional hook — Scene's base implementation is already a no-op ("pass"),

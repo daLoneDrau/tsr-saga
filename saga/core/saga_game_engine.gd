@@ -103,6 +103,40 @@ func draw_treasure() -> int:
 ## Treasure is never returned to the pool — heroes keep it until the game ends.
 
 
+# ---------------------------------------------------------------------------
+# Hero appearances — the whole roster's rolled cosmetic palette, saved by
+# HeroSelect when the player confirms their pick (spec 1.10: appearances
+# are generated for the entire roster up front and "preserved for the
+# duration of that game and in saves" — not just the chosen hero's).
+#
+# SagaSetupSystem.run() only writes skin/hair onto the CHOSEN hero's own
+# SagaHeroComponent, since the other five heroes never become entities at
+# setup time. This dictionary is where any future system recovers the
+# other five heroes' appearances — e.g. if they show up as AI opponents
+# later. Keyed by HeroKindTable kind_id.
+# ---------------------------------------------------------------------------
+
+var hero_appearances: Dictionary[int, Dictionary] = {}
+
+
+## Records kind_id's rolled palette (skin, hair, and stubble — stubble is
+## only ever meaningful for Starkad, but stored uniformly for every hero
+## for simplicity; callers/consumers ignore it where it doesn't apply).
+## Overwrites any existing entry for the same kind_id.
+func set_hero_appearance(kind_id: int, skin_material_path: String, hair_material_path: String, stubble_material_path: String) -> void:
+	hero_appearances[kind_id] = {
+		"skin_material_path": skin_material_path,
+		"hair_material_path": hair_material_path,
+		"stubble_material_path": stubble_material_path,
+		}
+
+
+## Returns kind_id's saved appearance, or an empty Dictionary if none was
+## ever recorded for it.
+func get_hero_appearance(kind_id: int) -> Dictionary:
+	return hero_appearances.get(kind_id, {})
+
+
 ## Called when the node enters the scene tree
 func _ready() -> void:
 	super._ready()
