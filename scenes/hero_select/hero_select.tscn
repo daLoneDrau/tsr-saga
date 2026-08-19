@@ -172,21 +172,13 @@ texture = ExtResource("4_00mn2")
 
 [node name="HeroGallery" type="Control" parent="." unique_id=1321780318]
 unique_name_in_owner = true
-anchors_preset = 0
+layout_mode = 0
 offset_top = 56.0
 offset_right = 640.0
 offset_bottom = 351.0
 mouse_filter = 2
 
-[node name="CurrentHeroSlot" type="Control" parent="HeroGallery" unique_id=1027606915]
-unique_name_in_owner = true
-anchors_preset = 0
-offset_left = 150.0
-offset_right = 490.0
-offset_bottom = 295.0
-mouse_filter = 2
-
-[node name="CurrentHeroViewportContainer" type="SubViewportContainer" parent="HeroGallery/CurrentHeroSlot" unique_id=2021627410]
+[node name="GalleryViewportContainer" type="SubViewportContainer" parent="HeroGallery"]
 unique_name_in_owner = true
 layout_mode = 0
 anchor_right = 1.0
@@ -194,118 +186,48 @@ anchor_bottom = 1.0
 mouse_filter = 2
 stretch = true
 
-[node name="CurrentHeroDisplay" type="SubViewport" parent="HeroGallery/CurrentHeroSlot/CurrentHeroViewportContainer" unique_id=2100000001]
+[node name="GalleryViewport" type="SubViewport" parent="HeroGallery/GalleryViewportContainer" unique_id=2100000001]
 unique_name_in_owner = true
 own_world_3d = true
 transparent_bg = true
 handle_input_locally = false
 msaa_3d = 1
-size = Vector2i(340, 295)
+size = Vector2i(640, 295)
 render_target_update_mode = 4
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="HeroGallery/CurrentHeroSlot/CurrentHeroViewportContainer/CurrentHeroDisplay" unique_id=829729119]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="HeroGallery/GalleryViewportContainer/GalleryViewport"]
 environment = SubResource("Environment_currenthero")
 
-[node name="Camera3D" type="Camera3D" parent="HeroGallery/CurrentHeroSlot/CurrentHeroViewportContainer/CurrentHeroDisplay" unique_id=2100000002]
+[node name="Camera3D" type="Camera3D" parent="HeroGallery/GalleryViewportContainer/GalleryViewport" unique_id=2100000002]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 5)
 projection = 1
 size = 1.9667
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="HeroGallery/CurrentHeroSlot/CurrentHeroViewportContainer/CurrentHeroDisplay" unique_id=2100000003]
-transform = Transform3D(0.90630776, -0.27165377, 0.3237444, 0, 0.76604444, 0.6427876, -0.42261827, -0.58256334, 0.69427204, 0, 2, 3)
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="HeroGallery/GalleryViewportContainer/GalleryViewport" unique_id=2100000003]
+position = Vector3(0, 2, 3)
+rotation_degrees = Vector3(-40, 25, 0)
 light_energy = 1.2
 shadow_enabled = true
 
-[node name="CharacterMark" type="Node3D" parent="HeroGallery/CurrentHeroSlot/CurrentHeroViewportContainer/CurrentHeroDisplay" unique_id=2100000004]
-
-[node name="beowulf" parent="HeroGallery/CurrentHeroSlot/CurrentHeroViewportContainer/CurrentHeroDisplay/CharacterMark" unique_id=1172860843 instance=ExtResource("5_beowulf")]
-
-[node name="NextHeroSlot" type="Control" parent="HeroGallery" unique_id=146884634]
+[node name="GalleryStage" type="Node3D" parent="HeroGallery/GalleryViewportContainer/GalleryViewport" unique_id=2100000004]
 unique_name_in_owner = true
-anchors_preset = 0
-offset_left = 490.0
-offset_right = 640.0
-offset_bottom = 295.0
-mouse_filter = 0
-mouse_default_cursor_shape = 2
-
-[node name="NextHeroViewportContainer" type="SubViewportContainer" parent="HeroGallery/NextHeroSlot" unique_id=1358785884]
-unique_name_in_owner = true
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-stretch = true
-
-[node name="NextHeroDisplay" type="SubViewport" parent="HeroGallery/NextHeroSlot/NextHeroViewportContainer" unique_id=2100000005]
-unique_name_in_owner = true
-own_world_3d = true
-transparent_bg = true
-handle_input_locally = false
-msaa_3d = 1
-size = Vector2i(150, 295)
-render_target_update_mode = 4
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="HeroGallery/NextHeroSlot/NextHeroViewportContainer/NextHeroDisplay" unique_id=313895059]
-environment = SubResource("Environment_currenthero")
-
-[node name="Camera3D" type="Camera3D" parent="HeroGallery/NextHeroSlot/NextHeroViewportContainer/NextHeroDisplay" unique_id=2100000006]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3236, 5)
-projection = 1
-size = 2.8922
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="HeroGallery/NextHeroSlot/NextHeroViewportContainer/NextHeroDisplay" unique_id=2100000007]
-transform = Transform3D(0.90630776, -0.27165377, 0.3237444, 0, 0.76604444, 0.6427876, -0.42261827, -0.58256334, 0.69427204, 0, 2, 3)
-light_energy = 1.2
-shadow_enabled = true
-
-[node name="CharacterMark" type="Node3D" parent="HeroGallery/NextHeroSlot/NextHeroViewportContainer/NextHeroDisplay" unique_id=2100000008]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25, 0, 0)
-
-[node name="egil" parent="HeroGallery/NextHeroSlot/NextHeroViewportContainer/NextHeroDisplay/CharacterMark" unique_id=1475983548 instance=ExtResource("6_egil")]
 
 [node name="PrevHeroSlot" type="Control" parent="HeroGallery" unique_id=1389422908]
 unique_name_in_owner = true
-anchors_preset = 0
+layout_mode = 0
 offset_right = 150.0
 offset_bottom = 295.0
 mouse_filter = 0
 mouse_default_cursor_shape = 2
 
-[node name="PrevHeroViewportContainer" type="SubViewportContainer" parent="HeroGallery/PrevHeroSlot" unique_id=1772838611]
+[node name="NextHeroSlot" type="Control" parent="HeroGallery" unique_id=146884634]
 unique_name_in_owner = true
 layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-stretch = true
-
-[node name="PrevHeroDisplay" type="SubViewport" parent="HeroGallery/PrevHeroSlot/PrevHeroViewportContainer" unique_id=2100000009]
-unique_name_in_owner = true
-own_world_3d = true
-transparent_bg = true
-handle_input_locally = false
-msaa_3d = 1
-size = Vector2i(150, 295)
-render_target_update_mode = 4
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="HeroGallery/PrevHeroSlot/PrevHeroViewportContainer/PrevHeroDisplay" unique_id=1345218569]
-environment = SubResource("Environment_currenthero")
-
-[node name="Camera3D" type="Camera3D" parent="HeroGallery/PrevHeroSlot/PrevHeroViewportContainer/PrevHeroDisplay" unique_id=2100000010]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3236, 5)
-projection = 1
-size = 2.8922
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="HeroGallery/PrevHeroSlot/PrevHeroViewportContainer/PrevHeroDisplay" unique_id=2100000011]
-transform = Transform3D(0.90630776, -0.27165377, 0.3237444, 0, 0.76604444, 0.6427876, -0.42261827, -0.58256334, 0.69427204, 0, 2, 3)
-light_energy = 1.2
-shadow_enabled = true
-
-[node name="CharacterMark" type="Node3D" parent="HeroGallery/PrevHeroSlot/PrevHeroViewportContainer/PrevHeroDisplay" unique_id=2100000012]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 0, 0)
-
-[node name="ragnar" parent="HeroGallery/PrevHeroSlot/PrevHeroViewportContainer/PrevHeroDisplay/CharacterMark" unique_id=747991854 instance=ExtResource("7_ragnar")]
+offset_left = 490.0
+offset_right = 640.0
+offset_bottom = 295.0
+mouse_filter = 0
+mouse_default_cursor_shape = 2
 
 [node name="PrevArrow" type="Button" parent="HeroGallery" unique_id=1870447095]
 unique_name_in_owner = true
@@ -345,7 +267,6 @@ theme_override_styles/hover = SubResource("StyleBoxEmpty_arrow")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_arrow")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_arrow")
 text = "›"
-
 [node name="HeroIdentity" type="Control" parent="." unique_id=514251905]
 unique_name_in_owner = true
 anchors_preset = 0

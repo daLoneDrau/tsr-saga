@@ -7,13 +7,14 @@
 # prototypes without pressing Play.
 #
 # Layout is fixed and lives entirely in hero_select.tscn — this script
-# does not compute layout. What it owns is: the prototype color toggle
+# does not compute 2D layout. What it owns is: the prototype color toggle
 # (see _apply_prototype()), the roster/palette state (_roll_palette(),
-# rolled once for all six heroes), and now the circular gallery browsing
-# itself — PrevArrow/NextArrow rotate the roster, wrapping at both ends,
-# reloading each of the three slots' hero model + materials + the name
-# label on every step. Transitions (spec 1.17) and SELECT HERO/BACK are
-# still unwired — clicking them does nothing yet.
+# rolled once for all six heroes), and the circular gallery — including
+# the spec 1.17 transition, which now animates real position/scale in a
+# single shared 3D world (GalleryStage) rather than three independent
+# fixed viewports. See _play_transition()'s doc comment for why that
+# architectural change was necessary. SELECT HERO/BACK are still
+# unwired — clicking them does nothing yet.
 #
 # Prototype color schemes (see _apply_prototype()):
 #   - A: blue background, single flat gold tint (#c5a35a) on the frame/
@@ -135,9 +136,7 @@ const STUBBLE_BY_HAIR: Dictionary = {
 @onready var _prev_arrow: Button = %PrevArrow
 @onready var _next_arrow: Button = %NextArrow
 @onready var _back_button: Button = %BackButton
-@onready var _current_hero_display: SubViewport = %CurrentHeroDisplay
-@onready var _next_hero_display: SubViewport = %NextHeroDisplay
-@onready var _prev_hero_display: SubViewport = %PrevHeroDisplay
+@onready var _gallery_stage: Node3D = %GalleryStage
 @onready var _next_hero_slot: Control = %NextHeroSlot
 @onready var _prev_hero_slot: Control = %PrevHeroSlot
 
@@ -150,6 +149,48 @@ var _hero_stubble_paths: Array[String] = []
 # Index into ROSTER_KIND_IDS of the currently-focused (center) hero.
 # 0 = Beowulf, matching spec 1.9 (screen opens on the first roster entry).
 var _focused_idx: int = 0
+
+# --- Gallery stage (spec 1.17) ----------------------------------------------
+# Single shared 3D world/camera spanning the whole 640px gallery, replacing
+# the earlier three-separate-viewports architecture. That version couldn't
+# satisfy 1.17 honestly: three independent fixed viewports have no way for
+# a hero to literally travel between them, only to fake it with an in-place
+# pulse. Here, every visible hero is a sibling Node3D under GalleryStage,
+# and "moving to center" / "moving outward" are real position:x tweens in
+# one shared world, with a real Node3D.scale tween for the size change.
+#
+# Camera3D reuses exactly the same size/target_y this project already
+# established for the focused framing (Camera3D.size = 1.9667, target_y =
+# 0.9) — Godot's default KEEP_HEIGHT aspect means widening the viewport to
+# 640px just reveals more horizontal world-space at the same 150 px/unit
+# rate, so no new camera math was needed, just a wider viewport.
+#
+# Ground line is now automatic rather than computed per-role: each hero
+# model's own origin sits at its feet (verified directly against the .glb
+# bounds — Y=0 to Y=1.8, feet at 0), and each holder is scaled around that
+# same origin, so the feet stay pinned to world Y=0 regardless of scale.
+const STAGE_PX_PER_UNIT: float = 150.0
+const STAGE_ZONE_WORLD_WIDTH: float = 1.0  # 150px zone / 150px-per-unit
+const STAGE_ANCHOR_PREV: float = -245.0 / STAGE_PX_PER_UNIT
+const STAGE_ANCHOR_CURRENT: float = 0.0
+const STAGE_ANCHOR_NEXT: float = 245.0 / STAGE_PX_PER_UNIT
+const STAGE_ANCHOR_FAR_PREV: float = STAGE_ANCHOR_PREV - STAGE_ZONE_WORLD_WIDTH
+const STAGE_ANCHOR_FAR_NEXT: float = STAGE_ANCHOR_NEXT + STAGE_ZONE_WORLD_WIDTH
+const STAGE_SCALE_FOCUSED: float = 1.0
+const STAGE_SCALE_ADJACENT: float = 0.68
+
+const TRANSITION_SECONDS: float = 0.2
+
+var _is_transitioning: bool = false
+
+# The three hero "holders" currently on stage — plain Node3D wrappers, each
+# with one hero model instanced as a child (same convention the old
+# CharacterMark nodes used). Reassigned at the end of each transition
+# rather than reloaded, since the tween moves the actual surviving
+# instances into their new roles' positions/scales directly.
+var _prev_node: Node3D = null
+var _current_node: Node3D = null
+var _next_node: Node3D = null
 
 # Captured once in _ready(), before any override is applied — these ARE
 # the StyleBoxFlat resources authored in the .tscn (Prototype A's solid
@@ -185,7 +226,7 @@ func _ready() -> void:
 	_wire_input()
 
 	_roll_palette()
-	_refresh_gallery()
+	_populate_stage()
 
 	_apply_prototype()
 	# TitleGroup's final auto-sized rect may not be settled the instant
@@ -275,67 +316,140 @@ func _roll_palette() -> void:
 
 
 ## Rotates the focused hero by one step, wrapping in both directions
-## (circular roster per spec 1.8), then reloads all three slots.
+## (circular roster per spec 1.8). Ignored while a transition is already
+## in flight.
 func _navigate(direction: int) -> void:
+	if _is_transitioning:
+		return
 	_focused_idx = wrapi(_focused_idx + direction, 0, ROSTER_KIND_IDS.size())
-	_refresh_gallery()
+	_play_transition(direction)
 
 
-## Loads the correct hero model into each of the three slots for the
-## current _focused_idx, then updates the name label to match. Called on
-## every navigate() as well as once from _ready() — at _focused_idx == 0
-## this reproduces the same Beowulf/Egil/Ragnar arrangement the .tscn
-## originally instanced statically, just through the same dynamic path
-## used for every other position instead of a separate one-off case.
-func _refresh_gallery() -> void:
+## Initial population only — builds the three starting holders at their
+## canonical rest anchors/scales for _focused_idx. Called once from
+## _ready(); after that, _play_transition() owns updating the stage.
+func _populate_stage() -> void:
+	for n in [_prev_node, _current_node, _next_node]:
+		if n != null:
+			n.queue_free()
+
 	var prev_idx: int = wrapi(_focused_idx - 1, 0, ROSTER_KIND_IDS.size())
 	var next_idx: int = wrapi(_focused_idx + 1, 0, ROSTER_KIND_IDS.size())
 
-	_load_hero_into_slot(_current_hero_display.get_node("CharacterMark"), ROSTER_KIND_IDS[_focused_idx])
-	_load_hero_into_slot(_next_hero_display.get_node("CharacterMark"), ROSTER_KIND_IDS[next_idx])
-	_load_hero_into_slot(_prev_hero_display.get_node("CharacterMark"), ROSTER_KIND_IDS[prev_idx])
+	_prev_node = _spawn_hero_on_stage(ROSTER_KIND_IDS[prev_idx], STAGE_ANCHOR_PREV, STAGE_SCALE_ADJACENT)
+	_current_node = _spawn_hero_on_stage(ROSTER_KIND_IDS[_focused_idx], STAGE_ANCHOR_CURRENT, STAGE_SCALE_FOCUSED)
+	_next_node = _spawn_hero_on_stage(ROSTER_KIND_IDS[next_idx], STAGE_ANCHOR_NEXT, STAGE_SCALE_ADJACENT)
 
 	_update_hero_name_label()
 
 
-## Clears whatever's currently under character_mark and instances kind_id's
-## model in its place, then applies that hero's rolled palette. Old
-## children are explicitly remove_child()'d before queue_free() — relying
-## on queue_free() alone would leave the old instance in get_children()
-## until end-of-frame, which could make _apply_hero_materials()'s mesh
-## search (via _find_mesh) find the outgoing mesh instead of the new one.
-func _load_hero_into_slot(character_mark: Node3D, kind_id: int) -> void:
-	if character_mark == null:
-		return
-
-	for child in character_mark.get_children():
-		character_mark.remove_child(child)
-		child.queue_free()
+## Instances kind_id's model inside a fresh holder Node3D positioned at
+## world_x (world Y stays 0 — every hero model's own origin is already at
+## its feet, verified against the .glb bounds, so this alone keeps the
+## ground line consistent regardless of scale_factor) and scaled uniformly
+## by scale_factor. Applies that hero's rolled palette before returning.
+func _spawn_hero_on_stage(kind_id: int, world_x: float, scale_factor: float) -> Node3D:
+	var holder := Node3D.new()
+	holder.position = Vector3(world_x, 0.0, 0.0)
+	holder.scale = Vector3(scale_factor, scale_factor, scale_factor)
+	_gallery_stage.add_child(holder)
 
 	var hero_data: Dictionary = HeroKindTable.get_hero(kind_id)
 	var model_path: String = hero_data.get("model", "")
 	if model_path.is_empty():
 		push_error("HeroSelect: no model path for kind_id %d" % kind_id)
-		return
+		return holder
 
 	var packed: PackedScene = load(model_path) as PackedScene
 	if packed == null:
 		push_error("HeroSelect: could not load hero model at %s" % model_path)
-		return
+		return holder
 
 	var instance: Node3D = packed.instantiate() as Node3D
 	if instance == null:
 		push_error("HeroSelect: hero scene root is not Node3D at %s" % model_path)
-		return
+		return holder
 
-	# characterMark already carries the position/rotation the camera rig
-	# expects — the hero model sits at its local origin (same convention
-	# PortraitWidget uses).
 	instance.position = Vector3.ZERO
 	instance.rotation = Vector3.ZERO
-	character_mark.add_child(instance)
+	holder.add_child(instance)
 
-	_apply_hero_materials(character_mark, kind_id)
+	_apply_hero_materials(holder, kind_id)
+	return holder
+
+
+## Spec 1.17, implemented as literal continuous motion in the shared
+## GalleryStage world rather than the earlier in-place pulse approximation:
+##   - _current_node tweens to the PREV (or NEXT) anchor and shrinks to
+##     STAGE_SCALE_ADJACENT — "outgoing Hero moves outward and reduces."
+##   - _next_node (or _prev_node) tweens to the CURRENT anchor and grows to
+##     STAGE_SCALE_FOCUSED — "Incoming Hero moves to center and increases
+##     to focused scale."
+##   - The hero now two roster-steps away exits toward the far anchor on
+##     the same side and is freed once the tween completes.
+##   - A brand-new hero for the newly-revealed outer slot is spawned at the
+##     FAR anchor on the opposite side (already at adjacent scale — it
+##     isn't growing/shrinking, just entering) and tweens inward to its
+##     resting PREV/NEXT anchor.
+## All four run in one parallel tween — a single continuous motion rather
+## than the two-phase pulse-then-swap the earlier version used, and no
+## content reload is needed afterward since the surviving instances are
+## already sitting at their correct final position/scale; only the
+## script-level role references get reassigned.
+func _play_transition(direction: int) -> void:
+	_is_transitioning = true
+
+	var outgoing_node: Node3D
+	var far_anchor: float
+	var new_far_kind_id: int
+
+	# _focused_idx has already been advanced by _navigate() before this
+	# call, so ROSTER_KIND_IDS[_focused_idx ± 1] below already reflects the
+	# hero that belongs in the newly-revealed outer slot.
+	if direction > 0:
+		outgoing_node = _prev_node
+		far_anchor = STAGE_ANCHOR_FAR_NEXT
+		new_far_kind_id = ROSTER_KIND_IDS[wrapi(_focused_idx + 1, 0, ROSTER_KIND_IDS.size())]
+	else:
+		outgoing_node = _next_node
+		far_anchor = STAGE_ANCHOR_FAR_PREV
+		new_far_kind_id = ROSTER_KIND_IDS[wrapi(_focused_idx - 1, 0, ROSTER_KIND_IDS.size())]
+
+	var incoming_node: Node3D = _spawn_hero_on_stage(new_far_kind_id, far_anchor, STAGE_SCALE_ADJACENT)
+
+	var tween := create_tween()
+	tween.set_parallel(true)
+	tween.set_trans(Tween.TRANS_SINE)
+	tween.set_ease(Tween.EASE_OUT)
+
+	if direction > 0:
+		tween.tween_property(_current_node, "position:x", STAGE_ANCHOR_PREV, TRANSITION_SECONDS)
+		tween.tween_property(_current_node, "scale", Vector3.ONE * STAGE_SCALE_ADJACENT, TRANSITION_SECONDS)
+		tween.tween_property(_next_node, "position:x", STAGE_ANCHOR_CURRENT, TRANSITION_SECONDS)
+		tween.tween_property(_next_node, "scale", Vector3.ONE * STAGE_SCALE_FOCUSED, TRANSITION_SECONDS)
+		tween.tween_property(_prev_node, "position:x", STAGE_ANCHOR_FAR_PREV, TRANSITION_SECONDS)
+		tween.tween_property(incoming_node, "position:x", STAGE_ANCHOR_NEXT, TRANSITION_SECONDS)
+	else:
+		tween.tween_property(_current_node, "position:x", STAGE_ANCHOR_NEXT, TRANSITION_SECONDS)
+		tween.tween_property(_current_node, "scale", Vector3.ONE * STAGE_SCALE_ADJACENT, TRANSITION_SECONDS)
+		tween.tween_property(_prev_node, "position:x", STAGE_ANCHOR_CURRENT, TRANSITION_SECONDS)
+		tween.tween_property(_prev_node, "scale", Vector3.ONE * STAGE_SCALE_FOCUSED, TRANSITION_SECONDS)
+		tween.tween_property(_next_node, "position:x", STAGE_ANCHOR_FAR_NEXT, TRANSITION_SECONDS)
+		tween.tween_property(incoming_node, "position:x", STAGE_ANCHOR_PREV, TRANSITION_SECONDS)
+
+	tween.chain().tween_callback(func() -> void:
+		outgoing_node.queue_free()
+		if direction > 0:
+			_prev_node = _current_node
+			_current_node = _next_node
+			_next_node = incoming_node
+		else:
+			_next_node = _current_node
+			_current_node = _prev_node
+			_prev_node = incoming_node
+		_update_hero_name_label()
+		_is_transitioning = false
+	)
 
 
 ## Finds kind_id's rolled palette and applies it to the hero model already
@@ -452,7 +566,7 @@ func _apply_prototype() -> void:
 
 ## Rebuilds HeroNameLabel's BBCode text for the currently-focused hero,
 ## using whichever prototype's colors are active. Split out from
-## _apply_prototype() so _refresh_gallery() (called on every arrow click)
+## _apply_prototype() so _play_transition() (called on every arrow click)
 ## can update just the name without re-touching backgrounds, panels, and
 ## every other prototype-wide color on each navigation step.
 func _update_hero_name_label() -> void:
