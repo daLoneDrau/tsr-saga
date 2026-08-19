@@ -130,7 +130,7 @@ func _apply_prototype() -> void:
 
 	var primary := B_ORNAMENT_PRIMARY if is_b else A_ORNAMENT_COLOR
 	var secondary := B_ORNAMENT_SECONDARY if is_b else A_ORNAMENT_COLOR
-	var outline := 1.5 if is_b else 0.0
+	var outline := 0.5 if is_b else 0.0
 	for mat in [_ornament_material, _frame_material]:
 		if mat == null:
 			continue
