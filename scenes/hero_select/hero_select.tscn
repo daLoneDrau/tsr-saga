@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://w5yiy6syrsi7" path="res://scenes/hero_select/hero_select.gd" id="1_a6aad"]
 [ext_resource type="FontFile" uid="uid://qe33fb4bklxf" path="res://assets/fonts/NorseBold-2Kge.otf" id="2_2ftf5"]
+[ext_resource type="Texture2D" uid="uid://mwdcgntphfd" path="res://assets/modeling/iconography/parchment.png" id="2_ds5fi"]
 [ext_resource type="Texture2D" uid="uid://da4lq33uypix" path="res://assets/art/ui/wolf_left.png" id="3_2fj4q"]
 [ext_resource type="Texture2D" uid="uid://bgemnq4wx4rhi" path="res://assets/art/ui/frame.png" id="3_hye7y"]
 [ext_resource type="Texture2D" uid="uid://bilsx1k6uk1hh" path="res://assets/art/ui/wolf_right.png" id="4_00mn2"]
@@ -73,6 +74,15 @@ mouse_filter = 2
 color = Color(0.10980392, 0.2784314, 0.47058824, 1)
 
 [node name="PresentationFrame" type="TextureRect" parent="." unique_id=301573403]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_right = 640.0
+offset_bottom = 480.0
+mouse_filter = 2
+texture = ExtResource("2_ds5fi")
+
+[node name="PresentationFrame2" type="TextureRect" parent="." unique_id=164207348]
 unique_name_in_owner = true
 modulate = Color(0.77254903, 0.6392157, 0.3529412, 1)
 layout_mode = 0
