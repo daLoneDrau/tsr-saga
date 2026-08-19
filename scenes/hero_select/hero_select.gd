@@ -517,7 +517,6 @@ func do_action(action: GameAction) -> void:
 		"browse_next":
 			_navigate(1)
 		"any_key":
-			print("any_key")
 			match action.phase:
 				"END":
 					var key_entry: String = OS.get_keycode_string(SagaGameEngine_auto.last_keycode)

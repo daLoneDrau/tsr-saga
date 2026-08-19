@@ -309,6 +309,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 0, 0)
 
 [node name="PrevArrow" type="Button" parent="HeroGallery" unique_id=1870447095]
 unique_name_in_owner = true
+focus_mode = 0
 layout_mode = 0
 offset_left = 14.0
 offset_top = 171.0
@@ -327,6 +328,7 @@ text = "‹"
 
 [node name="NextArrow" type="Button" parent="HeroGallery" unique_id=1101620024]
 unique_name_in_owner = true
+focus_mode = 0
 layout_mode = 0
 offset_left = 594.0
 offset_top = 171.0
@@ -381,6 +383,7 @@ mouse_filter = 2
 
 [node name="SelectHeroButton" type="Button" parent="PrimaryAction" unique_id=1928531128]
 unique_name_in_owner = true
+focus_mode = 0
 layout_mode = 0
 offset_left = 237.5
 offset_top = 9.5
@@ -409,6 +412,7 @@ mouse_filter = 2
 
 [node name="BackButton" type="Button" parent="Peripheral" unique_id=1569493299]
 unique_name_in_owner = true
+focus_mode = 0
 layout_mode = 0
 offset_left = 16.0
 offset_top = -11.0
