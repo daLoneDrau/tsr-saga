@@ -7,10 +7,13 @@
 # prototypes without pressing Play.
 #
 # Layout is fixed and lives entirely in hero_select.tscn — this script
-# still does not compute layout. What it DOES own now is purely cosmetic:
-# which of two prototype color schemes is currently applied. Everything
-# else (roster/palette state, gallery browsing, transitions, SELECT HERO/
-# BACK actions) is still out of scope, unchanged from before.
+# does not compute layout. What it owns is: the prototype color toggle
+# (see _apply_prototype()), the roster/palette state (_roll_palette(),
+# rolled once for all six heroes), and now the circular gallery browsing
+# itself — PrevArrow/NextArrow rotate the roster, wrapping at both ends,
+# reloading each of the three slots' hero model + materials + the name
+# label on every step. Transitions (spec 1.17) and SELECT HERO/BACK are
+# still unwired — clicking them does nothing yet.
 #
 # Prototype color schemes (see _apply_prototype()):
 #   - A: blue background, single flat gold tint (#c5a35a) on the frame/
@@ -79,7 +82,7 @@ const ROSTER_KIND_IDS: Array[int] = [
 	HeroKindTable.SIEGFRIED,
 	HeroKindTable.STARKAD,
 	HeroKindTable.RAGNAR,
-	]
+]
 
 # Palette pools — ported from SetupScene.gd so both screens roll from the
 # same source of truth. If SetupScene's pools ever change, update both
@@ -90,18 +93,18 @@ const SKIN_MATERIAL_PATHS: Array[String] = [
 	"res://assets/art/materials/heroes/skin/light_tan.tres",
 	"res://assets/art/materials/heroes/skin/florid.tres",
 	"res://assets/art/materials/heroes/skin/olive.tres",
-	]
+]
 const HAIR_MATERIAL_PATHS: Array[String] = [
 	"res://assets/art/materials/heroes/hair/blonde.tres",
 	"res://assets/art/materials/heroes/hair/auburn.tres",
 	"res://assets/art/materials/heroes/hair/red.tres",
 	"res://assets/art/materials/heroes/hair/black.tres",
 	"res://assets/art/materials/heroes/hair/platinum.tres",
-	]
+]
 const HAIR_MATERIAL_PATHS_OLIVE: Array[String] = [
 	"res://assets/art/materials/heroes/hair/auburn.tres",
 	"res://assets/art/materials/heroes/hair/black.tres",
-	]
+]
 # Maps scalp hair material path -> matching stubble path for Starkad.
 const STUBBLE_BY_HAIR: Dictionary = {
 	"res://assets/art/materials/heroes/hair/blonde.tres": "res://assets/art/materials/heroes/stubble/stubble_blonde.tres",
@@ -109,7 +112,7 @@ const STUBBLE_BY_HAIR: Dictionary = {
 	"res://assets/art/materials/heroes/hair/red.tres": "res://assets/art/materials/heroes/stubble/stubble_red.tres",
 	"res://assets/art/materials/heroes/hair/black.tres": "res://assets/art/materials/heroes/stubble/stubble_black.tres",
 	"res://assets/art/materials/heroes/hair/platinum.tres": "res://assets/art/materials/heroes/stubble/stubble_platinum.tres",
-	}
+}
 
 
 # ---------------------------------------------------------------------------
@@ -142,6 +145,10 @@ var _hero_skin_paths: Array[String] = []
 var _hero_hair_paths: Array[String] = []
 var _hero_stubble_paths: Array[String] = []
 
+# Index into ROSTER_KIND_IDS of the currently-focused (center) hero.
+# 0 = Beowulf, matching spec 1.9 (screen opens on the first roster entry).
+var _focused_idx: int = 0
+
 # Captured once in _ready(), before any override is applied — these ARE
 # the StyleBoxFlat resources authored in the .tscn (Prototype A's solid
 # blue panel backgrounds), just grabbed by reference rather than
@@ -155,7 +162,7 @@ var _empty_panel_style: StyleBox
 
 
 # ---------------------------------------------------------------------------
-# Lifecycle
+#region Lifecycle
 # ---------------------------------------------------------------------------
 
 func _ready() -> void:
@@ -168,15 +175,52 @@ func _ready() -> void:
 	# in sync whenever that happens, not just when _apply_prototype() runs.
 	if not _title_group.resized.is_connected(_update_frame_cutout):
 		_title_group.resized.connect(_update_frame_cutout)
-
+		
+	# register actions for menu buttons and navigation
+	_register_actions()
+	
+	# connect UI button elements to trigger actions
+	_wire_input()
+	
 	_roll_palette()
-	_apply_gallery_materials()
+	_refresh_gallery()
 
 	_apply_prototype()
 	# TitleGroup's final auto-sized rect may not be settled the instant
 	# _ready() runs (container layout resolves within the same frame) —
 	# recompute once more after layout has actually flushed.
 	_update_frame_cutout.call_deferred()
+
+#endregion
+
+# ---------------------------------------------------------------------------
+#region Actions API
+# ---------------------------------------------------------------------------
+
+
+func _register_actions() -> void:
+	#Register keyboard shortcuts for menu actions
+
+	if OS.is_debug_build():
+		print("[HeroSelect] Registered %d actions" % action_map.size())
+
+
+## Connects the previous/next arrow buttons to browse actions, routed
+## through do_action() like every other input in this rebuild (matching
+## TitleScene's convention) rather than connecting straight to _navigate().
+func _wire_input() -> void:
+	# connect UI button clicks to trigger the same actions as keybooard shortcuts
+	if _prev_arrow:
+		_prev_arrow.pressed.connect(_on_arrow_button_input.bind("browse_prev"))
+	if _next_arrow:
+		_next_arrow.pressed.connect(_on_arrow_button_input.bind("browse_next"))
+	
+	
+func _on_arrow_button_input(action_name: String) -> void:
+	# trigger the action via do_action (same as keyboard shortcut)
+	do_action(GameAction.new(action_name, GameAction.PHASE_END))
+
+#endregion
 
 
 ## Rolls an independent skin/hair/stubble combo for every hero in the
@@ -205,14 +249,68 @@ func _roll_palette() -> void:
 		_hero_stubble_paths.append(stubble_path)
 
 
-## Applies each currently-instanced static hero's rolled palette to its
-## model. Only three slots exist right now (Beowulf/Egil/Ragnar, statically
-## instanced in the .tscn) — this doesn't yet handle swapping models on
-## browse, just recoloring what's already there.
-func _apply_gallery_materials() -> void:
-	_apply_hero_materials(_current_hero_display.get_node("CharacterMark"), HeroKindTable.BEOWULF)
-	_apply_hero_materials(_next_hero_display.get_node("CharacterMark"), HeroKindTable.EGIL)
-	_apply_hero_materials(_prev_hero_display.get_node("CharacterMark"), HeroKindTable.RAGNAR)
+## Rotates the focused hero by one step, wrapping in both directions
+## (circular roster per spec 1.8), then reloads all three slots.
+func _navigate(direction: int) -> void:
+	_focused_idx = wrapi(_focused_idx + direction, 0, ROSTER_KIND_IDS.size())
+	_refresh_gallery()
+
+
+## Loads the correct hero model into each of the three slots for the
+## current _focused_idx, then updates the name label to match. Called on
+## every navigate() as well as once from _ready() — at _focused_idx == 0
+## this reproduces the same Beowulf/Egil/Ragnar arrangement the .tscn
+## originally instanced statically, just through the same dynamic path
+## used for every other position instead of a separate one-off case.
+func _refresh_gallery() -> void:
+	var prev_idx: int = wrapi(_focused_idx - 1, 0, ROSTER_KIND_IDS.size())
+	var next_idx: int = wrapi(_focused_idx + 1, 0, ROSTER_KIND_IDS.size())
+
+	_load_hero_into_slot(_current_hero_display.get_node("CharacterMark"), ROSTER_KIND_IDS[_focused_idx])
+	_load_hero_into_slot(_next_hero_display.get_node("CharacterMark"), ROSTER_KIND_IDS[next_idx])
+	_load_hero_into_slot(_prev_hero_display.get_node("CharacterMark"), ROSTER_KIND_IDS[prev_idx])
+
+	_update_hero_name_label()
+
+
+## Clears whatever's currently under character_mark and instances kind_id's
+## model in its place, then applies that hero's rolled palette. Old
+## children are explicitly remove_child()'d before queue_free() — relying
+## on queue_free() alone would leave the old instance in get_children()
+## until end-of-frame, which could make _apply_hero_materials()'s mesh
+## search (via _find_mesh) find the outgoing mesh instead of the new one.
+func _load_hero_into_slot(character_mark: Node3D, kind_id: int) -> void:
+	if character_mark == null:
+		return
+
+	for child in character_mark.get_children():
+		character_mark.remove_child(child)
+		child.queue_free()
+
+	var hero_data: Dictionary = HeroKindTable.get_hero(kind_id)
+	var model_path: String = hero_data.get("model", "")
+	if model_path.is_empty():
+		push_error("HeroSelect: no model path for kind_id %d" % kind_id)
+		return
+
+	var packed: PackedScene = load(model_path) as PackedScene
+	if packed == null:
+		push_error("HeroSelect: could not load hero model at %s" % model_path)
+		return
+
+	var instance: Node3D = packed.instantiate() as Node3D
+	if instance == null:
+		push_error("HeroSelect: hero scene root is not Node3D at %s" % model_path)
+		return
+
+	# characterMark already carries the position/rotation the camera rig
+	# expects — the hero model sits at its local origin (same convention
+	# PortraitWidget uses).
+	instance.position = Vector3.ZERO
+	instance.rotation = Vector3.ZERO
+	character_mark.add_child(instance)
+
+	_apply_hero_materials(character_mark, kind_id)
 
 
 ## Finds kind_id's rolled palette and applies it to the hero model already
@@ -317,13 +415,7 @@ func _apply_prototype() -> void:
 
 	_title_label.add_theme_color_override("font_color", B_TITLE_COLOR if is_b else A_TITLE_COLOR)
 
-	var name_color := B_NAME_COLOR if is_b else A_TEXT_COLOR
-	var name_ornament_color := B_NAME_ORNAMENT_COLOR if is_b else A_TEXT_COLOR
-	_hero_name_label.text = "[color=#%s]%s[/color] [color=#%s]%s[/color] [color=#%s]%s[/color]" % [
-		name_ornament_color.to_html(false), HERO_NAME_ORNAMENT,
-		name_color.to_html(false), _current_hero_name(),
-		name_ornament_color.to_html(false), HERO_NAME_ORNAMENT,
-		]
+	_update_hero_name_label()
 
 	var arrow_back_color := B_ORNAMENT_PRIMARY if is_b else A_TEXT_COLOR
 	_prev_arrow.add_theme_color_override("font_color", arrow_back_color)
@@ -331,6 +423,22 @@ func _apply_prototype() -> void:
 	_back_button.add_theme_color_override("font_color", arrow_back_color)
 
 	_update_frame_cutout()
+
+
+## Rebuilds HeroNameLabel's BBCode text for the currently-focused hero,
+## using whichever prototype's colors are active. Split out from
+## _apply_prototype() so _refresh_gallery() (called on every arrow click)
+## can update just the name without re-touching backgrounds, panels, and
+## every other prototype-wide color on each navigation step.
+func _update_hero_name_label() -> void:
+	var is_b := prototype == PrototypeVariant.B
+	var name_color := B_NAME_COLOR if is_b else A_TEXT_COLOR
+	var name_ornament_color := B_NAME_ORNAMENT_COLOR if is_b else A_TEXT_COLOR
+	_hero_name_label.text = "[color=#%s]%s[/color] [color=#%s]%s[/color] [color=#%s]%s[/color]" % [
+		name_ornament_color.to_html(false), HERO_NAME_ORNAMENT,
+		name_color.to_html(false), _current_hero_name(),
+		name_ornament_color.to_html(false), HERO_NAME_ORNAMENT,
+	]
 
 
 ## Computes TitleGroup's current global rect in PresentationFrame's own UV
@@ -362,10 +470,11 @@ func _update_frame_cutout() -> void:
 	_frame_material.set_shader_parameter("cutout_uv_bottom", uv_bottom)
 
 
-## Hardcoded to match the still-static CurrentHeroSlot (Beowulf) — this
-## becomes a real lookup once roster/browsing state comes back into scope.
+## Looks up the currently-focused hero's display name from HeroKindTable —
+## this used to be hardcoded to "BEOWULF" back when the gallery was still
+## static; now it tracks _focused_idx like everything else in the gallery.
 func _current_hero_name() -> String:
-	return "BEOWULF"
+	return String(HeroKindTable.get_hero(ROSTER_KIND_IDS[_focused_idx])["name"]).to_upper()
 
 
 # ---------------------------------------------------------------------------
@@ -373,12 +482,15 @@ func _current_hero_name() -> String:
 # ---------------------------------------------------------------------------
 
 ## REQUIRED — Scene marks this @abstract, so a concrete Scene subclass will
-## not even parse/load without an override. No actions are registered yet
-## at this stage of the rebuild (nothing calls register_action() here), so
-## there's nothing to route to — this stays a no-op stub until gallery
-## browsing / SELECT HERO / BACK come back into scope.
-func do_action(_action: GameAction) -> void:
-	pass
+## not even parse/load without an override. Routes the two arrow-button
+## actions registered in _wire_input(); SELECT HERO/BACK still have no
+## action wired to them yet.
+func do_action(action: GameAction) -> void:
+	match action.name:
+		"browse_prev":
+			_navigate(-1)
+		"browse_next":
+			_navigate(1)
 
 
 ## Optional hook — Scene's base implementation is already a no-op ("pass"),
