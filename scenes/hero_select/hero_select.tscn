@@ -94,7 +94,7 @@ offset_bottom = 480.0
 mouse_filter = 2
 texture = ExtResource("2_ds5fi")
 
-[node name="PresentationFrame2" type="TextureRect" parent="." unique_id=164207348]
+[node name="PresentationFrame" type="TextureRect" parent="." unique_id=164207348]
 unique_name_in_owner = true
 modulate = Color(0.77254903, 0.6392157, 0.3529412, 1)
 layout_mode = 0
