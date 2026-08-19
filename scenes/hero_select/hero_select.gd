@@ -171,13 +171,23 @@ var _focused_idx: int = 0
 # same origin, so the feet stay pinned to world Y=0 regardless of scale.
 const STAGE_PX_PER_UNIT: float = 150.0
 const STAGE_ZONE_WORLD_WIDTH: float = 1.0  # 150px zone / 150px-per-unit
-const STAGE_ANCHOR_PREV: float = -245.0 / STAGE_PX_PER_UNIT
+# Distance from center for the resting PREV/NEXT anchors, in screen px.
+# Originally 245 (the old PrevHeroSlot/NextHeroSlot zone centers), reduced
+# to 220 — at STAGE_SCALE_ADJACENT (0.68), a hero's silhouette is ~88px
+# wide, and at 245px the resting position overlapped PrevArrow/NextArrow's
+# hit targets (x:14-46 / x:594-626) by about 15px. 220px leaves roughly
+# 10px of clearance instead. Ground line is unaffected either way — see
+# the block comment above on why Y stays pinned to 0 regardless of X.
+const STAGE_ANCHOR_DISTANCE_PX: float = 220.0
+const STAGE_ANCHOR_PREV: float = -STAGE_ANCHOR_DISTANCE_PX / STAGE_PX_PER_UNIT
 const STAGE_ANCHOR_CURRENT: float = 0.0
-const STAGE_ANCHOR_NEXT: float = 245.0 / STAGE_PX_PER_UNIT
+const STAGE_ANCHOR_NEXT: float = STAGE_ANCHOR_DISTANCE_PX / STAGE_PX_PER_UNIT
 const STAGE_ANCHOR_FAR_PREV: float = STAGE_ANCHOR_PREV - STAGE_ZONE_WORLD_WIDTH
 const STAGE_ANCHOR_FAR_NEXT: float = STAGE_ANCHOR_NEXT + STAGE_ZONE_WORLD_WIDTH
 const STAGE_SCALE_FOCUSED: float = 1.0
 const STAGE_SCALE_ADJACENT: float = 0.68
+
+const COUNTER_POSE_ANIM_NAME: String = "counter_pose"
 
 const TRANSITION_SECONDS: float = 0.2
 
@@ -375,7 +385,44 @@ func _spawn_hero_on_stage(kind_id: int, world_x: float, scale_factor: float) -> 
 	holder.add_child(instance)
 
 	_apply_hero_materials(holder, kind_id)
+	_play_counter_pose(holder)
 	return holder
+
+
+## Every hero model has a "counter_pose" animation (verified directly
+## against all six .glb files, not assumed — it's the bare clip, distinct
+## from the counter_pose.001-.015 variants also present). Plays it looping
+## on whichever AnimationPlayer is found under holder. loop_mode is forced
+## to LOOP_LINEAR rather than assumed, since Godot's glTF import doesn't
+## reliably preserve looping from the source file by default — same fix
+## PortraitWidget already needed for its own idle animation.
+func _play_counter_pose(holder: Node3D) -> void:
+	var anim_player: AnimationPlayer = _find_animation_player(holder)
+	if anim_player == null:
+		push_error("HeroSelect: no AnimationPlayer found under %s" % holder.name)
+		return
+
+	if not anim_player.has_animation(COUNTER_POSE_ANIM_NAME):
+		push_error("HeroSelect: %s has no '%s' animation" % [holder.name, COUNTER_POSE_ANIM_NAME])
+		return
+
+	var anim: Animation = anim_player.get_animation(COUNTER_POSE_ANIM_NAME)
+	anim.loop_mode = Animation.LOOP_LINEAR
+	anim_player.play(COUNTER_POSE_ANIM_NAME)
+
+
+## Recursively finds the first AnimationPlayer in the subtree — same
+## search pattern as _find_mesh().
+func _find_animation_player(node: Node) -> AnimationPlayer:
+	if node == null:
+		return null
+	if node is AnimationPlayer:
+		return node as AnimationPlayer
+	for child in node.get_children():
+		var result: AnimationPlayer = _find_animation_player(child)
+		if result != null:
+			return result
+	return null
 
 
 ## Spec 1.17, implemented as literal continuous motion in the shared
