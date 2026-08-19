@@ -62,6 +62,55 @@ const B_NAME_ORNAMENT_COLOR := Color("59442d")
 
 const HERO_NAME_ORNAMENT := "—◇—"
 
+# ---------------------------------------------------------------------------
+# Roster & palette — canonical order per HeroKindTable's declared order
+# (matches the earlier decision this whole rebuild has used throughout).
+# Rolled once per _ready() for the entire six-hero roster, not just the
+# three currently displayed — matches spec 1.10/1.11 (generate cosmetic
+# appearances for the whole roster up front, not per-hero-on-demand) and
+# keeps this scene ready for when browsing brings the other three heroes
+# into view without needing to re-roll anything at that point.
+# ---------------------------------------------------------------------------
+
+const ROSTER_KIND_IDS: Array[int] = [
+	HeroKindTable.BEOWULF,
+	HeroKindTable.EGIL,
+	HeroKindTable.BRUNHILD,
+	HeroKindTable.SIEGFRIED,
+	HeroKindTable.STARKAD,
+	HeroKindTable.RAGNAR,
+	]
+
+# Palette pools — ported from SetupScene.gd so both screens roll from the
+# same source of truth. If SetupScene's pools ever change, update both
+# until this prototype graduates into the real flow and one of them can
+# just reference the other.
+const SKIN_MATERIAL_PATHS: Array[String] = [
+	"res://assets/art/materials/heroes/skin/fair_rosy.tres",
+	"res://assets/art/materials/heroes/skin/light_tan.tres",
+	"res://assets/art/materials/heroes/skin/florid.tres",
+	"res://assets/art/materials/heroes/skin/olive.tres",
+	]
+const HAIR_MATERIAL_PATHS: Array[String] = [
+	"res://assets/art/materials/heroes/hair/blonde.tres",
+	"res://assets/art/materials/heroes/hair/auburn.tres",
+	"res://assets/art/materials/heroes/hair/red.tres",
+	"res://assets/art/materials/heroes/hair/black.tres",
+	"res://assets/art/materials/heroes/hair/platinum.tres",
+	]
+const HAIR_MATERIAL_PATHS_OLIVE: Array[String] = [
+	"res://assets/art/materials/heroes/hair/auburn.tres",
+	"res://assets/art/materials/heroes/hair/black.tres",
+	]
+# Maps scalp hair material path -> matching stubble path for Starkad.
+const STUBBLE_BY_HAIR: Dictionary = {
+	"res://assets/art/materials/heroes/hair/blonde.tres": "res://assets/art/materials/heroes/stubble/stubble_blonde.tres",
+	"res://assets/art/materials/heroes/hair/auburn.tres": "res://assets/art/materials/heroes/stubble/stubble_auburn.tres",
+	"res://assets/art/materials/heroes/hair/red.tres": "res://assets/art/materials/heroes/stubble/stubble_red.tres",
+	"res://assets/art/materials/heroes/hair/black.tres": "res://assets/art/materials/heroes/stubble/stubble_black.tres",
+	"res://assets/art/materials/heroes/hair/platinum.tres": "res://assets/art/materials/heroes/stubble/stubble_platinum.tres",
+	}
+
 
 # ---------------------------------------------------------------------------
 # Node references
@@ -83,6 +132,15 @@ const HERO_NAME_ORNAMENT := "—◇—"
 @onready var _prev_arrow: Button = %PrevArrow
 @onready var _next_arrow: Button = %NextArrow
 @onready var _back_button: Button = %BackButton
+@onready var _current_hero_display: SubViewport = %CurrentHeroDisplay
+@onready var _next_hero_display: SubViewport = %NextHeroDisplay
+@onready var _prev_hero_display: SubViewport = %PrevHeroDisplay
+
+# Per-roster-index rolled palette — parallel arrays indexed like
+# ROSTER_KIND_IDS, populated once by _roll_palette().
+var _hero_skin_paths: Array[String] = []
+var _hero_hair_paths: Array[String] = []
+var _hero_stubble_paths: Array[String] = []
 
 # Captured once in _ready(), before any override is applied — these ARE
 # the StyleBoxFlat resources authored in the .tscn (Prototype A's solid
@@ -111,11 +169,115 @@ func _ready() -> void:
 	if not _title_group.resized.is_connected(_update_frame_cutout):
 		_title_group.resized.connect(_update_frame_cutout)
 
+	_roll_palette()
+	_apply_gallery_materials()
+
 	_apply_prototype()
 	# TitleGroup's final auto-sized rect may not be settled the instant
 	# _ready() runs (container layout resolves within the same frame) —
 	# recompute once more after layout has actually flushed.
 	_update_frame_cutout.call_deferred()
+
+
+## Rolls an independent skin/hair/stubble combo for every hero in the
+## roster, once per screen load (spec 1.10/1.11) — ported from
+## SetupScene._roll_palette(). Highlighting a different hero afterward only
+## looks up its already-rolled combo once browsing exists; nothing here
+## re-rolls after this point.
+func _roll_palette() -> void:
+	_hero_skin_paths = []
+	_hero_hair_paths = []
+	_hero_stubble_paths = []
+
+	for i in ROSTER_KIND_IDS.size():
+		var skin_path: String = SKIN_MATERIAL_PATHS[randi_range(0, SKIN_MATERIAL_PATHS.size() - 1)]
+
+		var hair_pool: Array[String] = HAIR_MATERIAL_PATHS_OLIVE if skin_path == SKIN_MATERIAL_PATHS[3] else HAIR_MATERIAL_PATHS
+		var hair_path: String = hair_pool[randi_range(0, hair_pool.size() - 1)]
+
+		# Stubble only exists on Starkad's model — resolved for every hero
+		# from the same hair roll for storage purposes, but _apply_hero_
+		# materials() below only ever uses it when kind_id == STARKAD.
+		var stubble_path: String = STUBBLE_BY_HAIR.get(hair_path, "")
+
+		_hero_skin_paths.append(skin_path)
+		_hero_hair_paths.append(hair_path)
+		_hero_stubble_paths.append(stubble_path)
+
+
+## Applies each currently-instanced static hero's rolled palette to its
+## model. Only three slots exist right now (Beowulf/Egil/Ragnar, statically
+## instanced in the .tscn) — this doesn't yet handle swapping models on
+## browse, just recoloring what's already there.
+func _apply_gallery_materials() -> void:
+	_apply_hero_materials(_current_hero_display.get_node("CharacterMark"), HeroKindTable.BEOWULF)
+	_apply_hero_materials(_next_hero_display.get_node("CharacterMark"), HeroKindTable.EGIL)
+	_apply_hero_materials(_prev_hero_display.get_node("CharacterMark"), HeroKindTable.RAGNAR)
+
+
+## Finds kind_id's rolled palette and applies it to the hero model already
+## sitting under character_mark, via surface material overrides — same
+## surface convention PortraitWidget uses (0 = skin, 1 = hair, last =
+## stubble). Stubble is only ever applied for Starkad: on every other
+## hero's 2-surface mesh, "last surface index" IS the hair surface, so
+## applying it unconditionally would silently overwrite hair with stubble
+## instead of adding it — this mirrors the gating SetupScene's own call
+## site already does before reaching PortraitWidget.
+func _apply_hero_materials(character_mark: Node3D, kind_id: int) -> void:
+	if character_mark == null:
+		return
+
+	var roster_idx: int = ROSTER_KIND_IDS.find(kind_id)
+	if roster_idx == -1:
+		push_error("HeroSelect: kind_id %d not found in ROSTER_KIND_IDS" % kind_id)
+		return
+
+	var mesh_node: MeshInstance3D = _find_mesh(character_mark)
+	if mesh_node == null:
+		push_error("HeroSelect: no MeshInstance3D found under %s" % character_mark.name)
+		return
+
+	var skin_mat: StandardMaterial3D = load(_hero_skin_paths[roster_idx]) as StandardMaterial3D
+	if skin_mat == null:
+		push_error("HeroSelect: could not load skin material at %s" % _hero_skin_paths[roster_idx])
+	else:
+		mesh_node.set_surface_override_material(0, skin_mat)
+
+	var hair_mat: StandardMaterial3D = load(_hero_hair_paths[roster_idx]) as StandardMaterial3D
+	if hair_mat == null:
+		push_error("HeroSelect: could not load hair material at %s" % _hero_hair_paths[roster_idx])
+	else:
+		mesh_node.set_surface_override_material(1, hair_mat)
+
+	if kind_id != HeroKindTable.STARKAD:
+		return
+
+	var stubble_path: String = _hero_stubble_paths[roster_idx]
+	if stubble_path.is_empty():
+		return
+	var stubble_mat: StandardMaterial3D = load(stubble_path) as StandardMaterial3D
+	if stubble_mat == null:
+		push_error("HeroSelect: could not load stubble material at %s" % stubble_path)
+		return
+	var mesh: Mesh = mesh_node.mesh
+	if mesh == null or mesh.get_surface_count() == 0:
+		return
+	mesh_node.set_surface_override_material(mesh.get_surface_count() - 1, stubble_mat)
+
+
+## Recursively find the first MeshInstance3D in the subtree — same helper
+## PortraitWidget uses, duplicated here since PortraitWidget is scoped to
+## its own scene rather than a shared utility.
+func _find_mesh(node: Node) -> MeshInstance3D:
+	if node == null:
+		return null
+	if node is MeshInstance3D:
+		return node as MeshInstance3D
+	for child in node.get_children():
+		var result: MeshInstance3D = _find_mesh(child)
+		if result != null:
+			return result
+	return null
 
 
 ## Applies the current `prototype` value's full color scheme. Safe to call
