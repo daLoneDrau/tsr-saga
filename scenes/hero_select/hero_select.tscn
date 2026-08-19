@@ -14,33 +14,29 @@
 [ext_resource type="Texture2D" uid="uid://ct5psr5fheqjs" path="res://assets/art/ui/medieval_button_32.png" id="11_medbtn"]
 [ext_resource type="Shader" uid="uid://bsdl5ou3obw3d" path="res://shaders/silhouette_outline.gdshader" id="12_outline"]
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_frame"]
+shader = ExtResource("12_outline")
+shader_parameter/primary_color = Color(0.34901962, 0.26666668, 0.1764706, 1)
+shader_parameter/secondary_color = Color(0.12941177, 0.11372549, 0.09411765, 1)
+shader_parameter/outline_px = 0.50000002375
+shader_parameter/cutout_uv_left = 0.325
+shader_parameter/cutout_uv_right = 0.675
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_arrow"]
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ornament"]
 shader = ExtResource("12_outline")
 shader_parameter/primary_color = Color(0.34901962, 0.26666668, 0.1764706, 1)
 shader_parameter/secondary_color = Color(0.12941177, 0.11372549, 0.09411765, 1)
-shader_parameter/outline_px = 0.6430000305425
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ornamentbacking"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-bg_color = Color(0.10980392, 0.2784314, 0.47058824, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_titlebacking"]
-content_margin_left = 8.0
-content_margin_top = 4.0
-content_margin_right = 8.0
-content_margin_bottom = 4.0
-bg_color = Color(0.10980392, 0.2784314, 0.47058824, 1)
+shader_parameter/outline_px = 1.5
+shader_parameter/cutout_uv_left = 0.0
+shader_parameter/cutout_uv_right = 0.0
 
 [sub_resource type="Environment" id="Environment_currenthero"]
 background_mode = 3
 ambient_light_source = 2
 ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_energy = 0.6
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_arrow"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_selecthero_normal"]
 content_margin_left = 14.0
@@ -105,7 +101,7 @@ texture = ExtResource("2_ds5fi")
 
 [node name="PresentationFrame" type="TextureRect" parent="." unique_id=164207348]
 unique_name_in_owner = true
-material = SubResource("ShaderMaterial_ornament")
+material = SubResource("ShaderMaterial_frame")
 layout_mode = 0
 offset_right = 640.0
 offset_bottom = 480.0
@@ -128,7 +124,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 4
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ornamentbacking")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_arrow")
 
 [node name="TitleOrnamentLeft" type="TextureRect" parent="TitleGroup/OrnamentPanelLeft" unique_id=663169412]
 unique_name_in_owner = true
@@ -143,7 +139,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 4
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_titlebacking")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_arrow")
 
 [node name="TitleLabel" type="Label" parent="TitleGroup/TitleBackingPanel" unique_id=880931497]
 unique_name_in_owner = true
@@ -160,7 +156,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 4
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ornamentbacking")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_arrow")
 
 [node name="TitleOrnamentRight" type="TextureRect" parent="TitleGroup/OrnamentPanelRight" unique_id=401253494]
 unique_name_in_owner = true

@@ -76,11 +76,24 @@ const HERO_NAME_ORNAMENT := "—◇—"
 @onready var _ornament_panel_right: PanelContainer = %OrnamentPanelRight
 @onready var _title_ornament_left: TextureRect = %TitleOrnamentLeft
 @onready var _title_ornament_right: TextureRect = %TitleOrnamentRight
+@onready var _ornament_material: ShaderMaterial = _title_ornament_left.material
+@onready var _frame_material: ShaderMaterial = _presentation_frame.material
 @onready var _title_label: Label = %TitleLabel
 @onready var _hero_name_label: RichTextLabel = %HeroNameLabel
 @onready var _prev_arrow: Button = %PrevArrow
 @onready var _next_arrow: Button = %NextArrow
 @onready var _back_button: Button = %BackButton
+
+# Captured once in _ready(), before any override is applied — these ARE
+# the StyleBoxFlat resources authored in the .tscn (Prototype A's solid
+# blue panel backgrounds), just grabbed by reference rather than
+# duplicated here, so the tscn stays the source of truth for their exact
+# color/margins.
+var _ornament_panel_style_a: StyleBox
+var _title_panel_style_a: StyleBox
+# Reused from the arrows' existing empty stylebox rather than constructing
+# a new resource — Prototype B's "no panel background" state.
+var _empty_panel_style: StyleBox
 
 
 # ---------------------------------------------------------------------------
@@ -88,7 +101,21 @@ const HERO_NAME_ORNAMENT := "—◇—"
 # ---------------------------------------------------------------------------
 
 func _ready() -> void:
+	_ornament_panel_style_a = _ornament_panel_left.get_theme_stylebox("panel")
+	_title_panel_style_a = _title_backing_panel.get_theme_stylebox("panel")
+	_empty_panel_style = _prev_arrow.get_theme_stylebox("normal")
+
+	# TitleGroup's width/position can change (font swap, longer hero name,
+	# etc.) independently of the prototype toggle — keep the frame's cutout
+	# in sync whenever that happens, not just when _apply_prototype() runs.
+	if not _title_group.resized.is_connected(_update_frame_cutout):
+		_title_group.resized.connect(_update_frame_cutout)
+
 	_apply_prototype()
+	# TitleGroup's final auto-sized rect may not be settled the instant
+	# _ready() runs (container layout resolves within the same frame) —
+	# recompute once more after layout has actually flushed.
+	_update_frame_cutout.call_deferred()
 
 
 ## Applies the current `prototype` value's full color scheme. Safe to call
@@ -101,19 +128,30 @@ func _apply_prototype() -> void:
 	_background_blue.visible = not is_b
 	_background_parchment.visible = is_b
 
-	var ornament_material := _presentation_frame.material as ShaderMaterial
-	if ornament_material != null:
-		if is_b:
-			ornament_material.set_shader_parameter("primary_color", B_ORNAMENT_PRIMARY)
-			ornament_material.set_shader_parameter("secondary_color", B_ORNAMENT_SECONDARY)
-			ornament_material.set_shader_parameter("outline_px", 1.5)
-		else:
-			ornament_material.set_shader_parameter("primary_color", A_ORNAMENT_COLOR)
-			ornament_material.set_shader_parameter("secondary_color", A_ORNAMENT_COLOR)
-			ornament_material.set_shader_parameter("outline_px", 0.0)
-	# _title_ornament_left / _title_ornament_right share the same
-	# ShaderMaterial resource as _presentation_frame (assigned once in the
-	# .tscn), so updating it here updates all three at once.
+	var primary := B_ORNAMENT_PRIMARY if is_b else A_ORNAMENT_COLOR
+	var secondary := B_ORNAMENT_SECONDARY if is_b else A_ORNAMENT_COLOR
+	var outline := 1.5 if is_b else 0.0
+	for mat in [_ornament_material, _frame_material]:
+		if mat == null:
+			continue
+		mat.set_shader_parameter("primary_color", primary)
+		mat.set_shader_parameter("secondary_color", secondary)
+		mat.set_shader_parameter("outline_px", outline)
+	# _title_ornament_left / _title_ornament_right share _ornament_material,
+	# so updating it once updates both.
+
+	# Prototype A: TitleGroup's three panels keep their solid blue
+	# backgrounds, opaque enough on their own to cover the frame border
+	# beneath them — no cutout needed there, though it's applied anyway
+	# below since it's harmless when something opaque already sits on top.
+	# Prototype B: those same panels go fully transparent instead, so the
+	# frame border has to actually stop rendering under TitleGroup rather
+	# than being hidden by a rectangle — that's what the cutout is for.
+	var ornament_panel_style := _empty_panel_style if is_b else _ornament_panel_style_a
+	var title_panel_style := _empty_panel_style if is_b else _title_panel_style_a
+	_ornament_panel_left.add_theme_stylebox_override("panel", ornament_panel_style)
+	_ornament_panel_right.add_theme_stylebox_override("panel", ornament_panel_style)
+	_title_backing_panel.add_theme_stylebox_override("panel", title_panel_style)
 
 	_title_label.add_theme_color_override("font_color", B_TITLE_COLOR if is_b else A_TITLE_COLOR)
 
@@ -129,6 +167,30 @@ func _apply_prototype() -> void:
 	_prev_arrow.add_theme_color_override("font_color", arrow_back_color)
 	_next_arrow.add_theme_color_override("font_color", arrow_back_color)
 	_back_button.add_theme_color_override("font_color", arrow_back_color)
+
+	_update_frame_cutout()
+
+
+## Computes TitleGroup's current global rect in PresentationFrame's own UV
+## space (0.0-1.0 across its width) and feeds it to _frame_material's
+## cutout uniforms, so the frame's border doesn't render underneath
+## TitleGroup regardless of the title's current width. Runs independently
+## of the prototype toggle (via TitleGroup.resized) since the title's
+## width can change on its own — see _ready().
+func _update_frame_cutout() -> void:
+	if _frame_material == null:
+		return
+
+	var frame_rect := _presentation_frame.get_global_rect()
+	if frame_rect.size.x <= 0.0:
+		return
+
+	var title_rect := _title_group.get_global_rect()
+	var uv_left: float = clampf((title_rect.position.x - frame_rect.position.x) / frame_rect.size.x, 0.0, 1.0)
+	var uv_right: float = clampf((title_rect.position.x + title_rect.size.x - frame_rect.position.x) / frame_rect.size.x, 0.0, 1.0)
+
+	_frame_material.set_shader_parameter("cutout_uv_left", uv_left)
+	_frame_material.set_shader_parameter("cutout_uv_right", uv_right)
 
 
 ## Hardcoded to match the still-static CurrentHeroSlot (Beowulf) — this
