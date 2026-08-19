@@ -226,7 +226,8 @@ anchors_preset = 0
 offset_left = 490.0
 offset_right = 640.0
 offset_bottom = 295.0
-mouse_filter = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 2
 
 [node name="NextHeroViewportContainer" type="SubViewportContainer" parent="HeroGallery/NextHeroSlot" unique_id=1358785884]
 unique_name_in_owner = true
@@ -268,7 +269,8 @@ unique_name_in_owner = true
 anchors_preset = 0
 offset_right = 150.0
 offset_bottom = 295.0
-mouse_filter = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 2
 
 [node name="PrevHeroViewportContainer" type="SubViewportContainer" parent="HeroGallery/PrevHeroSlot" unique_id=1772838611]
 unique_name_in_owner = true

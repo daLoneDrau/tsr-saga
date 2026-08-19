@@ -138,6 +138,8 @@ const STUBBLE_BY_HAIR: Dictionary = {
 @onready var _current_hero_display: SubViewport = %CurrentHeroDisplay
 @onready var _next_hero_display: SubViewport = %NextHeroDisplay
 @onready var _prev_hero_display: SubViewport = %PrevHeroDisplay
+@onready var _next_hero_slot: Control = %NextHeroSlot
+@onready var _prev_hero_slot: Control = %PrevHeroSlot
 
 # Per-roster-index rolled palette — parallel arrays indexed like
 # ROSTER_KIND_IDS, populated once by _roll_palette().
@@ -175,13 +177,13 @@ func _ready() -> void:
 	# in sync whenever that happens, not just when _apply_prototype() runs.
 	if not _title_group.resized.is_connected(_update_frame_cutout):
 		_title_group.resized.connect(_update_frame_cutout)
-		
+
 	# register actions for menu buttons and navigation
 	_register_actions()
-	
+
 	# connect UI button elements to trigger actions
 	_wire_input()
-	
+
 	_roll_palette()
 	_refresh_gallery()
 
@@ -200,6 +202,7 @@ func _ready() -> void:
 
 func _register_actions() -> void:
 	#Register keyboard shortcuts for menu actions
+	register_action("any_key", "any_key")
 
 	if OS.is_debug_build():
 		print("[HeroSelect] Registered %d actions" % action_map.size())
@@ -214,11 +217,33 @@ func _wire_input() -> void:
 		_prev_arrow.pressed.connect(_on_arrow_button_input.bind("browse_prev"))
 	if _next_arrow:
 		_next_arrow.pressed.connect(_on_arrow_button_input.bind("browse_next"))
-	
-	
+
+	# Adjacent-hero click-to-focus (spec 1.12) — clicking the prev/next
+	# hero itself brings it into focus, same as clicking the arrow that
+	# points at it. mouse_filter on both slots was IGNORE (no interaction
+	# wired yet); now STOP, set in the .tscn, so gui_input actually fires
+	# here instead of the click falling through to whatever's behind it.
+	if _prev_hero_slot:
+		_prev_hero_slot.gui_input.connect(_on_adjacent_slot_gui_input.bind("browse_prev"))
+	if _next_hero_slot:
+		_next_hero_slot.gui_input.connect(_on_adjacent_slot_gui_input.bind("browse_next"))
+
+
 func _on_arrow_button_input(action_name: String) -> void:
 	# trigger the action via do_action (same as keyboard shortcut)
 	do_action(GameAction.new(action_name, GameAction.PHASE_END))
+
+
+## Adjacent-hero slots aren't buttons — they're plain Controls wrapping a
+## SubViewportContainer — so this listens on gui_input directly rather than
+## a `pressed` signal, and only reacts to an actual left-click release
+## (mirrors the arrow buttons' click semantics rather than firing on
+## mouse-down or on hover).
+func _on_adjacent_slot_gui_input(event: InputEvent, action_name: String) -> void:
+	if event is InputEventMouseButton:
+		var mb := event as InputEventMouseButton
+		if mb.button_index == MOUSE_BUTTON_LEFT and mb.pressed:
+			do_action(GameAction.new(action_name, GameAction.PHASE_END))
 
 #endregion
 
@@ -438,7 +463,7 @@ func _update_hero_name_label() -> void:
 		name_ornament_color.to_html(false), HERO_NAME_ORNAMENT,
 		name_color.to_html(false), _current_hero_name(),
 		name_ornament_color.to_html(false), HERO_NAME_ORNAMENT,
-	]
+		]
 
 
 ## Computes TitleGroup's current global rect in PresentationFrame's own UV
@@ -482,15 +507,27 @@ func _current_hero_name() -> String:
 # ---------------------------------------------------------------------------
 
 ## REQUIRED — Scene marks this @abstract, so a concrete Scene subclass will
-## not even parse/load without an override. Routes the two arrow-button
-## actions registered in _wire_input(); SELECT HERO/BACK still have no
-## action wired to them yet.
+## not even parse/load without an override. Routes the two arrow-button/
+## adjacent-slot-click actions and keyboard Left/Right (spec 1.12);
+## SELECT HERO/BACK still have no action wired to them yet.
 func do_action(action: GameAction) -> void:
 	match action.name:
 		"browse_prev":
 			_navigate(-1)
 		"browse_next":
 			_navigate(1)
+		"any_key":
+			print("any_key")
+			match action.phase:
+				"END":
+					var key_entry: String = OS.get_keycode_string(SagaGameEngine_auto.last_keycode)
+					match key_entry:
+						"Left", "Kp 4":
+							_navigate(-1)
+						"Right", "Kp 6":
+							_navigate(1)
+						_:
+							pass
 
 
 ## Optional hook — Scene's base implementation is already a no-op ("pass"),
