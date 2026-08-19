@@ -172,25 +172,32 @@ func _apply_prototype() -> void:
 
 
 ## Computes TitleGroup's current global rect in PresentationFrame's own UV
-## space (0.0-1.0 across its width) and feeds it to _frame_material's
+## space (0.0-1.0 across both axes) and feeds it to _frame_material's
 ## cutout uniforms, so the frame's border doesn't render underneath
-## TitleGroup regardless of the title's current width. Runs independently
-## of the prototype toggle (via TitleGroup.resized) since the title's
-## width can change on its own — see _ready().
+## TitleGroup regardless of the title's current size. Bounded on Y as well
+## as X — an X-only cutout would blank the full column height, erasing the
+## bottom border directly below TitleGroup along with the top border
+## behind it. Runs independently of the prototype toggle (via
+## TitleGroup.resized) since the title's size can change on its own — see
+## _ready().
 func _update_frame_cutout() -> void:
 	if _frame_material == null:
 		return
 
 	var frame_rect := _presentation_frame.get_global_rect()
-	if frame_rect.size.x <= 0.0:
+	if frame_rect.size.x <= 0.0 or frame_rect.size.y <= 0.0:
 		return
 
 	var title_rect := _title_group.get_global_rect()
 	var uv_left: float = clampf((title_rect.position.x - frame_rect.position.x) / frame_rect.size.x, 0.0, 1.0)
 	var uv_right: float = clampf((title_rect.position.x + title_rect.size.x - frame_rect.position.x) / frame_rect.size.x, 0.0, 1.0)
+	var uv_top: float = clampf((title_rect.position.y - frame_rect.position.y) / frame_rect.size.y, 0.0, 1.0)
+	var uv_bottom: float = clampf((title_rect.position.y + title_rect.size.y - frame_rect.position.y) / frame_rect.size.y, 0.0, 1.0)
 
 	_frame_material.set_shader_parameter("cutout_uv_left", uv_left)
 	_frame_material.set_shader_parameter("cutout_uv_right", uv_right)
+	_frame_material.set_shader_parameter("cutout_uv_top", uv_top)
+	_frame_material.set_shader_parameter("cutout_uv_bottom", uv_bottom)
 
 
 ## Hardcoded to match the still-static CurrentHeroSlot (Beowulf) — this
