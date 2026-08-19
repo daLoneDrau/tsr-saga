@@ -379,3 +379,29 @@ theme_override_styles/hover = SubResource("StyleBoxTexture_selecthero_hover")
 theme_override_styles/disabled = SubResource("StyleBoxTexture_selecthero_normal")
 theme_override_styles/focus = SubResource("StyleBoxTexture_selecthero_normal")
 text = "SELECT HERO"
+
+[node name="Peripheral" type="Control" parent="." unique_id=1014731920]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_top = 448.0
+offset_right = 640.0
+offset_bottom = 479.0
+mouse_filter = 2
+
+[node name="BackButton" type="Button" parent="Peripheral" unique_id=1493974701]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 16.0
+offset_top = 4.5
+offset_right = 96.0
+offset_bottom = 26.5
+mouse_default_cursor_shape = 2
+theme_override_colors/font_color = Color(0.9411765, 0.8862745, 0.7372549, 1)
+theme_override_fonts/font = ExtResource("10_0f3ib")
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxEmpty_arrow")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_arrow")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_arrow")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_arrow")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_arrow")
+text = "‹ BACK"
