@@ -12,6 +12,13 @@
 [ext_resource type="FontFile" uid="uid://b8rian7jfo5ne" path="res://assets/fonts/HeorotExpanded-0RLz.ttf" id="9_nb12y"]
 [ext_resource type="FontFile" uid="uid://dgwtsq67ho0cr" path="res://assets/fonts/IMFellEnglish-Regular.ttf" id="10_0f3ib"]
 [ext_resource type="Texture2D" uid="uid://ct5psr5fheqjs" path="res://assets/art/ui/medieval_button_32.png" id="11_medbtn"]
+[ext_resource type="Shader" uid="uid://bsdl5ou3obw3d" path="res://shaders/silhouette_outline.gdshader" id="12_outline"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ornament"]
+shader = ExtResource("12_outline")
+shader_parameter/primary_color = Color(0.34901962, 0.26666668, 0.1764706, 1)
+shader_parameter/secondary_color = Color(0.12941177, 0.11372549, 0.09411765, 1)
+shader_parameter/outline_px = 0.6430000305425
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ornamentbacking"]
 content_margin_left = 0.0
@@ -77,8 +84,11 @@ anchors_preset = 0
 offset_right = 640.0
 offset_bottom = 480.0
 script = ExtResource("1_a6aad")
+prototype = 1
 
 [node name="BackgroundBlue" type="ColorRect" parent="." unique_id=909622891]
+unique_name_in_owner = true
+visible = false
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -87,7 +97,6 @@ color = Color(0.10980392, 0.2784314, 0.47058824, 1)
 
 [node name="BackgroundParchment" type="TextureRect" parent="." unique_id=301573403]
 unique_name_in_owner = true
-visible = false
 layout_mode = 0
 offset_right = 640.0
 offset_bottom = 480.0
@@ -96,7 +105,7 @@ texture = ExtResource("2_ds5fi")
 
 [node name="PresentationFrame" type="TextureRect" parent="." unique_id=164207348]
 unique_name_in_owner = true
-modulate = Color(0.77254903, 0.6392157, 0.3529412, 1)
+material = SubResource("ShaderMaterial_ornament")
 layout_mode = 0
 offset_right = 640.0
 offset_bottom = 480.0
@@ -123,7 +132,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_ornamentbacking")
 
 [node name="TitleOrnamentLeft" type="TextureRect" parent="TitleGroup/OrnamentPanelLeft" unique_id=663169412]
 unique_name_in_owner = true
-modulate = Color(0.77254903, 0.6392157, 0.3529412, 1)
+material = SubResource("ShaderMaterial_ornament")
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 mouse_filter = 2
@@ -139,7 +148,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_titlebacking")
 [node name="TitleLabel" type="Label" parent="TitleGroup/TitleBackingPanel" unique_id=880931497]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.77254903, 0.6392157, 0.3529412, 1)
+theme_override_colors/font_color = Color(0.12941177, 0.11372549, 0.09411765, 1)
 theme_override_fonts/font = ExtResource("2_2ftf5")
 theme_override_font_sizes/font_size = 24
 text = "CHOOSE YOUR HERO"
@@ -155,7 +164,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_ornamentbacking")
 
 [node name="TitleOrnamentRight" type="TextureRect" parent="TitleGroup/OrnamentPanelRight" unique_id=401253494]
 unique_name_in_owner = true
-modulate = Color(0.77254903, 0.6392157, 0.3529412, 1)
+material = SubResource("ShaderMaterial_ornament")
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 mouse_filter = 2
@@ -304,7 +313,7 @@ offset_top = 171.0
 offset_right = 46.0
 offset_bottom = 211.0
 mouse_default_cursor_shape = 2
-theme_override_colors/font_color = Color(0.9411765, 0.8862745, 0.7372549, 1)
+theme_override_colors/font_color = Color(0.34901962, 0.26666668, 0.1764706, 1)
 theme_override_fonts/font = ExtResource("9_nb12y")
 theme_override_font_sizes/font_size = 36
 theme_override_styles/normal = SubResource("StyleBoxEmpty_arrow")
@@ -322,7 +331,7 @@ offset_top = 171.0
 offset_right = 626.0
 offset_bottom = 211.0
 mouse_default_cursor_shape = 2
-theme_override_colors/font_color = Color(0.9411765, 0.8862745, 0.7372549, 1)
+theme_override_colors/font_color = Color(0.34901962, 0.26666668, 0.1764706, 1)
 theme_override_fonts/font = ExtResource("9_nb12y")
 theme_override_font_sizes/font_size = 36
 theme_override_styles/normal = SubResource("StyleBoxEmpty_arrow")
@@ -340,17 +349,23 @@ offset_right = 640.0
 offset_bottom = 395.0
 mouse_filter = 2
 
-[node name="HeroNameLabel" type="Label" parent="HeroIdentity" unique_id=262636676]
-unique_name_in_owner = true
+[node name="NameCenterContainer" type="CenterContainer" parent="HeroIdentity" unique_id=1748817560]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-theme_override_colors/font_color = Color(0.9411765, 0.8862745, 0.7372549, 1)
-theme_override_fonts/font = ExtResource("2_2ftf5")
-theme_override_font_sizes/font_size = 20
-text = "—◇— BEOWULF —◇—"
-horizontal_alignment = 1
-vertical_alignment = 1
+mouse_filter = 2
+
+[node name="HeroNameLabel" type="RichTextLabel" parent="HeroIdentity/NameCenterContainer" unique_id=262636676]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/default_color = Color(0.9411765, 0.8862745, 0.7372549, 1)
+theme_override_fonts/normal_font = ExtResource("2_2ftf5")
+theme_override_font_sizes/normal_font_size = 20
+bbcode_enabled = true
+text = "[color=#59442d]—◇—[/color] [color=#211d18]BEOWULF[/color] [color=#59442d]—◇—[/color]"
+fit_content = true
+scroll_active = false
+shortcut_keys_enabled = false
 
 [node name="PrimaryAction" type="Control" parent="." unique_id=861261005]
 unique_name_in_owner = true
@@ -396,7 +411,7 @@ offset_top = -11.0
 offset_right = 96.0
 offset_bottom = 11.0
 mouse_default_cursor_shape = 2
-theme_override_colors/font_color = Color(0.9411765, 0.8862745, 0.7372549, 1)
+theme_override_colors/font_color = Color(0.34901962, 0.26666668, 0.1764706, 1)
 theme_override_fonts/font = ExtResource("10_0f3ib")
 theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = SubResource("StyleBoxEmpty_arrow")
