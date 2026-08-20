@@ -26,8 +26,8 @@ SagaEntityManager_auto="*res://saga/core/saga_entity_manager.gd"
 
 window/size/viewport_width=640
 window/size/viewport_height=480
-window/size/window_width_override=640
-window/size/window_height_override=480
+window/size/window_width_override=1280
+window/size/window_height_override=960
 window/stretch/mode="viewport"
 
 [filesystem]
