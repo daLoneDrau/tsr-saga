@@ -1,0 +1,670 @@
+{
+  "regions": {
+    "1_1_Finmark": {
+      "type": "land",
+      "neighbors": [
+        "1_2_Trondheim"
+      ]
+    },
+    "1_2_Trondheim": {
+      "type": "land",
+      "neighbors": [
+        "06",
+        "1_1_Finmark",
+        "1_3_Hordaland",
+        "1_4_Upland"
+      ]
+    },
+    "1_3_Hordaland": {
+      "type": "land",
+      "neighbors": [
+        "06",
+        "07",
+        "08",
+        "1_2_Trondheim",
+        "1_4_Upland",
+        "1_5_Agdar"
+      ]
+    },
+    "1_4_Upland": {
+      "type": "land",
+      "neighbors": [
+        "1_2_Trondheim",
+        "1_3_Hordaland",
+        "1_5_Agdar",
+        "1_6_Romeirt",
+        "2_1_Jamtland"
+      ]
+    },
+    "1_5_Agdar": {
+      "type": "land",
+      "neighbors": [
+        "04",
+        "08",
+        "09",
+        "1_3_Hordaland",
+        "1_4_Upland",
+        "1_6_Romeirt"
+      ]
+    },
+    "1_6_Romeirt": {
+      "type": "land",
+      "neighbors": [
+        "04",
+        "1_4_Upland",
+        "1_5_Agdar",
+        "2_1_Jamtland",
+        "2_2_Vester_Gotland"
+      ]
+    },
+    "2_1_Jamtland": {
+      "type": "land",
+      "neighbors": [
+        "01",
+        "1_4_Upland",
+        "1_6_Romeirt",
+        "2_2_Vester_Gotland",
+        "2_3_Oster_Gotland"
+      ]
+    },
+    "2_2_Vester_Gotland": {
+      "type": "land",
+      "neighbors": [
+        "05",
+        "1_6_Romeirt",
+        "2_1_Jamtland",
+        "2_3_Oster_Gotland",
+        "2_4_Suder_Gotland"
+      ]
+    },
+    "2_3_Oster_Gotland": {
+      "type": "land",
+      "neighbors": [
+        "01",
+        "03",
+        "2_1_Jamtland",
+        "2_2_Vester_Gotland",
+        "2_4_Suder_Gotland"
+      ]
+    },
+    "2_4_Suder_Gotland": {
+      "type": "land",
+      "neighbors": [
+        "03",
+        "05",
+        "2_2_Vester_Gotland",
+        "2_3_Oster_Gotland",
+        "2_6_Scandia"
+      ]
+    },
+    "2_5_Juteland": {
+      "type": "land",
+      "neighbors": [
+        "04",
+        "05",
+        "10",
+        "11",
+        "2_6_Scandia",
+        "3_3_Anglia"
+      ]
+    },
+    "2_6_Scandia": {
+      "type": "land",
+      "neighbors": [
+        "03",
+        "05",
+        "2_4_Suder_Gotland",
+        "2_5_Juteland",
+        "3_1_Pomerania",
+        "3_2_Saxony",
+        "3_3_Anglia"
+      ]
+    },
+    "3_1_Pomerania": {
+      "type": "land",
+      "neighbors": [
+        "02",
+        "03",
+        "2_6_Scandia",
+        "3_2_Saxony"
+      ]
+    },
+    "3_2_Saxony": {
+      "type": "land",
+      "neighbors": [
+        "11",
+        "2_6_Scandia",
+        "3_1_Pomerania",
+        "3_3_Anglia",
+        "3_4_Fenland",
+        "3_5_Rhineland"
+      ]
+    },
+    "3_3_Anglia": {
+      "type": "land",
+      "neighbors": [
+        "11",
+        "2_5_Juteland",
+        "2_6_Scandia",
+        "3_2_Saxony"
+      ]
+    },
+    "3_4_Fenland": {
+      "type": "land",
+      "neighbors": [
+        "11",
+        "21",
+        "22",
+        "3_2_Saxony",
+        "3_5_Rhineland",
+        "3_6_Frisia"
+      ]
+    },
+    "3_5_Rhineland": {
+      "type": "land",
+      "neighbors": [
+        "3_2_Saxony",
+        "3_4_Fenland",
+        "3_6_Frisia"
+      ]
+    },
+    "3_6_Frisia": {
+      "type": "land",
+      "neighbors": [
+        "22",
+        "3_4_Fenland",
+        "3_5_Rhineland",
+        "4_1_Frankland"
+      ]
+    },
+    "4_1_Frankland": {
+      "type": "land",
+      "neighbors": [
+        "22",
+        "23",
+        "3_6_Frisia",
+        "4_2_Armorica"
+      ]
+    },
+    "4_2_Armorica": {
+      "type": "land",
+      "neighbors": [
+        "23",
+        "24",
+        "4_1_Frankland"
+      ]
+    },
+    "4_3_Cornwall": {
+      "type": "land",
+      "neighbors": [
+        "23",
+        "24",
+        "4_4_Wessex"
+      ]
+    },
+    "4_4_Wessex": {
+      "type": "land",
+      "neighbors": [
+        "23",
+        "4_3_Cornwall",
+        "4_5_Sussex",
+        "5_1_Mercia",
+        "5_2_Daffyd"
+      ]
+    },
+    "4_5_Sussex": {
+      "type": "land",
+      "neighbors": [
+        "22",
+        "23",
+        "4_4_Wessex",
+        "4_6_East_Anglia",
+        "5_1_Mercia"
+      ]
+    },
+    "4_6_East_Anglia": {
+      "type": "land",
+      "neighbors": [
+        "21",
+        "22",
+        "4_5_Sussex",
+        "5_1_Mercia"
+      ]
+    },
+    "5_1_Mercia": {
+      "type": "land",
+      "neighbors": [
+        "20",
+        "21",
+        "4_4_Wessex",
+        "4_5_Sussex",
+        "4_6_East_Anglia",
+        "5_2_Daffyd",
+        "5_3_Gwynedd",
+        "5_4_Northumberland"
+      ]
+    },
+    "5_2_Daffyd": {
+      "type": "land",
+      "neighbors": [
+        "24",
+        "25",
+        "4_4_Wessex",
+        "5_1_Mercia",
+        "5_3_Gwynedd"
+      ]
+    },
+    "5_3_Gwynedd": {
+      "type": "land",
+      "neighbors": [
+        "25",
+        "5_1_Mercia",
+        "5_2_Daffyd",
+        "5_4_Northumberland"
+      ]
+    },
+    "5_4_Northumberland": {
+      "type": "land",
+      "neighbors": [
+        "19",
+        "20",
+        "25",
+        "5_1_Mercia",
+        "5_3_Gwynedd",
+        "5_5_Dalriada"
+      ]
+    },
+    "5_5_Dalriada": {
+      "type": "land",
+      "neighbors": [
+        "19",
+        "25",
+        "26",
+        "5_4_Northumberland",
+        "5_6_Caledonia",
+        "6_1_Pictland"
+      ]
+    },
+    "5_6_Caledonia": {
+      "type": "land",
+      "neighbors": [
+        "18",
+        "19",
+        "5_5_Dalriada",
+        "6_1_Pictland"
+      ]
+    },
+    "6_1_Pictland": {
+      "type": "land",
+      "neighbors": [
+        "12",
+        "13",
+        "17",
+        "18",
+        "26",
+        "5_5_Dalriada",
+        "5_6_Caledonia",
+        "6_2_Hebrides"
+      ]
+    },
+    "6_2_Hebrides": {
+      "type": "land",
+      "neighbors": [
+        "17",
+        "26",
+        "27",
+        "29",
+        "6_1_Pictland"
+      ]
+    },
+    "6_3_Thule": {
+      "type": "land",
+      "neighbors": [
+        "29",
+        "30"
+      ]
+    },
+    "6_4_Connacht": {
+      "type": "land",
+      "neighbors": [
+        "27",
+        "28",
+        "6_5_Ulster",
+        "6_6_Leinster"
+      ]
+    },
+    "6_5_Ulster": {
+      "type": "land",
+      "neighbors": [
+        "25",
+        "26",
+        "27",
+        "6_4_Connacht",
+        "6_6_Leinster"
+      ]
+    },
+    "6_6_Leinster": {
+      "type": "land",
+      "neighbors": [
+        "24",
+        "25",
+        "6_4_Connacht",
+        "6_5_Ulster"
+      ]
+    },
+    "01": {
+      "type": "sea",
+      "neighbors": [
+        "02",
+        "03",
+        "2_1_Jamtland",
+        "2_3_Oster_Gotland"
+      ]
+    },
+    "02": {
+      "type": "sea",
+      "neighbors": [
+        "01",
+        "03",
+        "3_1_Pomerania"
+      ]
+    },
+    "03": {
+      "type": "sea",
+      "neighbors": [
+        "01",
+        "02",
+        "2_3_Oster_Gotland",
+        "2_4_Suder_Gotland",
+        "2_6_Scandia",
+        "3_1_Pomerania"
+      ]
+    },
+    "04": {
+      "type": "sea",
+      "neighbors": [
+        "05",
+        "10",
+        "1_5_Agdar",
+        "1_6_Romeirt",
+        "2_5_Juteland"
+      ]
+    },
+    "05": {
+      "type": "sea",
+      "neighbors": [
+        "04",
+        "2_2_Vester_Gotland",
+        "2_4_Suder_Gotland",
+        "2_5_Juteland",
+        "2_6_Scandia"
+      ]
+    },
+    "06": {
+      "type": "sea",
+      "neighbors": [
+        "07",
+        "12",
+        "13",
+        "1_2_Trondheim",
+        "1_3_Hordaland"
+      ]
+    },
+    "07": {
+      "type": "sea",
+      "neighbors": [
+        "06",
+        "08",
+        "13",
+        "1_3_Hordaland"
+      ]
+    },
+    "08": {
+      "type": "sea",
+      "neighbors": [
+        "07",
+        "09",
+        "13",
+        "14",
+        "15",
+        "1_3_Hordaland",
+        "1_5_Agdar"
+      ]
+    },
+    "09": {
+      "type": "sea",
+      "neighbors": [
+        "08",
+        "10",
+        "15",
+        "16",
+        "1_5_Agdar"
+      ]
+    },
+    "10": {
+      "type": "sea",
+      "neighbors": [
+        "04",
+        "09",
+        "11",
+        "16",
+        "2_5_Juteland"
+      ]
+    },
+    "11": {
+      "type": "sea",
+      "neighbors": [
+        "10",
+        "16",
+        "21",
+        "2_5_Juteland",
+        "3_2_Saxony",
+        "3_3_Anglia",
+        "3_4_Fenland"
+      ]
+    },
+    "12": {
+      "type": "sea",
+      "neighbors": [
+        "06",
+        "13",
+        "17",
+        "6_1_Pictland"
+      ]
+    },
+    "13": {
+      "type": "sea",
+      "neighbors": [
+        "06",
+        "07",
+        "08",
+        "12",
+        "14",
+        "18",
+        "6_1_Pictland"
+      ]
+    },
+    "14": {
+      "type": "sea",
+      "neighbors": [
+        "08",
+        "13",
+        "15",
+        "18",
+        "19"
+      ]
+    },
+    "15": {
+      "type": "sea",
+      "neighbors": [
+        "08",
+        "09",
+        "14",
+        "16",
+        "19",
+        "20"
+      ]
+    },
+    "16": {
+      "type": "sea",
+      "neighbors": [
+        "09",
+        "10",
+        "11",
+        "15",
+        "20",
+        "21"
+      ]
+    },
+    "17": {
+      "type": "sea",
+      "neighbors": [
+        "12",
+        "6_1_Pictland",
+        "6_2_Hebrides"
+      ]
+    },
+    "18": {
+      "type": "sea",
+      "neighbors": [
+        "13",
+        "14",
+        "19",
+        "5_6_Caledonia",
+        "6_1_Pictland"
+      ]
+    },
+    "19": {
+      "type": "sea",
+      "neighbors": [
+        "14",
+        "15",
+        "18",
+        "20",
+        "5_4_Northumberland",
+        "5_5_Dalriada",
+        "5_6_Caledonia"
+      ]
+    },
+    "20": {
+      "type": "sea",
+      "neighbors": [
+        "15",
+        "16",
+        "19",
+        "21",
+        "5_1_Mercia",
+        "5_4_Northumberland"
+      ]
+    },
+    "21": {
+      "type": "sea",
+      "neighbors": [
+        "11",
+        "16",
+        "20",
+        "22",
+        "3_4_Fenland",
+        "4_6_East_Anglia",
+        "5_1_Mercia"
+      ]
+    },
+    "22": {
+      "type": "sea",
+      "neighbors": [
+        "21",
+        "23",
+        "3_4_Fenland",
+        "3_6_Frisia",
+        "4_1_Frankland",
+        "4_5_Sussex",
+        "4_6_East_Anglia"
+      ]
+    },
+    "23": {
+      "type": "sea",
+      "neighbors": [
+        "22",
+        "24",
+        "4_1_Frankland",
+        "4_2_Armorica",
+        "4_3_Cornwall",
+        "4_4_Wessex",
+        "4_5_Sussex"
+      ]
+    },
+    "24": {
+      "type": "sea",
+      "neighbors": [
+        "23",
+        "25",
+        "4_2_Armorica",
+        "4_3_Cornwall",
+        "5_2_Daffyd",
+        "6_6_Leinster"
+      ]
+    },
+    "25": {
+      "type": "sea",
+      "neighbors": [
+        "24",
+        "26",
+        "5_2_Daffyd",
+        "5_3_Gwynedd",
+        "5_4_Northumberland",
+        "5_5_Dalriada",
+        "6_5_Ulster",
+        "6_6_Leinster"
+      ]
+    },
+    "26": {
+      "type": "sea",
+      "neighbors": [
+        "25",
+        "27",
+        "5_5_Dalriada",
+        "6_1_Pictland",
+        "6_2_Hebrides",
+        "6_5_Ulster"
+      ]
+    },
+    "27": {
+      "type": "sea",
+      "neighbors": [
+        "26",
+        "28",
+        "29",
+        "30",
+        "6_2_Hebrides",
+        "6_4_Connacht",
+        "6_5_Ulster"
+      ]
+    },
+    "28": {
+      "type": "sea",
+      "neighbors": [
+        "27",
+        "30",
+        "6_4_Connacht"
+      ]
+    },
+    "29": {
+      "type": "sea",
+      "neighbors": [
+        "27",
+        "30",
+        "6_2_Hebrides",
+        "6_3_Thule"
+      ]
+    },
+    "30": {
+      "type": "sea",
+      "neighbors": [
+        "27",
+        "28",
+        "29",
+        "6_3_Thule"
+      ]
+    }
+  }
+}
