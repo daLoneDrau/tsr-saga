@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://ci5aiwdjq54th"]
+
+[ext_resource type="PackedScene" uid="uid://cxhydqp2xjj0y" path="res://assets/art/models/map/hero_marker.glb" id="1_8k6t2"]
+[ext_resource type="Shader" uid="uid://dqrlhui7g4fbu" path="res://shaders/toon_outline.gdshader" id="2_sdp1q"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rpf7b"]
+render_priority = 0
+shader = ExtResource("2_sdp1q")
+shader_parameter/outline_width = 0.015
+shader_parameter/outline_color = Color(0.18, 0.13, 0.1, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qt78s"]
+next_pass = SubResource("ShaderMaterial_rpf7b")
+shading_mode = 0
+albedo_color = Color(0.19215687, 0.37254903, 0.47058824, 1)
+
+[node name="hero_marker" unique_id=274378101 instance=ExtResource("1_8k6t2")]
+transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 0, 0, 0)
+
+[node name="hero_emission" parent="." index="0" unique_id=2108684831]
+surface_material_override/0 = SubResource("StandardMaterial3D_qt78s")

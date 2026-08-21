@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://de0f52xybyj3l"]
+
+[ext_resource type="PackedScene" uid="uid://dhiq2iu58p6p1" path="res://assets/art/models/map/saga_map.glb" id="1_up7y0"]
+
+[node name="saga_map" unique_id=373574353 instance=ExtResource("1_up7y0")]

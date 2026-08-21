@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://b4dglelma3h66"]
+
+[ext_resource type="Script" uid="uid://2w6673rj1h6t" path="res://scenes/dev/board_camera_test.gd" id="1_njxct"]
+[ext_resource type="PackedScene" uid="uid://dhiq2iu58p6p1" path="res://assets/art/models/map/saga_map.glb" id="2_fep34"]
+
+[sub_resource type="Environment" id="Environment_fep34"]
+background_mode = 1
+background_color = Color(0.42352942, 0.56078434, 0.8392157, 1)
+ambient_light_source = 2
+ambient_light_color = Color(1, 1, 1, 1)
+ambient_light_energy = 0.35
+
+[node name="BoardCameraTest" type="Node3D" unique_id=1037422861]
+script = ExtResource("1_njxct")
+
+[node name="Env" type="WorldEnvironment" parent="." unique_id=299402819]
+environment = SubResource("Environment_fep34")
+
+[node name="Sun" type="DirectionalLight3D" parent="." unique_id=1411390439]
+transform = Transform3D(0.81915206, 0.43938506, -0.36868784, 0, 0.64278764, 0.76604444, 0.57357645, -0.62750685, 0.5265408, 0, 0, 0)
+light_energy = 1.2
+
+[node name="BoardRoot" parent="." unique_id=373574353 instance=ExtResource("2_fep34")]
+
+[node name="YawPivot" type="Node3D" parent="." unique_id=1941490626]
+
+[node name="PitchPivot" type="Node3D" parent="YawPivot" unique_id=168211443]
+
+[node name="Camera3D" type="Camera3D" parent="YawPivot/PitchPivot" unique_id=1320590110]
+projection = 1
+current = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=77929581]
+
+[node name="Readout" type="Label" parent="CanvasLayer" unique_id=810191986]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 480.0
+offset_bottom = 120.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "computing..."
