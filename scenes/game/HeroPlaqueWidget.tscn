@@ -1,0 +1,82 @@
+[gd_scene format=3 uid="uid://bs3q78jcs864l"]
+
+[ext_resource type="Script" uid="uid://bhyr46dtchw3e" path="res://scenes/game/hero_plaque_widget.gd" id="1_18no0"]
+[ext_resource type="Texture2D" uid="uid://4npxh6ac2lks" path="res://assets/modeling/ui/frame_80_pixelated.png" id="2_o5ydl"]
+[ext_resource type="Texture2D" uid="uid://bcdrp4ghn8ojp" path="res://assets/modeling/ui/parchment_frame.png" id="3_4tr46"]
+[ext_resource type="FontFile" uid="uid://qe33fb4bklxf" path="res://assets/fonts/NorseBold-2Kge.otf" id="4_1pqy8"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_wgf0x"]
+texture = ExtResource("2_o5ydl")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ed26q"]
+content_margin_left = 18.0
+content_margin_top = 12.0
+content_margin_right = 18.0
+content_margin_bottom = 12.0
+texture = ExtResource("3_4tr46")
+texture_margin_left = 16.0
+texture_margin_top = 16.0
+texture_margin_right = 16.0
+texture_margin_bottom = 16.0
+expand_margin_left = 8.0
+expand_margin_top = 6.0
+expand_margin_right = 9.0
+expand_margin_bottom = 4.0
+modulate_color = Color(0.34901962, 0.26666668, 0.1764706, 1)
+draw_center = false
+
+[node name="HeroPlaqueWidget" type="Control" unique_id=1784213882]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_18no0")
+
+[node name="TopCenter" type="CenterContainer" parent="." unique_id=1858688772]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 8.0
+grow_horizontal = 2
+mouse_filter = 2
+
+[node name="CardFrameMargin" type="PanelContainer" parent="TopCenter" unique_id=401303665]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_wgf0x")
+
+[node name="CardFrame" type="PanelContainer" parent="TopCenter/CardFrameMargin" unique_id=248125779]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxTexture_ed26q")
+
+[node name="Row" type="HBoxContainer" parent="TopCenter/CardFrameMargin/CardFrame" unique_id=1067829231]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="RuneLabel" type="Label" parent="TopCenter/CardFrameMargin/CardFrame/Row" unique_id=1107001462]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.34901962, 0.26666668, 0.1764706, 1)
+theme_override_fonts/font = ExtResource("4_1pqy8")
+theme_override_font_sizes/font_size = 22
+text = "?"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HeroNameLabel" type="Label" parent="TopCenter/CardFrameMargin/CardFrame/Row" unique_id=2069410304]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.12941177, 0.11372549, 0.09411765, 1)
+theme_override_fonts/font = ExtResource("4_1pqy8")
+theme_override_font_sizes/font_size = 15
+text = "HERO"
+horizontal_alignment = 1
+vertical_alignment = 1

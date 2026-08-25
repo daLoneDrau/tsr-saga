@@ -27,7 +27,8 @@
 #     markers on the board (BoardSpace.place_entity_markers()), all
 #     together in one call.
 #   - Once the sword reveal is dismissed: pause on the board, show a
-#     restrained "TURN X OF 20" widget, pause again, fade it away.
+#     restrained "TURN X OF 20" widget, pause, fade it away, then announce
+#     the current hero (rune + name) the same way, pause, fade away.
 # Deliberately NOT yet doing (comes back in later steps):
 #   - Any other HUD/UI — banner, mover card, Hero Info, Close-Up modal.
 #   - Region click handling / move selection.
@@ -40,13 +41,15 @@ extends Scene
 @onready var _board_space: BoardSpace = %BoardSpace
 @onready var _sword_reveal_overlay: SwordRevealOverlay = %SwordRevealOverlay
 @onready var _turn_widget: TurnWidget = %TurnWidget
+@onready var _hero_plaque_widget: HeroPlaqueWidget = %HeroPlaqueWidget
 
 # How long to pause on the fully-revealed board before showing the turn
-# widget, and how long to leave the widget up before fading it — both
+# widget, and how long to leave each widget up before fading it — all
 # "a beat," not precisely specified, so treat these as first-guess timing
 # to adjust once seen in motion rather than exact values.
 const REVIEW_BOARD_BEAT_SECONDS := 1.0
 const READ_TURN_WIDGET_BEAT_SECONDS := 1.5
+const READ_HERO_PLAQUE_BEAT_SECONDS := 1.5
 
 
 # ---------------------------------------------------------------------------
@@ -106,9 +109,9 @@ func _on_sword_reveal_acknowledged() -> void:
 ## Board opens with the sword reveal dismissed and every entity's marker
 ## already in place (no entry animation — see _place_all_entity_markers()).
 ## Sequence: pause on the fully-revealed board -> show "TURN X OF 20" ->
-## pause to read it -> fade it away. Only makes sense once the board is
-## actually visible, so this runs from the sword reveal's dismissal, not
-## from _ready() directly.
+## pause to read it -> fade it away -> announce the current hero. Only
+## makes sense once the board is actually visible, so this runs from the
+## sword reveal's dismissal, not from _ready() directly.
 func _play_turn_intro_sequence() -> void:
 	await get_tree().create_timer(REVIEW_BOARD_BEAT_SECONDS).timeout
 
@@ -121,7 +124,47 @@ func _play_turn_intro_sequence() -> void:
 	_turn_widget.show_widget()
 
 	await get_tree().create_timer(READ_TURN_WIDGET_BEAT_SECONDS).timeout
-	_turn_widget.fade_out()
+	await _turn_widget.fade_out()
+
+	_announce_current_hero()
+
+
+## Turn order (highest glory first, ties re-shuffled randomly, every turn)
+## is already fully handled by SagaTurnSystem.compute_turn_order() — this
+## just surfaces whoever that order already put first.
+## SagaMovementSystem.get_current_mover() reflects that order directly,
+## since start_movement_phase() already snapshotted it and set the mover
+## cursor to index 0.
+func _announce_current_hero() -> void:
+	var movement_sys := get_registered_system(&"SagaMovementSystem") as SagaMovementSystem
+	if movement_sys == null:
+		push_warning("GameScene: SagaMovementSystem not available — skipping hero announcement.")
+		return
+
+	var hero_entity_id: String = movement_sys.get_current_mover()
+	if hero_entity_id == "":
+		push_warning("GameScene: no current mover to announce.")
+		return
+
+	var hero_entity: Entity = SagaEntityManager_auto.get_entity_by_id(hero_entity_id)
+	if hero_entity == null:
+		push_warning("GameScene: current mover entity '%s' not found." % hero_entity_id)
+		return
+
+	var hero_comp: SagaHeroComponent = hero_entity.get_component("SagaHeroComponent", false) as SagaHeroComponent
+	if hero_comp == null:
+		push_warning("GameScene: current mover entity '%s' has no SagaHeroComponent." % hero_entity_id)
+		return
+
+	# HeroPlaqueWidget derives both the display name and the rune from
+	# kind_id via HeroKindTable/HERO_RUNES internally — no need to also
+	# resolve NameComponent here, since a hero's NameComponent is always
+	# set from the same HeroKindTable entry at creation and never diverges.
+	_hero_plaque_widget.set_hero(hero_comp.kind_id)
+	_hero_plaque_widget.show_widget()
+
+	await get_tree().create_timer(READ_HERO_PLAQUE_BEAT_SECONDS).timeout
+	await _hero_plaque_widget.fade_out()
 
 #endregion
 
@@ -149,7 +192,7 @@ func _place_all_entity_markers() -> void:
 		"hero":    SagaEntityManager.TAG_PLAYER,
 		"jarl":    SagaEntityManager.TAG_JARL,
 		"monster": SagaEntityManager.TAG_MONSTER,
-	}
+		}
 
 	var entities: Array = []
 	for kind: String in groups.keys():
@@ -167,7 +210,7 @@ func _place_all_entity_markers() -> void:
 				"entity_id": entity.id,
 				"kind": kind,
 				"region_id": region_id,
-			})
+				})
 
 	# animate=false: this is initial game setup, not a piece arriving
 	# mid-game (5.2.30's descend-and-settle is for that case) — the board
