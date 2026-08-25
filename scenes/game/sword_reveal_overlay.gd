@@ -41,6 +41,8 @@ signal acknowledged
 @onready var _sword_name_label: RichTextLabel = %SwordNameLabel
 @onready var _rules_text_label: Label = %RulesTextLabel
 @onready var _continue_button: Button = %ContinueButton
+@onready var _sword_silhouette: Node2D = %SwordSilhouette
+@onready var _sword_visual_backdrop: Control = _sword_silhouette.get_parent()
 
 var _sword_kind_id: int = -1
 
@@ -48,6 +50,19 @@ var _sword_kind_id: int = -1
 func _ready() -> void:
 	_continue_button.pressed.connect(_on_continue_pressed)
 	_populate_reveal()
+
+	# SwordSilhouette is a Node2D — it doesn't participate in Control
+	# layout at all, so nothing keeps it centered as CardFrame/CardContent
+	# reflow its parent backdrop (e.g. once real sword art changes the
+	# card's size, or the rules text wraps to a different number of
+	# lines). Re-centering it on every resize of its own backdrop keeps
+	# it correct regardless of what else in the responsive layout changes.
+	_sword_visual_backdrop.resized.connect(_center_silhouette)
+	_center_silhouette()
+
+
+func _center_silhouette() -> void:
+	_sword_silhouette.position = _sword_visual_backdrop.size / 2.0
 
 
 # ---------------------------------------------------------------------------
