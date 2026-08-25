@@ -96,6 +96,7 @@ func do_action(_action: GameAction) -> void:
 func _on_sword_reveal_acknowledged() -> void:
 	_sword_reveal_overlay.acknowledged.disconnect(_on_sword_reveal_acknowledged)
 	_sword_reveal_overlay.queue_free()
+	_top_banner.visible = true
 	_play_turn_intro_sequence()
 
 #endregion
@@ -107,13 +108,16 @@ func _on_sword_reveal_acknowledged() -> void:
 
 ## Board opens with the sword reveal dismissed and every entity's marker
 ## already in place (no entry animation — see _place_all_entity_markers()).
-## Sequence: pause on the fully-revealed board -> reveal the turn side of
-## TopBanner -> pause -> reveal the hero side. The banner frame itself is
-## persistent (shown from _ready(), never hidden) — only its two content
-## halves stage in here. Only makes sense once the board is actually
-## visible, so this runs from the sword reveal's dismissal, not from
-## _ready() directly.
+## Sequence: make the banner visible (it stays hidden entirely while the
+## sword reveal is up — see TopBanner.tscn's visible=false default; it was
+## previously rendering its frame on top of the sword reveal overlay,
+## since it's the last child in the tree) -> pause on the fully-revealed
+## board -> reveal the turn side -> pause -> reveal the hero side. Only
+## makes sense once the board is actually visible, so this runs from the
+## sword reveal's dismissal, not from _ready() directly.
 func _play_turn_intro_sequence() -> void:
+	_top_banner.visible = true
+
 	await get_tree().create_timer(REVIEW_BOARD_BEAT_SECONDS).timeout
 
 	var turn_sys := get_registered_system(&"SagaTurnSystem") as SagaTurnSystem

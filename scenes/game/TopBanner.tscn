@@ -27,6 +27,7 @@ modulate_color = Color(0.34901962, 0.26666668, 0.1764706, 1)
 draw_center = false
 
 [node name="TopBanner" type="Control" unique_id=365625066]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
