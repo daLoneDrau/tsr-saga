@@ -1,0 +1,111 @@
+[gd_scene format=3 uid="uid://xv0xwmubfdsp"]
+
+[ext_resource type="Script" uid="uid://lulwr4tdc4yw" path="res://scenes/game/top_banner.gd" id="1_jx2kk"]
+[ext_resource type="Texture2D" uid="uid://4npxh6ac2lks" path="res://assets/modeling/ui/frame_80_pixelated.png" id="2_j7c8u"]
+[ext_resource type="Texture2D" uid="uid://bcdrp4ghn8ojp" path="res://assets/modeling/ui/parchment_frame.png" id="3_renqd"]
+[ext_resource type="FontFile" uid="uid://qe33fb4bklxf" path="res://assets/fonts/NorseBold-2Kge.otf" id="4_3v6cr"]
+[ext_resource type="FontFile" uid="uid://dgwtsq67ho0cr" path="res://assets/fonts/IMFellEnglish-Regular.ttf" id="5_aj41b"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_dsoc2"]
+texture = ExtResource("2_j7c8u")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3v6cr"]
+content_margin_left = 18.0
+content_margin_top = 12.0
+content_margin_right = 18.0
+content_margin_bottom = 12.0
+texture = ExtResource("3_renqd")
+texture_margin_left = 16.0
+texture_margin_top = 16.0
+texture_margin_right = 16.0
+texture_margin_bottom = 16.0
+expand_margin_left = 8.0
+expand_margin_top = 6.0
+expand_margin_right = 9.0
+expand_margin_bottom = 4.0
+modulate_color = Color(0.34901962, 0.26666668, 0.1764706, 1)
+draw_center = false
+
+[node name="TopBanner" type="Control" unique_id=365625066]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_jx2kk")
+
+[node name="BannerBG" type="PanelContainer" parent="." unique_id=1111343044]
+layout_mode = 0
+anchor_right = 1.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_dsoc2")
+
+[node name="BannerFrame" type="PanelContainer" parent="BannerBG" unique_id=1031156495]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxTexture_3v6cr")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="BannerBG/BannerFrame" unique_id=1333669170]
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="BannerBG/BannerFrame/VBoxContainer" unique_id=694781809]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="ContentRow" type="HBoxContainer" parent="BannerBG/BannerFrame/VBoxContainer" unique_id=1747846705]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 12
+
+[node name="HeroSide" type="HBoxContainer" parent="BannerBG/BannerFrame/VBoxContainer/ContentRow" unique_id=1541230840]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="RuneLabel" type="Label" parent="BannerBG/BannerFrame/VBoxContainer/ContentRow/HeroSide" unique_id=2017273467]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.34901962, 0.26666668, 0.1764706, 1)
+theme_override_fonts/font = ExtResource("4_3v6cr")
+theme_override_font_sizes/font_size = 20
+text = "?"
+vertical_alignment = 1
+
+[node name="HeroNameLabel" type="Label" parent="BannerBG/BannerFrame/VBoxContainer/ContentRow/HeroSide" unique_id=492653874]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.12941177, 0.11372549, 0.09411765, 1)
+theme_override_fonts/font = ExtResource("4_3v6cr")
+theme_override_font_sizes/font_size = 14
+text = "HERO"
+vertical_alignment = 1
+
+[node name="Spacer" type="Control" parent="BannerBG/BannerFrame/VBoxContainer/ContentRow" unique_id=2105229372]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="TurnLabel" type="Label" parent="BannerBG/BannerFrame/VBoxContainer/ContentRow" unique_id=1994025786]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.12941177, 0.11372549, 0.09411765, 1)
+theme_override_fonts/font = ExtResource("5_aj41b")
+theme_override_font_sizes/font_size = 15
+text = "TURN 1 OF 20"
+vertical_alignment = 1
+
+[node name="Spacer2" type="Control" parent="BannerBG/BannerFrame/VBoxContainer" unique_id=1588999598]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2

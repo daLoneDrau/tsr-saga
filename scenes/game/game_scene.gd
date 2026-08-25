@@ -26,11 +26,11 @@
 #   - Resolve every hero/jarl/monster's starting region and place their
 #     markers on the board (BoardSpace.place_entity_markers()), all
 #     together in one call.
-#   - Once the sword reveal is dismissed: pause on the board, show a
-#     restrained "TURN X OF 20" widget, pause, fade it away, then announce
-#     the current hero (rune + name) the same way, pause, fade away.
+#   - Once the sword reveal is dismissed: pause on the board, then reveal
+#     TopBanner's turn side, pause, then reveal its hero side. The banner
+#     itself is a persistent fixture — only its content stages in.
 # Deliberately NOT yet doing (comes back in later steps):
-#   - Any other HUD/UI — banner, mover card, Hero Info, Close-Up modal.
+#   - Any other HUD/UI — mover card, Hero Info, Close-Up modal.
 #   - Region click handling / move selection.
 #   - Regional Focus reframing.
 
@@ -40,16 +40,15 @@ extends Scene
 
 @onready var _board_space: BoardSpace = %BoardSpace
 @onready var _sword_reveal_overlay: SwordRevealOverlay = %SwordRevealOverlay
-@onready var _turn_widget: TurnWidget = %TurnWidget
-@onready var _hero_plaque_widget: HeroPlaqueWidget = %HeroPlaqueWidget
+@onready var _top_banner: TopBanner = %TopBanner
 
-# How long to pause on the fully-revealed board before showing the turn
-# widget, and how long to leave each widget up before fading it — all
-# "a beat," not precisely specified, so treat these as first-guess timing
-# to adjust once seen in motion rather than exact values.
+# How long to pause on the fully-revealed board before showing anything,
+# and how long to pause between revealing the turn side and the hero side
+# of the banner — both "a beat," not precisely specified, so treat these
+# as first-guess timing to adjust once seen in motion rather than exact
+# values.
 const REVIEW_BOARD_BEAT_SECONDS := 1.0
-const READ_TURN_WIDGET_BEAT_SECONDS := 1.5
-const READ_HERO_PLAQUE_BEAT_SECONDS := 1.5
+const BETWEEN_TURN_AND_HERO_BEAT_SECONDS := 1.0
 
 
 # ---------------------------------------------------------------------------
@@ -108,23 +107,24 @@ func _on_sword_reveal_acknowledged() -> void:
 
 ## Board opens with the sword reveal dismissed and every entity's marker
 ## already in place (no entry animation — see _place_all_entity_markers()).
-## Sequence: pause on the fully-revealed board -> show "TURN X OF 20" ->
-## pause to read it -> fade it away -> announce the current hero. Only
-## makes sense once the board is actually visible, so this runs from the
-## sword reveal's dismissal, not from _ready() directly.
+## Sequence: pause on the fully-revealed board -> reveal the turn side of
+## TopBanner -> pause -> reveal the hero side. The banner frame itself is
+## persistent (shown from _ready(), never hidden) — only its two content
+## halves stage in here. Only makes sense once the board is actually
+## visible, so this runs from the sword reveal's dismissal, not from
+## _ready() directly.
 func _play_turn_intro_sequence() -> void:
 	await get_tree().create_timer(REVIEW_BOARD_BEAT_SECONDS).timeout
 
 	var turn_sys := get_registered_system(&"SagaTurnSystem") as SagaTurnSystem
 	if turn_sys == null:
-		push_warning("GameScene: SagaTurnSystem not available — skipping turn widget.")
+		push_warning("GameScene: SagaTurnSystem not available — skipping turn banner.")
 		return
 
-	_turn_widget.set_turn(turn_sys.get_current_turn(), SagaTurnSystem.MAX_TURNS)
-	_turn_widget.show_widget()
+	_top_banner.set_turn(turn_sys.get_current_turn(), SagaTurnSystem.MAX_TURNS)
+	_top_banner.reveal_turn()
 
-	await get_tree().create_timer(READ_TURN_WIDGET_BEAT_SECONDS).timeout
-	await _turn_widget.fade_out()
+	await get_tree().create_timer(BETWEEN_TURN_AND_HERO_BEAT_SECONDS).timeout
 
 	_announce_current_hero()
 
@@ -156,15 +156,8 @@ func _announce_current_hero() -> void:
 		push_warning("GameScene: current mover entity '%s' has no SagaHeroComponent." % hero_entity_id)
 		return
 
-	# HeroPlaqueWidget derives both the display name and the rune from
-	# kind_id via HeroKindTable/HERO_RUNES internally — no need to also
-	# resolve NameComponent here, since a hero's NameComponent is always
-	# set from the same HeroKindTable entry at creation and never diverges.
-	_hero_plaque_widget.set_hero(hero_comp.kind_id)
-	_hero_plaque_widget.show_widget()
-
-	await get_tree().create_timer(READ_HERO_PLAQUE_BEAT_SECONDS).timeout
-	await _hero_plaque_widget.fade_out()
+	_top_banner.set_hero(hero_comp.kind_id)
+	_top_banner.reveal_hero()
 
 #endregion
 
