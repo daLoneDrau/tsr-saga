@@ -43,11 +43,13 @@ extends Scene
 @onready var _top_banner: TopBanner = %TopBanner
 
 # How long to pause on the fully-revealed board before showing anything,
-# and how long to pause between revealing the turn side and the hero side
-# of the banner — both "a beat," not precisely specified, so treat these
-# as first-guess timing to adjust once seen in motion rather than exact
+# how long to pause after the banner appears before revealing the turn
+# side, and how long to pause between revealing the turn side and the
+# hero side — all "a beat," not precisely specified, so treat these as
+# first-guess timing to adjust once seen in motion rather than exact
 # values.
 const REVIEW_BOARD_BEAT_SECONDS := 1.0
+const AFTER_BANNER_APPEARS_BEAT_SECONDS := 0.5
 const BETWEEN_TURN_AND_HERO_BEAT_SECONDS := 1.0
 
 
@@ -111,13 +113,15 @@ func _on_sword_reveal_acknowledged() -> void:
 ## (it stays hidden entirely until this pause completes — see
 ## TopBanner.tscn's visible=false default; it was previously rendering its
 ## frame on top of the sword reveal overlay, since it's the last child in
-## the tree) -> reveal the turn side -> pause -> reveal the hero side.
-## Only makes sense once the board is actually visible, so this runs from
-## the sword reveal's dismissal, not from _ready() directly.
+## the tree) -> pause -> reveal the turn side -> pause -> reveal the hero
+## side. Only makes sense once the board is actually visible, so this runs
+## from the sword reveal's dismissal, not from _ready() directly.
 func _play_turn_intro_sequence() -> void:
 	await get_tree().create_timer(REVIEW_BOARD_BEAT_SECONDS).timeout
 
 	_top_banner.visible = true
+
+	await get_tree().create_timer(AFTER_BANNER_APPEARS_BEAT_SECONDS).timeout
 
 	var turn_sys := get_registered_system(&"SagaTurnSystem") as SagaTurnSystem
 	if turn_sys == null:
@@ -269,4 +273,4 @@ func _start_movement_phase() -> void:
 	var movement_sys := get_registered_system(&"SagaMovementSystem") as SagaMovementSystem
 	movement_sys.start_movement_phase()
 
-#endregion
+	#endregion
