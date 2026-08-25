@@ -29,4 +29,5 @@ func fade_out(duration: float = 0.6) -> void:
 	var tween := create_tween()
 	tween.tween_property(self, "modulate:a", 0.0, duration) \
 			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
-	tween.tween_callback(func() -> void: visible = false)
+	await tween.finished
+	visible = false
