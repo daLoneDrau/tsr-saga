@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://cixpjwltysnvj" path="res://scenes/game/game_scene.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://dgnjc4c06byuv" path="res://scenes/game/BoardSpace.tscn" id="2_dsxmn"]
 [ext_resource type="PackedScene" uid="uid://bv0byhqpeub5f" path="res://scenes/game/SwordRevealOverlay.tscn" id="3_ldxrm"]
+[ext_resource type="PackedScene" uid="uid://ofpncx8kvpvk" path="res://scenes/game/TurnWidget.tscn" id="4_vaave"]
 
 [node name="GameScene" type="Control" unique_id=1797217881]
 layout_mode = 3
@@ -18,5 +19,9 @@ unique_name_in_owner = true
 layout_mode = 1
 
 [node name="SwordRevealOverlay" parent="." unique_id=413210673 instance=ExtResource("3_ldxrm")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[node name="TurnWidget" parent="." unique_id=1754967989 instance=ExtResource("4_vaave")]
 unique_name_in_owner = true
 layout_mode = 1

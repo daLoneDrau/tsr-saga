@@ -26,6 +26,8 @@
 #   - Resolve every hero/jarl/monster's starting region and place their
 #     markers on the board (BoardSpace.place_entity_markers()), all
 #     together in one call.
+#   - Once the sword reveal is dismissed: pause on the board, show a
+#     restrained "TURN X OF 20" widget, pause again, fade it away.
 # Deliberately NOT yet doing (comes back in later steps):
 #   - Any other HUD/UI — banner, mover card, Hero Info, Close-Up modal.
 #   - Region click handling / move selection.
@@ -37,6 +39,14 @@ extends Scene
 
 @onready var _board_space: BoardSpace = %BoardSpace
 @onready var _sword_reveal_overlay: SwordRevealOverlay = %SwordRevealOverlay
+@onready var _turn_widget: TurnWidget = %TurnWidget
+
+# How long to pause on the fully-revealed board before showing the turn
+# widget, and how long to leave the widget up before fading it — both
+# "a beat," not precisely specified, so treat these as first-guess timing
+# to adjust once seen in motion rather than exact values.
+const REVIEW_BOARD_BEAT_SECONDS := 1.0
+const READ_TURN_WIDGET_BEAT_SECONDS := 1.5
 
 
 # ---------------------------------------------------------------------------
@@ -84,6 +94,34 @@ func do_action(_action: GameAction) -> void:
 func _on_sword_reveal_acknowledged() -> void:
 	_sword_reveal_overlay.acknowledged.disconnect(_on_sword_reveal_acknowledged)
 	_sword_reveal_overlay.queue_free()
+	_play_turn_intro_sequence()
+
+#endregion
+
+
+# ---------------------------------------------------------------------------
+#region Turn intro
+# ---------------------------------------------------------------------------
+
+## Board opens with the sword reveal dismissed and every entity's marker
+## already in place (no entry animation — see _place_all_entity_markers()).
+## Sequence: pause on the fully-revealed board -> show "TURN X OF 20" ->
+## pause to read it -> fade it away. Only makes sense once the board is
+## actually visible, so this runs from the sword reveal's dismissal, not
+## from _ready() directly.
+func _play_turn_intro_sequence() -> void:
+	await get_tree().create_timer(REVIEW_BOARD_BEAT_SECONDS).timeout
+
+	var turn_sys := get_registered_system(&"SagaTurnSystem") as SagaTurnSystem
+	if turn_sys == null:
+		push_warning("GameScene: SagaTurnSystem not available — skipping turn widget.")
+		return
+
+	_turn_widget.set_turn(turn_sys.get_current_turn(), SagaTurnSystem.MAX_TURNS)
+	_turn_widget.show_widget()
+
+	await get_tree().create_timer(READ_TURN_WIDGET_BEAT_SECONDS).timeout
+	_turn_widget.fade_out()
 
 #endregion
 
@@ -131,7 +169,10 @@ func _place_all_entity_markers() -> void:
 				"region_id": region_id,
 			})
 
-	_board_space.place_entity_markers(entities)
+	# animate=false: this is initial game setup, not a piece arriving
+	# mid-game (5.2.30's descend-and-settle is for that case) — the board
+	# should already look populated the moment it opens.
+	_board_space.place_entity_markers(entities, false)
 
 #endregion
 

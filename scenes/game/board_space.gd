@@ -46,7 +46,7 @@ const MARKER_SCENE_PATHS: Dictionary = {
 	"hero":    "res://assets/art/models/map/hero_marker_v_2.tscn",
 	"jarl":    "res://assets/art/models/map/jarl_marker_v_2.tscn",
 	"monster": "res://assets/art/models/map/monster_marker_v_2.tscn",
-}
+	}
 
 # Minimum Chebyshev distance (max of |dx|,|dy|) between two marker cells
 # that guarantees at least one empty cell buffer in every direction around
@@ -65,6 +65,7 @@ const MARKER_SETTLE_DURATION := 0.18
 const MARKER_SETTLE_SQUASH := Vector3(1.15, 0.75, 1.15)
 
 @onready var _board_root: Node3D = %BoardRoot
+@onready var _svp: Node = _board_root.get_parent()  # the SubViewport BoardRoot actually lives in — markers must be added here, not to `self` (a Control), or the 3D camera never sees them
 @onready var _yaw_pivot: Node3D = %IsoCameraRig
 @onready var _pitch_pivot: Node3D = %PitchPivot
 @onready var _camera: Camera3D = %Camera3D
@@ -158,12 +159,18 @@ func _apply_overview_framing() -> void:
 ## same frame) — this is initial spawn placement, not a piece arriving on
 ## its own, so there's no reason to stagger them relative to each other.
 ##
+## animate: whether to play the 5.2.30 descend-and-settle entry animation.
+## Defaults to true for future mid-game use (a new monster/jarl entering
+## play later), but initial game setup passes false — the board is meant
+## to already be populated the moment it opens, not visibly dropping
+## pieces in as the very first thing the player sees.
+##
 ## entities: Array[Dictionary], each: { "entity_id": String,
 ## "kind": "hero"|"jarl"|"monster", "region_id": String }. BoardSpace never
 ## resolves entity_id -> region_id itself — the caller (GameScene) already
 ## did that via SagaBoardSystem/SagaMapSystem, matching the same
 ## "rendering widget doesn't touch game systems" split map_preview.gd uses.
-func place_entity_markers(entities: Array) -> void:
+func place_entity_markers(entities: Array, animate: bool = true) -> void:
 	var by_region: Dictionary = {}  # region_id -> Array[Dictionary] (entity entries)
 	for entry: Dictionary in entities:
 		var region_id: String = entry.get("region_id", "")
@@ -175,10 +182,10 @@ func place_entity_markers(entities: Array) -> void:
 		by_region[region_id].append(entry)
 
 	for region_id: String in by_region.keys():
-		_place_region_markers(region_id, by_region[region_id])
+		_place_region_markers(region_id, by_region[region_id], animate)
 
 
-func _place_region_markers(region_id: String, region_entities: Array) -> void:
+func _place_region_markers(region_id: String, region_entities: Array, animate: bool) -> void:
 	var cells: Array = _cells_by_region.get(region_id, [])
 	if cells.is_empty():
 		push_warning("BoardSpace: region '%s' has no cells in cell_markers.json — can't place %d entit%s there." % [region_id, region_entities.size(), "y" if region_entities.size() == 1 else "ies"])
@@ -191,11 +198,10 @@ func _place_region_markers(region_id: String, region_entities: Array) -> void:
 	for i in range(min(chosen_cells.size(), region_entities.size())):
 		var cell: Dictionary = chosen_cells[i]
 		var entry: Dictionary = region_entities[i]
-		_place_single_marker(entry, cell)
+		_place_single_marker(entry, cell, animate)
 
 
-func _place_single_marker(entry: Dictionary, cell: Dictionary) -> void:
-	print("_place_single_marker(", entry)
+func _place_single_marker(entry: Dictionary, cell: Dictionary, animate: bool) -> void:
 	var entity_id: String = entry.get("entity_id", "")
 	var kind: String = entry.get("kind", "")
 	var cell_name: String = cell.get("name", "")
@@ -228,9 +234,12 @@ func _place_single_marker(entry: Dictionary, cell: Dictionary) -> void:
 		push_error("BoardSpace: marker scene root is not a Node3D at %s" % scene_path)
 		return
 
-	add_child(marker)
+	_svp.add_child(marker)
 	_apply_outline_scale_to_marker(marker)
-	_animate_marker_entry(marker, world_pos)
+	if animate:
+		_animate_marker_entry(marker, world_pos)
+	else:
+		marker.global_position = world_pos
 	_entity_markers[entity_id] = marker
 
 
