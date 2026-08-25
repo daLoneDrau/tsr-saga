@@ -192,21 +192,21 @@
     {
       "name": "cell_6_2_Hebrides_x027_y000",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 27,
       "y": 0
     },
     {
       "name": "cell_6_2_Hebrides_x028_y000",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 28,
       "y": 0
     },
     {
       "name": "cell_6_2_Hebrides_x029_y000",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 29,
       "y": 0
     },
@@ -801,28 +801,28 @@
     {
       "name": "cell_6_2_Hebrides_x026_y001",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 26,
       "y": 1
     },
     {
       "name": "cell_6_2_Hebrides_x027_y001",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 27,
       "y": 1
     },
     {
       "name": "cell_6_2_Hebrides_x028_y001",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 28,
       "y": 1
     },
     {
       "name": "cell_6_2_Hebrides_x029_y001",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 29,
       "y": 1
     },
@@ -1403,21 +1403,21 @@
     {
       "name": "cell_6_2_Hebrides_x024_y002",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 24,
       "y": 2
     },
     {
       "name": "cell_6_2_Hebrides_x025_y002",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 25,
       "y": 2
     },
     {
       "name": "cell_6_2_Hebrides_x026_y002",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 26,
       "y": 2
     },
@@ -1431,14 +1431,14 @@
     {
       "name": "cell_6_2_Hebrides_x028_y002",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 28,
       "y": 2
     },
     {
       "name": "cell_6_2_Hebrides_x029_y002",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 29,
       "y": 2
     },
@@ -2005,28 +2005,28 @@
     {
       "name": "cell_6_2_Hebrides_x022_y003",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 22,
       "y": 3
     },
     {
       "name": "cell_6_2_Hebrides_x023_y003",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 23,
       "y": 3
     },
     {
       "name": "cell_6_2_Hebrides_x024_y003",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 24,
       "y": 3
     },
     {
       "name": "cell_6_2_Hebrides_x025_y003",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 25,
       "y": 3
     },
@@ -2054,7 +2054,7 @@
     {
       "name": "cell_6_2_Hebrides_x029_y003",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 29,
       "y": 3
     },
@@ -2607,35 +2607,35 @@
     {
       "name": "cell_6_2_Hebrides_x020_y004",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 20,
       "y": 4
     },
     {
       "name": "cell_6_2_Hebrides_x021_y004",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 21,
       "y": 4
     },
     {
       "name": "cell_6_2_Hebrides_x022_y004",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 22,
       "y": 4
     },
     {
       "name": "cell_6_2_Hebrides_x023_y004",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 23,
       "y": 4
     },
     {
       "name": "cell_6_2_Hebrides_x024_y004",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 24,
       "y": 4
     },
@@ -2649,7 +2649,7 @@
     {
       "name": "cell_6_2_Hebrides_x026_y004",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 26,
       "y": 4
     },
@@ -2663,7 +2663,7 @@
     {
       "name": "cell_6_2_Hebrides_x028_y004",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 28,
       "y": 4
     },
@@ -2964,7 +2964,7 @@
     {
       "name": "cell_1_2_Trondheim_x071_y004",
       "region": "1_2_Trondheim",
-      "type": "land",
+      "type": "sea",
       "x": 71,
       "y": 4
     },
@@ -3216,42 +3216,42 @@
     {
       "name": "cell_6_2_Hebrides_x019_y005",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 19,
       "y": 5
     },
     {
       "name": "cell_6_2_Hebrides_x020_y005",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 20,
       "y": 5
     },
     {
       "name": "cell_6_2_Hebrides_x021_y005",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 21,
       "y": 5
     },
     {
       "name": "cell_6_2_Hebrides_x022_y005",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 22,
       "y": 5
     },
     {
       "name": "cell_6_2_Hebrides_x023_y005",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 23,
       "y": 5
     },
     {
       "name": "cell_6_2_Hebrides_x024_y005",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 24,
       "y": 5
     },
@@ -3265,21 +3265,21 @@
     {
       "name": "cell_6_2_Hebrides_x026_y005",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 26,
       "y": 5
     },
     {
       "name": "cell_6_2_Hebrides_x027_y005",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 27,
       "y": 5
     },
     {
       "name": "cell_6_2_Hebrides_x028_y005",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 28,
       "y": 5
     },
@@ -3832,28 +3832,28 @@
     {
       "name": "cell_6_2_Hebrides_x019_y006",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 19,
       "y": 6
     },
     {
       "name": "cell_6_2_Hebrides_x020_y006",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 20,
       "y": 6
     },
     {
       "name": "cell_6_2_Hebrides_x021_y006",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 21,
       "y": 6
     },
     {
       "name": "cell_6_2_Hebrides_x022_y006",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 22,
       "y": 6
     },
@@ -3881,21 +3881,21 @@
     {
       "name": "cell_6_2_Hebrides_x026_y006",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 26,
       "y": 6
     },
     {
       "name": "cell_6_2_Hebrides_x027_y006",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 27,
       "y": 6
     },
     {
       "name": "cell_6_2_Hebrides_x028_y006",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 28,
       "y": 6
     },
@@ -4441,28 +4441,28 @@
     {
       "name": "cell_6_2_Hebrides_x018_y007",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 18,
       "y": 7
     },
     {
       "name": "cell_6_2_Hebrides_x019_y007",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 19,
       "y": 7
     },
     {
       "name": "cell_6_2_Hebrides_x020_y007",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 20,
       "y": 7
     },
     {
       "name": "cell_6_2_Hebrides_x021_y007",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 21,
       "y": 7
     },
@@ -4497,21 +4497,21 @@
     {
       "name": "cell_6_2_Hebrides_x026_y007",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 26,
       "y": 7
     },
     {
       "name": "cell_6_2_Hebrides_x027_y007",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 27,
       "y": 7
     },
     {
       "name": "cell_6_2_Hebrides_x028_y007",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 28,
       "y": 7
     },
@@ -4525,14 +4525,14 @@
     {
       "name": "cell_6_1_Pictland_x030_y007",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 30,
       "y": 7
     },
     {
       "name": "cell_6_1_Pictland_x031_y007",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 31,
       "y": 7
     },
@@ -5050,28 +5050,28 @@
     {
       "name": "cell_6_2_Hebrides_x017_y008",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 17,
       "y": 8
     },
     {
       "name": "cell_6_2_Hebrides_x018_y008",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 18,
       "y": 8
     },
     {
       "name": "cell_6_2_Hebrides_x019_y008",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 19,
       "y": 8
     },
     {
       "name": "cell_6_2_Hebrides_x020_y008",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 20,
       "y": 8
     },
@@ -5099,42 +5099,42 @@
     {
       "name": "cell_6_2_Hebrides_x024_y008",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 24,
       "y": 8
     },
     {
       "name": "cell_6_2_Hebrides_x025_y008",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 25,
       "y": 8
     },
     {
       "name": "cell_6_2_Hebrides_x026_y008",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 26,
       "y": 8
     },
     {
       "name": "cell_6_1_Pictland_x027_y008",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 27,
       "y": 8
     },
     {
       "name": "cell_6_1_Pictland_x028_y008",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 28,
       "y": 8
     },
     {
       "name": "cell_6_1_Pictland_x029_y008",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 29,
       "y": 8
     },
@@ -5148,49 +5148,49 @@
     {
       "name": "cell_6_1_Pictland_x031_y008",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 31,
       "y": 8
     },
     {
       "name": "cell_6_1_Pictland_x032_y008",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 32,
       "y": 8
     },
     {
       "name": "cell_6_1_Pictland_x033_y008",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 33,
       "y": 8
     },
     {
       "name": "cell_6_1_Pictland_x034_y008",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 34,
       "y": 8
     },
     {
       "name": "cell_6_1_Pictland_x035_y008",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 35,
       "y": 8
     },
     {
       "name": "cell_6_1_Pictland_x036_y008",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 36,
       "y": 8
     },
     {
       "name": "cell_6_1_Pictland_x037_y008",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 37,
       "y": 8
     },
@@ -5666,14 +5666,14 @@
     {
       "name": "cell_6_2_Hebrides_x017_y009",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 17,
       "y": 9
     },
     {
       "name": "cell_6_2_Hebrides_x018_y009",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 18,
       "y": 9
     },
@@ -5715,21 +5715,21 @@
     {
       "name": "cell_6_2_Hebrides_x024_y009",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 24,
       "y": 9
     },
     {
       "name": "cell_6_2_Hebrides_x025_y009",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 25,
       "y": 9
     },
     {
       "name": "cell_6_1_Pictland_x026_y009",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 26,
       "y": 9
     },
@@ -5771,14 +5771,14 @@
     {
       "name": "cell_6_1_Pictland_x032_y009",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 32,
       "y": 9
     },
     {
       "name": "cell_6_1_Pictland_x033_y009",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 33,
       "y": 9
     },
@@ -5799,21 +5799,21 @@
     {
       "name": "cell_6_1_Pictland_x036_y009",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 36,
       "y": 9
     },
     {
       "name": "cell_6_1_Pictland_x037_y009",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 37,
       "y": 9
     },
     {
       "name": "cell_6_1_Pictland_x038_y009",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 38,
       "y": 9
     },
@@ -6275,14 +6275,14 @@
     {
       "name": "cell_6_2_Hebrides_x016_y010",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 16,
       "y": 10
     },
     {
       "name": "cell_6_2_Hebrides_x017_y010",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 17,
       "y": 10
     },
@@ -6310,35 +6310,35 @@
     {
       "name": "cell_6_2_Hebrides_x021_y010",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 21,
       "y": 10
     },
     {
       "name": "cell_6_2_Hebrides_x022_y010",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 22,
       "y": 10
     },
     {
       "name": "cell_6_2_Hebrides_x023_y010",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 23,
       "y": 10
     },
     {
       "name": "cell_6_2_Hebrides_x024_y010",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 24,
       "y": 10
     },
     {
       "name": "cell_6_1_Pictland_x025_y010",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 25,
       "y": 10
     },
@@ -6394,14 +6394,14 @@
     {
       "name": "cell_6_1_Pictland_x033_y010",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 33,
       "y": 10
     },
     {
       "name": "cell_6_1_Pictland_x034_y010",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 34,
       "y": 10
     },
@@ -6415,21 +6415,21 @@
     {
       "name": "cell_6_1_Pictland_x036_y010",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 36,
       "y": 10
     },
     {
       "name": "cell_6_1_Pictland_x037_y010",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 37,
       "y": 10
     },
     {
       "name": "cell_6_1_Pictland_x038_y010",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 38,
       "y": 10
     },
@@ -6884,21 +6884,21 @@
     {
       "name": "cell_6_2_Hebrides_x015_y011",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 15,
       "y": 11
     },
     {
       "name": "cell_6_2_Hebrides_x016_y011",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 16,
       "y": 11
     },
     {
       "name": "cell_6_2_Hebrides_x017_y011",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 17,
       "y": 11
     },
@@ -6919,35 +6919,35 @@
     {
       "name": "cell_6_2_Hebrides_x020_y011",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 20,
       "y": 11
     },
     {
       "name": "cell_6_2_Hebrides_x021_y011",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 21,
       "y": 11
     },
     {
       "name": "cell_6_2_Hebrides_x022_y011",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 22,
       "y": 11
     },
     {
       "name": "cell_6_2_Hebrides_x023_y011",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 23,
       "y": 11
     },
     {
       "name": "cell_6_1_Pictland_x024_y011",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 24,
       "y": 11
     },
@@ -7010,14 +7010,14 @@
     {
       "name": "cell_6_1_Pictland_x033_y011",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 33,
       "y": 11
     },
     {
       "name": "cell_6_1_Pictland_x034_y011",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 34,
       "y": 11
     },
@@ -7031,21 +7031,21 @@
     {
       "name": "cell_6_1_Pictland_x036_y011",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 36,
       "y": 11
     },
     {
       "name": "cell_6_1_Pictland_x037_y011",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 37,
       "y": 11
     },
     {
       "name": "cell_6_1_Pictland_x038_y011",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 38,
       "y": 11
     },
@@ -7500,21 +7500,21 @@
     {
       "name": "cell_6_2_Hebrides_x015_y012",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 15,
       "y": 12
     },
     {
       "name": "cell_6_2_Hebrides_x016_y012",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 16,
       "y": 12
     },
     {
       "name": "cell_6_2_Hebrides_x017_y012",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 17,
       "y": 12
     },
@@ -7549,14 +7549,14 @@
     {
       "name": "cell_6_2_Hebrides_x022_y012",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 22,
       "y": 12
     },
     {
       "name": "cell_6_1_Pictland_x023_y012",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 23,
       "y": 12
     },
@@ -7626,42 +7626,42 @@
     {
       "name": "cell_6_1_Pictland_x033_y012",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 33,
       "y": 12
     },
     {
       "name": "cell_6_1_Pictland_x034_y012",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 34,
       "y": 12
     },
     {
       "name": "cell_6_1_Pictland_x035_y012",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 35,
       "y": 12
     },
     {
       "name": "cell_6_1_Pictland_x036_y012",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 36,
       "y": 12
     },
     {
       "name": "cell_6_1_Pictland_x037_y012",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 37,
       "y": 12
     },
     {
       "name": "cell_6_1_Pictland_x038_y012",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 38,
       "y": 12
     },
@@ -8123,7 +8123,7 @@
     {
       "name": "cell_6_2_Hebrides_x016_y013",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 16,
       "y": 13
     },
@@ -8158,14 +8158,14 @@
     {
       "name": "cell_6_2_Hebrides_x021_y013",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 21,
       "y": 13
     },
     {
       "name": "cell_6_1_Pictland_x022_y013",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 22,
       "y": 13
     },
@@ -8228,35 +8228,35 @@
     {
       "name": "cell_6_1_Pictland_x031_y013",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 31,
       "y": 13
     },
     {
       "name": "cell_6_1_Pictland_x032_y013",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 32,
       "y": 13
     },
     {
       "name": "cell_6_1_Pictland_x033_y013",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 33,
       "y": 13
     },
     {
       "name": "cell_6_1_Pictland_x034_y013",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 34,
       "y": 13
     },
     {
       "name": "cell_6_1_Pictland_x035_y013",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 35,
       "y": 13
     },
@@ -8739,7 +8739,7 @@
     {
       "name": "cell_6_2_Hebrides_x016_y014",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 16,
       "y": 14
     },
@@ -8774,7 +8774,7 @@
     {
       "name": "cell_6_1_Pictland_x021_y014",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 21,
       "y": 14
     },
@@ -8844,21 +8844,21 @@
     {
       "name": "cell_6_1_Pictland_x031_y014",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 31,
       "y": 14
     },
     {
       "name": "cell_6_1_Pictland_x032_y014",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 32,
       "y": 14
     },
     {
       "name": "cell_6_1_Pictland_x033_y014",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 33,
       "y": 14
     },
@@ -9355,35 +9355,35 @@
     {
       "name": "cell_6_2_Hebrides_x016_y015",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 16,
       "y": 15
     },
     {
       "name": "cell_6_2_Hebrides_x017_y015",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 17,
       "y": 15
     },
     {
       "name": "cell_6_2_Hebrides_x018_y015",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 18,
       "y": 15
     },
     {
       "name": "cell_6_2_Hebrides_x019_y015",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 19,
       "y": 15
     },
     {
       "name": "cell_6_1_Pictland_x020_y015",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 20,
       "y": 15
     },
@@ -9978,14 +9978,14 @@
     {
       "name": "cell_6_2_Hebrides_x017_y016",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 17,
       "y": 16
     },
     {
       "name": "cell_6_2_Hebrides_x018_y016",
       "region": "6_2_Hebrides",
-      "type": "land",
+      "type": "sea",
       "x": 18,
       "y": 16
     },
@@ -9999,14 +9999,14 @@
     {
       "name": "cell_6_1_Pictland_x020_y016",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 20,
       "y": 16
     },
     {
       "name": "cell_6_1_Pictland_x021_y016",
       "region": "6_1_Pictland",
-      "type": "land",
+      "type": "sea",
       "x": 21,
       "y": 16
     },
@@ -12456,7 +12456,7 @@
     {
       "name": "cell_5_5_Dalriada_x019_y020",
       "region": "5_5_Dalriada",
-      "type": "land",
+      "type": "sea",
       "x": 19,
       "y": 20
     },
@@ -12708,7 +12708,7 @@
     {
       "name": "cell_1_5_Agdar_x055_y020",
       "region": "1_5_Agdar",
-      "type": "land",
+      "type": "sea",
       "x": 55,
       "y": 20
     },
@@ -13079,7 +13079,7 @@
     {
       "name": "cell_5_5_Dalriada_x020_y021",
       "region": "5_5_Dalriada",
-      "type": "land",
+      "type": "sea",
       "x": 20,
       "y": 21
     },
@@ -18623,7 +18623,7 @@
     {
       "name": "cell_5_4_Northumberland_x020_y030",
       "region": "5_4_Northumberland",
-      "type": "land",
+      "type": "sea",
       "x": 20,
       "y": 30
     },
@@ -20450,7 +20450,7 @@
     {
       "name": "cell_5_3_Gwynedd_x017_y033",
       "region": "5_3_Gwynedd",
-      "type": "land",
+      "type": "sea",
       "x": 17,
       "y": 33
     },
@@ -21038,7 +21038,7 @@
     {
       "name": "cell_5_3_Gwynedd_x013_y034",
       "region": "5_3_Gwynedd",
-      "type": "land",
+      "type": "sea",
       "x": 13,
       "y": 34
     },
@@ -23474,7 +23474,7 @@
     {
       "name": "cell_5_2_Daffyd_x009_y038",
       "region": "5_2_Daffyd",
-      "type": "land",
+      "type": "sea",
       "x": 9,
       "y": 38
     },
@@ -26281,49 +26281,49 @@
     {
       "name": "cell_2_6_Scandia_x058_y042",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 58,
       "y": 42
     },
     {
       "name": "cell_2_6_Scandia_x059_y042",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 59,
       "y": 42
     },
     {
       "name": "cell_2_6_Scandia_x060_y042",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 60,
       "y": 42
     },
     {
       "name": "cell_2_6_Scandia_x061_y042",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 61,
       "y": 42
     },
     {
       "name": "cell_2_6_Scandia_x062_y042",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 62,
       "y": 42
     },
     {
       "name": "cell_2_6_Scandia_x063_y042",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 63,
       "y": 42
     },
     {
       "name": "cell_2_6_Scandia_x064_y042",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 64,
       "y": 42
     },
@@ -26883,35 +26883,35 @@
     {
       "name": "cell_2_6_Scandia_x056_y043",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 56,
       "y": 43
     },
     {
       "name": "cell_2_6_Scandia_x057_y043",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 57,
       "y": 43
     },
     {
       "name": "cell_2_6_Scandia_x058_y043",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 58,
       "y": 43
     },
     {
       "name": "cell_2_6_Scandia_x059_y043",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 59,
       "y": 43
     },
     {
       "name": "cell_2_6_Scandia_x060_y043",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 60,
       "y": 43
     },
@@ -26932,14 +26932,14 @@
     {
       "name": "cell_2_6_Scandia_x063_y043",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 63,
       "y": 43
     },
     {
       "name": "cell_2_6_Scandia_x064_y043",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 64,
       "y": 43
     },
@@ -27044,7 +27044,7 @@
     {
       "name": "cell_01_x079_y043",
       "region": "01",
-      "type": "sea",
+      "type": "land",
       "x": 79,
       "y": 43
     },
@@ -27492,21 +27492,21 @@
     {
       "name": "cell_2_6_Scandia_x055_y044",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 55,
       "y": 44
     },
     {
       "name": "cell_2_6_Scandia_x056_y044",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 56,
       "y": 44
     },
     {
       "name": "cell_2_6_Scandia_x057_y044",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 57,
       "y": 44
     },
@@ -27548,14 +27548,14 @@
     {
       "name": "cell_2_6_Scandia_x063_y044",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 63,
       "y": 44
     },
     {
       "name": "cell_2_6_Scandia_x064_y044",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 64,
       "y": 44
     },
@@ -27660,7 +27660,7 @@
     {
       "name": "cell_01_x079_y044",
       "region": "01",
-      "type": "sea",
+      "type": "land",
       "x": 79,
       "y": 44
     },
@@ -28108,14 +28108,14 @@
     {
       "name": "cell_2_6_Scandia_x055_y045",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 55,
       "y": 45
     },
     {
       "name": "cell_2_6_Scandia_x056_y045",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 56,
       "y": 45
     },
@@ -28164,14 +28164,14 @@
     {
       "name": "cell_2_6_Scandia_x063_y045",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 63,
       "y": 45
     },
     {
       "name": "cell_2_6_Scandia_x064_y045",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 64,
       "y": 45
     },
@@ -28269,14 +28269,14 @@
     {
       "name": "cell_01_x078_y045",
       "region": "01",
-      "type": "sea",
+      "type": "land",
       "x": 78,
       "y": 45
     },
     {
       "name": "cell_01_x079_y045",
       "region": "01",
-      "type": "sea",
+      "type": "land",
       "x": 79,
       "y": 45
     },
@@ -28724,14 +28724,14 @@
     {
       "name": "cell_2_6_Scandia_x055_y046",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 55,
       "y": 46
     },
     {
       "name": "cell_2_6_Scandia_x056_y046",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 56,
       "y": 46
     },
@@ -28780,14 +28780,14 @@
     {
       "name": "cell_2_6_Scandia_x063_y046",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 63,
       "y": 46
     },
     {
       "name": "cell_2_6_Scandia_x064_y046",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 64,
       "y": 46
     },
@@ -28885,7 +28885,7 @@
     {
       "name": "cell_01_x078_y046",
       "region": "01",
-      "type": "sea",
+      "type": "land",
       "x": 78,
       "y": 46
     },
@@ -29340,14 +29340,14 @@
     {
       "name": "cell_2_6_Scandia_x055_y047",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 55,
       "y": 47
     },
     {
       "name": "cell_2_6_Scandia_x056_y047",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 56,
       "y": 47
     },
@@ -29396,14 +29396,14 @@
     {
       "name": "cell_2_6_Scandia_x063_y047",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 63,
       "y": 47
     },
     {
       "name": "cell_2_6_Scandia_x064_y047",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 64,
       "y": 47
     },
@@ -29494,14 +29494,14 @@
     {
       "name": "cell_01_x077_y047",
       "region": "01",
-      "type": "sea",
+      "type": "land",
       "x": 77,
       "y": 47
     },
     {
       "name": "cell_01_x078_y047",
       "region": "01",
-      "type": "sea",
+      "type": "land",
       "x": 78,
       "y": 47
     },
@@ -29956,14 +29956,14 @@
     {
       "name": "cell_2_6_Scandia_x055_y048",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 55,
       "y": 48
     },
     {
       "name": "cell_2_6_Scandia_x056_y048",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 56,
       "y": 48
     },
@@ -30005,14 +30005,14 @@
     {
       "name": "cell_2_6_Scandia_x062_y048",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 62,
       "y": 48
     },
     {
       "name": "cell_2_6_Scandia_x063_y048",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 63,
       "y": 48
     },
@@ -30453,7 +30453,7 @@
     {
       "name": "cell_3_4_Fenland_x038_y049",
       "region": "3_4_Fenland",
-      "type": "land",
+      "type": "sea",
       "x": 38,
       "y": 49
     },
@@ -30572,28 +30572,28 @@
     {
       "name": "cell_2_6_Scandia_x055_y049",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 55,
       "y": 49
     },
     {
       "name": "cell_2_6_Scandia_x056_y049",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 56,
       "y": 49
     },
     {
       "name": "cell_2_6_Scandia_x057_y049",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 57,
       "y": 49
     },
     {
       "name": "cell_2_6_Scandia_x058_y049",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 58,
       "y": 49
     },
@@ -30621,14 +30621,14 @@
     {
       "name": "cell_2_6_Scandia_x062_y049",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 62,
       "y": 49
     },
     {
       "name": "cell_2_6_Scandia_x063_y049",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 63,
       "y": 49
     },
@@ -31202,42 +31202,42 @@
     {
       "name": "cell_2_6_Scandia_x057_y050",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 57,
       "y": 50
     },
     {
       "name": "cell_2_6_Scandia_x058_y050",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 58,
       "y": 50
     },
     {
       "name": "cell_2_6_Scandia_x059_y050",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 59,
       "y": 50
     },
     {
       "name": "cell_2_6_Scandia_x060_y050",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 60,
       "y": 50
     },
     {
       "name": "cell_2_6_Scandia_x061_y050",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 61,
       "y": 50
     },
     {
       "name": "cell_2_6_Scandia_x062_y050",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 62,
       "y": 50
     },
@@ -31818,35 +31818,35 @@
     {
       "name": "cell_2_6_Scandia_x057_y051",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 57,
       "y": 51
     },
     {
       "name": "cell_2_6_Scandia_x058_y051",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 58,
       "y": 51
     },
     {
       "name": "cell_2_6_Scandia_x059_y051",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 59,
       "y": 51
     },
     {
       "name": "cell_2_6_Scandia_x060_y051",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 60,
       "y": 51
     },
     {
       "name": "cell_2_6_Scandia_x061_y051",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 61,
       "y": 51
     },
@@ -31895,14 +31895,14 @@
     {
       "name": "cell_03_x068_y051",
       "region": "03",
-      "type": "sea",
+      "type": "land",
       "x": 68,
       "y": 51
     },
     {
       "name": "cell_03_x069_y051",
       "region": "03",
-      "type": "sea",
+      "type": "land",
       "x": 69,
       "y": 51
     },
@@ -32434,21 +32434,21 @@
     {
       "name": "cell_2_6_Scandia_x057_y052",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 57,
       "y": 52
     },
     {
       "name": "cell_2_6_Scandia_x058_y052",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 58,
       "y": 52
     },
     {
       "name": "cell_2_6_Scandia_x059_y052",
       "region": "2_6_Scandia",
-      "type": "land",
+      "type": "sea",
       "x": 59,
       "y": 52
     },
@@ -32511,14 +32511,14 @@
     {
       "name": "cell_03_x068_y052",
       "region": "03",
-      "type": "sea",
+      "type": "land",
       "x": 68,
       "y": 52
     },
     {
       "name": "cell_03_x069_y052",
       "region": "03",
-      "type": "sea",
+      "type": "land",
       "x": 69,
       "y": 52
     },
@@ -33477,7 +33477,7 @@
     {
       "name": "cell_3_6_Frisia_x030_y054",
       "region": "3_6_Frisia",
-      "type": "land",
+      "type": "sea",
       "x": 30,
       "y": 54
     },
@@ -36893,7 +36893,7 @@
     {
       "name": "cell_3_1_Pomerania_x078_y059",
       "region": "3_1_Pomerania",
-      "type": "land",
+      "type": "sea",
       "x": 78,
       "y": 59
     },

@@ -1,0 +1,198 @@
+[gd_scene format=3 uid="uid://bv0byhqpeub5f"]
+
+[ext_resource type="Script" uid="uid://buu118ys8k16r" path="res://scenes/game/sword_reveal_overlay.gd" id="1_xexmd"]
+[ext_resource type="FontFile" uid="uid://dgwtsq67ho0cr" path="res://assets/fonts/IMFellEnglish-Regular.ttf" id="2_xt5xo"]
+[ext_resource type="Texture2D" uid="uid://ct5psr5fheqjs" path="res://assets/art/ui/medieval_button_32.png" id="3_7e8kq"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lx154"]
+bg_color = Color(0.87, 0.8, 0.64, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.34901962, 0.26666668, 0.1764706, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xexmd"]
+bg_color = Color(0.95, 0.91, 0.8, 0.6)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.34901962, 0.26666668, 0.1764706, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jabwy"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+texture = ExtResource("3_7e8kq")
+texture_margin_left = 10.0
+texture_margin_top = 5.0
+texture_margin_right = 10.0
+texture_margin_bottom = 5.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_1tr3q"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+texture = ExtResource("3_7e8kq")
+texture_margin_left = 10.0
+texture_margin_top = 5.0
+texture_margin_right = 10.0
+texture_margin_bottom = 5.0
+modulate_color = Color(0.72, 0.72, 0.72, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jdvj4"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+texture = ExtResource("3_7e8kq")
+texture_margin_left = 10.0
+texture_margin_top = 5.0
+texture_margin_right = 10.0
+texture_margin_bottom = 5.0
+modulate_color = Color(1.15, 1.1, 0.9, 1)
+
+[node name="SwordRevealOverlay" type="Control" unique_id=413210673]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+script = ExtResource("1_xexmd")
+
+[node name="Scrim" type="ColorRect" parent="." unique_id=1704296490]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+color = Color(0, 0, 0, 0.55)
+
+[node name="Card" type="PanelContainer" parent="." unique_id=483178845]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -230.0
+offset_top = -210.0
+offset_right = 230.0
+offset_bottom = 210.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_lx154")
+
+[node name="CardContent" type="Control" parent="Card" unique_id=181650734]
+layout_mode = 2
+mouse_filter = 1
+
+[node name="HeroLine" type="Label" parent="Card/CardContent" unique_id=910538337]
+layout_mode = 0
+offset_top = 46.0
+offset_right = 460.0
+offset_bottom = 66.0
+theme_override_colors/font_color = Color(0.34901962, 0.26666668, 0.1764706, 1)
+theme_override_font_sizes/font_size = 14
+text = "..."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SwordNameLabel" type="RichTextLabel" parent="Card/CardContent" unique_id=589262690]
+unique_name_in_owner = true
+layout_mode = 0
+offset_top = 70.0
+offset_right = 460.0
+offset_bottom = 104.0
+theme_override_colors/default_color = Color(0.9411765, 0.8862745, 0.7372549, 1)
+theme_override_font_sizes/normal_font_size = 22
+bbcode_enabled = true
+text = "..."
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+shortcut_keys_enabled = false
+horizontal_alignment = 1
+
+[node name="SwordVisual" type="Control" parent="Card/CardContent" unique_id=260917545]
+anchors_preset = 0
+offset_top = 108.0
+offset_right = 460.0
+offset_bottom = 300.0
+mouse_filter = 1
+
+[node name="SwordVisualBackdrop" type="PanelContainer" parent="Card/CardContent/SwordVisual" unique_id=982654071]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -110.0
+offset_top = -85.0
+offset_right = 110.0
+offset_bottom = 85.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_xexmd")
+
+[node name="SwordSilhouette" type="Node2D" parent="Card/CardContent/SwordVisual" unique_id=835920180]
+unique_name_in_owner = true
+position = Vector2(230, 140)
+
+[node name="Blade" type="Polygon2D" parent="Card/CardContent/SwordVisual/SwordSilhouette" unique_id=708798972]
+color = Color(0.34901962, 0.26666668, 0.1764706, 1)
+polygon = PackedVector2Array(0, -71, 5, -60, 5, -11, -5, -11, -5, -60)
+
+[node name="Crossguard" type="Polygon2D" parent="Card/CardContent/SwordVisual/SwordSilhouette" unique_id=1927813646]
+color = Color(0.34901962, 0.26666668, 0.1764706, 1)
+polygon = PackedVector2Array(-22, -11, 22, -11, 22, -4, -22, -4)
+
+[node name="Grip" type="Polygon2D" parent="Card/CardContent/SwordVisual/SwordSilhouette" unique_id=407412385]
+color = Color(0.34901962, 0.26666668, 0.1764706, 1)
+polygon = PackedVector2Array(-4, -4, 4, -4, 4, 34, -4, 34)
+
+[node name="Pommel" type="Polygon2D" parent="Card/CardContent/SwordVisual/SwordSilhouette" unique_id=994764535]
+color = Color(0.34901962, 0.26666668, 0.1764706, 1)
+polygon = PackedVector2Array(0, 34, 8, 42, 0, 50, -8, 42)
+
+[node name="RulesTextLabel" type="Label" parent="Card/CardContent" unique_id=1556759503]
+unique_name_in_owner = true
+layout_mode = 0
+offset_top = 306.0
+offset_right = 460.0
+offset_bottom = 350.0
+theme_override_colors/font_color = Color(0.12941177, 0.11372549, 0.09411765, 1)
+theme_override_font_sizes/font_size = 14
+text = "..."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="ContinueButton" type="Button" parent="Card/CardContent" unique_id=517069322]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 112.0
+offset_bottom = 35.0
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_override_colors/font_color = Color(0.9411765, 0.8862745, 0.7372549, 1)
+theme_override_colors/font_pressed_color = Color(0.9411765, 0.8862745, 0.7372549, 1)
+theme_override_colors/font_hover_color = Color(0.9411765, 0.8862745, 0.7372549, 1)
+theme_override_fonts/font = ExtResource("2_xt5xo")
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxTexture_jabwy")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_1tr3q")
+theme_override_styles/hover = SubResource("StyleBoxTexture_jdvj4")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_jabwy")
+theme_override_styles/focus = SubResource("StyleBoxTexture_jabwy")
+text = "CONTINUE"

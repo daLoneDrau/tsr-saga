@@ -29,14 +29,3 @@ light_energy = 1.2
 [node name="Camera3D" type="Camera3D" parent="YawPivot/PitchPivot" unique_id=1320590110]
 projection = 1
 current = true
-
-[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=77929581]
-
-[node name="Readout" type="Label" parent="CanvasLayer" unique_id=810191986]
-offset_left = 8.0
-offset_top = 8.0
-offset_right = 480.0
-offset_bottom = 120.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 14
-text = "computing..."
