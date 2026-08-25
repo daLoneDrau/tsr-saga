@@ -21,10 +21,14 @@
 #   - Kick off turn 1's movement phase on enter.
 #   - Render the board via BoardSpace, at the locked Board Overview
 #     camera framing.
+#   - Show the Magic Sword Reveal overlay on load, and dismiss it once
+#     the player acknowledges it (CONTINUE), revealing the board beneath.
+#   - Resolve every hero/jarl/monster's starting region and place their
+#     markers on the board (BoardSpace.place_entity_markers()), all
+#     together in one call.
 # Deliberately NOT yet doing (comes back in later steps):
-#   - Any HUD/UI — banner, mover card, Hero Info, Close-Up modal.
+#   - Any other HUD/UI — banner, mover card, Hero Info, Close-Up modal.
 #   - Region click handling / move selection.
-#   - Occupant markers on the board.
 #   - Regional Focus reframing.
 
 class_name GameScene
@@ -32,6 +36,7 @@ extends Scene
 
 
 @onready var _board_space: BoardSpace = %BoardSpace
+@onready var _sword_reveal_overlay: SwordRevealOverlay = %SwordRevealOverlay
 
 
 # ---------------------------------------------------------------------------
@@ -55,14 +60,80 @@ func _enter_tree() -> void:
 func _ready() -> void:
 	_register_systems()
 	_start_movement_phase()
+	_sword_reveal_overlay.acknowledged.connect(_on_sword_reveal_acknowledged)
+	_place_all_entity_markers()
 
 
 func on_exit() -> void:
-	pass  # nothing wired yet to unwire — comes back with the redesigned UI
+	if is_instance_valid(_sword_reveal_overlay) and _sword_reveal_overlay.acknowledged.is_connected(_on_sword_reveal_acknowledged):
+		_sword_reveal_overlay.acknowledged.disconnect(_on_sword_reveal_acknowledged)
 
 
 func do_action(_action: GameAction) -> void:
 	pass  # no keyboard-driven actions yet — board/UI interaction comes back in later steps
+
+
+# ---------------------------------------------------------------------------
+#region Sword reveal
+# ---------------------------------------------------------------------------
+
+## The overlay never removes itself (see sword_reveal_overlay.gd) — this is
+## the "GameScene decides what's on screen" half of that contract. Once
+## freed, the Scrim + Card go with it, leaving BoardSpace as the only
+## thing left rendering underneath.
+func _on_sword_reveal_acknowledged() -> void:
+	_sword_reveal_overlay.acknowledged.disconnect(_on_sword_reveal_acknowledged)
+	_sword_reveal_overlay.queue_free()
+
+#endregion
+
+
+# ---------------------------------------------------------------------------
+#region Entity marker placement
+# ---------------------------------------------------------------------------
+
+## Resolves every hero/jarl/monster entity's region_id (game-system
+## knowledge — SagaBoardSystem.get_location_of() + SagaMapSystem's
+## entity_id -> region_id reverse lookup) and hands the whole set to
+## BoardSpace in a single call, so all newly spawned entities are placed
+## together rather than one at a time. BoardSpace only ever receives
+## region_id strings + entity descriptors here — it never resolves a
+## location itself, matching the same "rendering widget doesn't touch
+## game systems" split map_preview.gd's header already established.
+func _place_all_entity_markers() -> void:
+	var map_sys := get_registered_system(&"SagaMapSystem") as SagaMapSystem
+	var board_sys := get_registered_system(&"SagaBoardSystem") as SagaBoardSystem
+	if map_sys == null or board_sys == null:
+		push_warning("GameScene: SagaMapSystem/SagaBoardSystem not available — skipping entity marker placement.")
+		return
+
+	var groups: Dictionary = {
+		"hero":    SagaEntityManager.TAG_PLAYER,
+		"jarl":    SagaEntityManager.TAG_JARL,
+		"monster": SagaEntityManager.TAG_MONSTER,
+	}
+
+	var entities: Array = []
+	for kind: String in groups.keys():
+		var tag: int = groups[kind]
+		for entity: Entity in SagaEntityManager_auto.get_entities_by_tag(tag):
+			var loc_entity_id: String = board_sys.get_location_of(entity.id)
+			if loc_entity_id == "":
+				push_warning("GameScene: %s entity '%s' has no location, skipping marker placement." % [kind, entity.id])
+				continue
+			var region_id: String = map_sys.get_region_id_for_entity(loc_entity_id)
+			if region_id == "":
+				push_warning("GameScene: could not resolve region_id for %s entity '%s', skipping marker placement." % [kind, entity.id])
+				continue
+			entities.append({
+				"entity_id": entity.id,
+				"kind": kind,
+				"region_id": region_id,
+			})
+
+	_board_space.place_entity_markers(entities)
+
+#endregion
 
 
 # ---------------------------------------------------------------------------
