@@ -560,6 +560,47 @@ func _load_cells_by_region() -> void:
 ## centroid, nearest first — NOT the bounding-box center, which can fall
 ## outside an irregularly shaped or concave region entirely (or even
 ## inside a neighboring sea cell).
+## Across the UNION of every region in region_ids' land cells
+## (cell_markers.json), finds the four extreme cells overall — min x,
+## max x, min y, max y. This is a single combined result across all given
+## regions, not four numbers per region: if the hero can reach both
+## 4_4_Wessex and 3_5_Rhineland, the min-x cell might belong to Rhineland
+## while the max-x cell belongs to Wessex — whichever region actually
+## holds each extreme. Returns {} if none of region_ids have any cells
+## loaded. Ties resolve to whichever qualifying cell appears first across
+## the combined list — not meaningfully different from any other tiebreak
+## for this purpose.
+func get_corner_cells_for_regions(region_ids: Array) -> Dictionary:
+	var all_cells: Array = []
+	for region_id: String in region_ids:
+		all_cells.append_array(_cells_by_region.get(region_id, []))
+
+	if all_cells.is_empty():
+		return {}
+
+	var min_x_cell: Dictionary = all_cells[0]
+	var max_x_cell: Dictionary = all_cells[0]
+	var min_y_cell: Dictionary = all_cells[0]
+	var max_y_cell: Dictionary = all_cells[0]
+
+	for cell: Dictionary in all_cells:
+		if int(cell.get("x", 0)) < int(min_x_cell.get("x", 0)):
+			min_x_cell = cell
+		if int(cell.get("x", 0)) > int(max_x_cell.get("x", 0)):
+			max_x_cell = cell
+		if int(cell.get("y", 0)) < int(min_y_cell.get("y", 0)):
+			min_y_cell = cell
+		if int(cell.get("y", 0)) > int(max_y_cell.get("y", 0)):
+			max_y_cell = cell
+
+	return {
+		"min_x": min_x_cell,
+		"max_x": max_x_cell,
+		"min_y": min_y_cell,
+		"max_y": max_y_cell,
+		}
+
+
 func _cells_sorted_by_centroid_distance(cells: Array) -> Array:
 	var sum_x := 0.0
 	var sum_y := 0.0
