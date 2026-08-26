@@ -110,7 +110,8 @@ const MARKER_SETTLE_SQUASH := Vector3(1.15, 0.75, 1.15)
 var _board_aabb: AABB
 var _board_center: Vector3
 
-var _cells_by_region: Dictionary = {}          # region_id -> Array[Dictionary] (raw cell_markers.json land cells)
+var _cells_by_region: Dictionary = {}          # region_id -> Array[Dictionary] (raw cell_markers.json LAND cells only — see _load_cells_by_region())
+var _all_cells_by_region: Dictionary = {}      # region_id -> Array[Dictionary] (every cell_markers.json cell, land AND sea)
 var _entity_markers: Dictionary = {}           # entity_id -> Node3D, so future moves/removals can find a marker by entity
 
 var _available_entity_ids: Array = []          # last set passed to update_move_availability()
@@ -531,6 +532,12 @@ func _place_single_marker(entry: Dictionary, cell: Dictionary, animate: bool) ->
 ## ever pass region_ids that setup already placed entities on as land —
 ## this is a second, explicit check on the cell's own "type" field, same
 ## safety net validated in board_camera_test.gd.
+## safety net validated in board_camera_test.gd. Also builds
+## _all_cells_by_region alongside it — unfiltered, land AND sea — for
+## callers that need a region's true cell footprint regardless of type
+## (e.g. get_corner_cells_for_regions(), which legitimately needs to
+## consider sea regions like "At Sea"/26; using the land-only index there
+## would silently drop every sea region's cells from the result).
 func _load_cells_by_region() -> void:
 	var file := FileAccess.open(CELL_MARKERS_PATH, FileAccess.READ)
 	if file == null:
@@ -545,11 +552,17 @@ func _load_cells_by_region() -> void:
 		return
 
 	_cells_by_region.clear()
+	_all_cells_by_region.clear()
 	for cell: Dictionary in parsed["cells"]:
-		if cell.get("type", "") != "land":
-			continue
 		var region_id: String = cell.get("region", "")
 		if region_id == "":
+			continue
+
+		if not _all_cells_by_region.has(region_id):
+			_all_cells_by_region[region_id] = []
+		_all_cells_by_region[region_id].append(cell)
+
+		if cell.get("type", "") != "land":
 			continue
 		if not _cells_by_region.has(region_id):
 			_cells_by_region[region_id] = []
@@ -560,20 +573,22 @@ func _load_cells_by_region() -> void:
 ## centroid, nearest first — NOT the bounding-box center, which can fall
 ## outside an irregularly shaped or concave region entirely (or even
 ## inside a neighboring sea cell).
-## Across the UNION of every region in region_ids' land cells
-## (cell_markers.json), finds the four extreme cells overall — min x,
-## max x, min y, max y. This is a single combined result across all given
-## regions, not four numbers per region: if the hero can reach both
-## 4_4_Wessex and 3_5_Rhineland, the min-x cell might belong to Rhineland
-## while the max-x cell belongs to Wessex — whichever region actually
-## holds each extreme. Returns {} if none of region_ids have any cells
-## loaded. Ties resolve to whichever qualifying cell appears first across
-## the combined list — not meaningfully different from any other tiebreak
-## for this purpose.
+## Across the UNION of every region in region_ids' cells (land AND sea —
+## uses the unfiltered cell index, not the land-only one _place_region_
+## markers() uses, since sea regions like "At Sea"/26 are legitimately
+## traversable and must not be silently dropped), finds the four extreme
+## cells overall — min x, max x, min y, max y. This is a single combined
+## result across all given regions, not four numbers per region: if the
+## hero can reach both 4_4_Wessex and 3_5_Rhineland, the min-x cell might
+## belong to Rhineland while the max-x cell belongs to Wessex — whichever
+## region actually holds each extreme. Returns {} if none of region_ids
+## have any cells loaded. Ties resolve to whichever qualifying cell
+## appears first across the combined list — not meaningfully different
+## from any other tiebreak for this purpose.
 func get_corner_cells_for_regions(region_ids: Array) -> Dictionary:
 	var all_cells: Array = []
 	for region_id: String in region_ids:
-		all_cells.append_array(_cells_by_region.get(region_id, []))
+		all_cells.append_array(_all_cells_by_region.get(region_id, []))
 
 	if all_cells.is_empty():
 		return {}
