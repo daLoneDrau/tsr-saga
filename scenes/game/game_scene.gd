@@ -235,11 +235,13 @@ func _on_finish_movement_pressed() -> void:
 ## highlights every region it could legally move to this turn on the
 ## A piece BoardSpace just reported as newly selected can be moved — this
 ## highlights every region it could legally move to this turn on the
-## board (BoardSpace.set_reachable_regions()), reframes the camera to
+## board (BoardSpace.set_reachable_regions()), hides BottomBanner (Regional
+## Focus reserves that screen space instead), reframes the camera to
 ## exactly that traversable extent with zero outside margin
 ## (BoardSpace.focus_on_reachable_cells() — 5.2.4 Regional Focus, built
-## from the same min/max corner cells this debug output prints), and
-## debug-prints the same reachable set, ahead of an actual
+## from the same min/max corner cells this debug output prints, offset by
+## TopBanner's actual height so the min-Y cells don't render underneath
+## it), and debug-prints the same reachable set, ahead of an actual
 ## destination-picking UI.
 ## SagaMovementSystem.get_reachable_regions() is written/typed as
 ## hero-only (parameter name hero_entity_id), but its body only touches
@@ -273,7 +275,8 @@ func _on_marker_selected(entity_id: String) -> void:
 	_print_region_corner_cells(reachable_region_ids)
 
 	_board_space.set_reachable_regions(reachable_region_ids)
-	_board_space.focus_on_reachable_cells(reachable_region_ids)
+	_bottom_banner.visible = false
+	_board_space.focus_on_reachable_cells(reachable_region_ids, _top_banner.get_banner_height())
 
 
 ## Across every traversable region combined (not per-region), prints the
@@ -310,6 +313,7 @@ func _print_region_corner_cells(region_ids: Array) -> void:
 func _on_marker_deselected(_entity_id: String) -> void:
 	_board_space.set_reachable_regions([])
 	_board_space.return_to_overview()
+	_bottom_banner.visible = true
 
 
 func _entity_display_name(entity_id: String) -> String:

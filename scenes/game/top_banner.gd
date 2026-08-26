@@ -32,6 +32,7 @@ const HERO_RUNES: Dictionary = {
 @onready var _turn_label: Label = %TurnLabel
 @onready var _rune_label: Label = %RuneLabel
 @onready var _hero_name_label: Label = %HeroNameLabel
+@onready var _banner_bg: Control = %BannerBG
 
 
 func _ready() -> void:
@@ -63,3 +64,12 @@ func reveal_hero(duration: float = 0.6) -> void:
 	tween.tween_property(_hero_side, "modulate:a", 1.0, duration) \
 			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	await tween.finished
+
+
+## BannerBG's own actual rendered height in pixels — auto-computed from
+## its content (see TopBanner.tscn), not a fixed constant. Callers that
+## need to avoid rendering content underneath the banner (e.g. BoardSpace's
+## Regional Focus reframe) query this rather than guessing/hardcoding a
+## height that would go stale the moment the banner's content changes.
+func get_banner_height() -> float:
+	return _banner_bg.size.y

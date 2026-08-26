@@ -303,8 +303,17 @@ func set_reachable_regions(region_ids: Array) -> void:
 ## Overview's small locked margin or the scratch scene's generous
 ## Regional Focus margin — this is a tight crop to exactly the
 ## traversable extent, not a "keep surrounding context visible" framing.
+##
+## top_margin_px: TopBanner's actual rendered height (query it via
+## TopBanner.get_banner_height() — GameScene owns that lookup, this just
+## receives the number), reserved at the top of the frame so the min-Y
+## cells don't render underneath it. TopBanner is the one UI element that
+## stays visible during Regional Focus (BottomBanner is hidden by the
+## caller) — this is the only reason the usable frame isn't the full
+## 640x480 viewport.
+##
 ## No-op if region_ids resolves to no cells (nothing to frame).
-func focus_on_reachable_cells(region_ids: Array) -> void:
+func focus_on_reachable_cells(region_ids: Array, top_margin_px: float = 0.0) -> void:
 	var corners: Dictionary = get_corner_cells_for_regions(region_ids)
 	if corners.is_empty():
 		return
@@ -313,7 +322,7 @@ func focus_on_reachable_cells(region_ids: Array) -> void:
 	if target_aabb.size == Vector3.ZERO and target_aabb.position == Vector3.ZERO:
 		return
 
-	_reframe_camera_to_aabb(target_aabb, 0.0, REGIONAL_FOCUS_TRANSITION_DURATION)
+	_reframe_camera_to_aabb(target_aabb, 0.0, REGIONAL_FOCUS_TRANSITION_DURATION, top_margin_px)
 
 
 ## Returns the camera to the locked Board Overview framing — same
@@ -360,20 +369,38 @@ func _aabb_from_corner_cells(corners: Dictionary) -> AABB:
 ## right/up axes — needed because the view is angled, not top-down), just
 ## parameterized by whatever AABB/margin the caller passes in. Ported from
 ## board_camera_test.gd's validated prototype.
-func _reframe_camera_to_aabb(target_aabb: AABB, margin_fraction: float, duration: float) -> void:
+##
+## top_margin_px reserves that many pixels at the top of the frame for
+## TopBanner (0.0 = full viewport usable, the Board Overview case).
+## camera.size alone only controls zoom — it doesn't move WHERE content
+## sits on screen — so two things change together when top_margin_px > 0:
+##   1. The height-fit target becomes the usable band (viewport height
+##      minus top_margin_px), not the full viewport height, so content
+##      ends up correctly sized to occupy only that reduced vertical
+##      space rather than the full frame.
+##   2. The framing center is shifted along the camera's own "up" axis by
+##      half the margin (in world units, derived from the final fitted
+##      size), which pushes the rendered content DOWN on screen by
+##      top_margin_px/2 pixels — just enough to clear the banner at the
+##      top while landing flush with the bottom edge, with no gap at
+##      either. (Camera position determines what maps to screen CENTER;
+##      moving the reference point up in world space is what makes
+##      lower content appear at that center instead — moving the camera
+##      up pushes the picture down.)
+func _reframe_camera_to_aabb(target_aabb: AABB, margin_fraction: float, duration: float, top_margin_px: float = 0.0) -> void:
 	var rig_basis: Basis = _pitch_pivot.global_transform.basis  # rotation only — stable regardless of rig position
 	var right: Vector3 = rig_basis.x.normalized()
 	var up: Vector3 = rig_basis.y.normalized()
 	var aspect: float = VIEWPORT_SIZE.x / VIEWPORT_SIZE.y
 
-	var new_center: Vector3 = target_aabb.position + target_aabb.size / 2.0
+	var true_center: Vector3 = target_aabb.position + target_aabb.size / 2.0
 
 	var min_r := INF
 	var max_r := -INF
 	var min_u := INF
 	var max_u := -INF
 	for corner in _aabb_corners(target_aabb):
-		var rel: Vector3 = corner - new_center
+		var rel: Vector3 = corner - true_center
 		var r: float = rel.dot(right)
 		var u: float = rel.dot(up)
 		min_r = minf(min_r, r)
@@ -383,9 +410,15 @@ func _reframe_camera_to_aabb(target_aabb: AABB, margin_fraction: float, duration
 
 	var extent_w: float = max_r - min_r
 	var extent_h: float = max_u - min_u
-	var size_from_height := extent_h
-	var size_from_width := extent_w / aspect
+
+	var usable_height_px: float = maxf(VIEWPORT_SIZE.y - top_margin_px, 1.0)
+	var size_from_height: float = extent_h * VIEWPORT_SIZE.y / usable_height_px
+	var size_from_width: float = extent_w / aspect
 	var fitted_size: float = maxf(size_from_height, size_from_width) * (1.0 + margin_fraction)
+
+	var shift_px: float = top_margin_px / 2.0
+	var world_units_per_px: float = fitted_size / VIEWPORT_SIZE.y
+	var new_center: Vector3 = true_center + up * (shift_px * world_units_per_px)
 
 	if _camera_tween != null and _camera_tween.is_valid():
 		_camera_tween.kill()
