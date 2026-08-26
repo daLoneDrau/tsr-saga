@@ -60,6 +60,20 @@ const MIN_MARKER_CELL_SPACING := 2
 # phase (owned by the current mover, not yet moved).
 const MOVE_AVAILABLE_HIGHLIGHT_NODE_NAME := "MoveAvailableHighlight"
 
+# Name of the child MeshInstance3D each marker scene already includes,
+# hidden by default — shown instead of MoveAvailableHighlight while an
+# available piece is directly hovered.
+const MOVE_HOVERED_HIGHLIGHT_NODE_NAME := "MoveHoveredHighlight"
+
+# How close the mouse needs to be (in screen pixels) to a marker's
+# unprojected position to count as hovering it. A fixed pixel radius is
+# reliable here specifically because the camera is a LOCKED, fixed
+# orthographic projection — no perspective distortion, so screen-space
+# distance behaves identically regardless of where a marker sits on the
+# board. Collider-free by design: marker scenes aren't guaranteed to have
+# a CollisionShape3D, so this doesn't depend on one existing.
+const HOVER_RADIUS_PIXELS := 22.0
+
 # 5.2.30 — Piece Entry: "New pieces descend into their final anchor and
 # settle." Straight vertical descend from above the anchor (accelerating,
 # like a dropped object — not a linear glide), then a brief squash-and-
@@ -81,6 +95,9 @@ var _board_center: Vector3
 var _cells_by_region: Dictionary = {}          # region_id -> Array[Dictionary] (raw cell_markers.json land cells)
 var _entity_markers: Dictionary = {}           # entity_id -> Node3D, so future moves/removals can find a marker by entity
 
+var _available_entity_ids: Array = []          # last set passed to update_move_availability()
+var _hovered_entity_id: String = ""            # "" when nothing is hovered
+
 
 func _ready() -> void:
 	_camera.current = true
@@ -93,6 +110,8 @@ func _ready() -> void:
 	_hide_region_borders()
 	_apply_overview_framing()
 	_load_cells_by_region()
+
+	mouse_exited.connect(_on_mouse_exited)
 
 
 ## Hides the region-border overlay mesh — reads cleanly in a future
@@ -182,7 +201,15 @@ func _apply_overview_framing() -> void:
 ## moves, the active hero changes) — it doesn't only turn highlights on,
 ## it also turns off whatever shouldn't be on anymore, so callers don't
 ## need to separately track/clear previous state themselves.
+##
+## Deliberately doesn't show MoveAvailableHighlight on whichever entity is
+## currently hovered — MoveHoveredHighlight takes over that marker's
+## highlight slot while hovered (see _set_marker_hover_state()), so the
+## two would otherwise show simultaneously. If the currently hovered piece
+## drops out of the new available set entirely, hover is cleared too.
 func update_move_availability(available_entity_ids: Array) -> void:
+	_available_entity_ids = available_entity_ids.duplicate()
+
 	for entity_id: String in _entity_markers.keys():
 		var marker: Node3D = _entity_markers[entity_id]
 		if not is_instance_valid(marker):
@@ -190,7 +217,85 @@ func update_move_availability(available_entity_ids: Array) -> void:
 		var highlight := marker.find_child(MOVE_AVAILABLE_HIGHLIGHT_NODE_NAME, true, false)
 		if highlight == null or not (highlight is MeshInstance3D):
 			continue
-		(highlight as MeshInstance3D).visible = entity_id in available_entity_ids
+		var is_available: bool = entity_id in _available_entity_ids
+		(highlight as MeshInstance3D).visible = is_available and entity_id != _hovered_entity_id
+
+	if _hovered_entity_id != "" and not (_hovered_entity_id in _available_entity_ids):
+		_set_hovered_entity("")
+
+
+# ---------------------------------------------------------------------------
+#region Marker hover
+# ---------------------------------------------------------------------------
+
+## Only available (highlighted) markers are interactable — this is checked
+## by only ever testing against _available_entity_ids, never the full
+## _entity_markers set, so a monster or an already-moved piece never
+## responds to hover regardless of where the mouse is.
+func _gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseMotion:
+		_update_hover((event as InputEventMouseMotion).position)
+
+
+func _on_mouse_exited() -> void:
+	_set_hovered_entity("")
+
+
+## Finds whichever available marker's unprojected screen position is
+## closest to the mouse, within HOVER_RADIUS_PIXELS — not just "closest
+## overall," so moving the mouse far from every available marker correctly
+## clears hover instead of always latching onto whichever one happens to
+## be nearest.
+func _update_hover(mouse_pos: Vector2) -> void:
+	var nearest_id: String = ""
+	var nearest_dist: float = HOVER_RADIUS_PIXELS
+
+	for entity_id in _available_entity_ids:
+		var marker: Node3D = _entity_markers.get(entity_id)
+		if marker == null or not is_instance_valid(marker):
+			continue
+		var screen_pos: Vector2 = _camera.unproject_position(marker.global_position)
+		var dist: float = screen_pos.distance_to(mouse_pos)
+		if dist < nearest_dist:
+			nearest_dist = dist
+			nearest_id = entity_id
+
+	_set_hovered_entity(nearest_id)
+
+
+func _set_hovered_entity(entity_id: String) -> void:
+	if entity_id == _hovered_entity_id:
+		return
+
+	if _hovered_entity_id != "":
+		_set_marker_hover_state(_hovered_entity_id, false)
+
+	_hovered_entity_id = entity_id
+
+	if _hovered_entity_id != "":
+		_set_marker_hover_state(_hovered_entity_id, true)
+
+	Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND if _hovered_entity_id != "" else Input.CURSOR_ARROW)
+
+
+## Swaps MoveAvailableHighlight <-> MoveHoveredHighlight on entity_id's
+## marker. Only ever called for entities already known to be in
+## _available_entity_ids (see _update_hover()), so there's no separate
+## "is this even movable" check needed here.
+func _set_marker_hover_state(entity_id: String, hovered: bool) -> void:
+	var marker: Node3D = _entity_markers.get(entity_id)
+	if marker == null or not is_instance_valid(marker):
+		return
+
+	var available_highlight := marker.find_child(MOVE_AVAILABLE_HIGHLIGHT_NODE_NAME, true, false)
+	if available_highlight != null and available_highlight is MeshInstance3D:
+		(available_highlight as MeshInstance3D).visible = not hovered
+
+	var hovered_highlight := marker.find_child(MOVE_HOVERED_HIGHLIGHT_NODE_NAME, true, false)
+	if hovered_highlight != null and hovered_highlight is MeshInstance3D:
+		(hovered_highlight as MeshInstance3D).visible = hovered
+
+#endregion
 
 
 func place_entity_markers(entities: Array, animate: bool = true) -> void:
