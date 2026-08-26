@@ -33,6 +33,13 @@ extends SubViewportContainer
 ## selection and lets GameScene decide what that means.
 signal marker_selected(entity_id: String)
 
+## Emitted when a previously selected piece is deselected (click again,
+## or it drops out of the available set). GameScene uses this to clear
+## whatever it showed in response to marker_selected (e.g. the reachable-
+## region highlight) — without it, that highlight would stay stuck on
+## screen after deselecting.
+signal marker_deselected(entity_id: String)
+
 const VIEWPORT_SIZE := Vector2(640.0, 480.0)
 const RIG_BACK_DISTANCE := 200.0  # orthographic — ortho ignores distance for scale, just needs to clear the board
 
@@ -110,6 +117,9 @@ var _available_entity_ids: Array = []          # last set passed to update_move_
 var _hovered_entity_id: String = ""            # "" when nothing is hovered
 var _selected_entity_ids: Dictionary = {}      # entity_id -> true; multiple pieces can be selected together (5.2.26)
 
+var _reachable_meshes: Dictionary = {}         # region_id -> MeshInstance3D overlay
+var _reachable_material: StandardMaterial3D
+
 
 func _ready() -> void:
 	_camera.current = true
@@ -122,6 +132,16 @@ func _ready() -> void:
 	_hide_region_borders()
 	_apply_overview_framing()
 	_load_cells_by_region()
+
+	# Same unshaded/translucent/no-cull convention as map_preview.gd's
+	# reachable-region highlight — this is that same visual concept,
+	# ported to BoardSpace.
+	_reachable_material = StandardMaterial3D.new()
+	_reachable_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_reachable_material.albedo_color = Color(0.3, 1.0, 0.4, 0.35)
+	_reachable_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	_reachable_material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	_reachable_material.render_priority = 2
 
 	mouse_exited.connect(_on_mouse_exited)
 
@@ -226,9 +246,87 @@ func update_move_availability(available_entity_ids: Array) -> void:
 	for entity_id: String in _selected_entity_ids.keys().duplicate():
 		if not (entity_id in _available_entity_ids):
 			_selected_entity_ids.erase(entity_id)
+			marker_deselected.emit(entity_id)
 
 	for entity_id: String in _entity_markers.keys():
 		_refresh_marker_highlights(entity_id)
+
+
+# ---------------------------------------------------------------------------
+#region Reachable-region highlight
+# ---------------------------------------------------------------------------
+
+## Highlights every region in region_ids (map.json keys, e.g. from
+## SagaMovementSystem.get_reachable_regions() resolved through
+## SagaMapSystem) as traversable by the currently selected piece. Replaces
+## whatever was highlighted before outright — the reachable set is fully
+## recomputed by the caller every time selection changes, not
+## incrementally updated, so diffing old-vs-new would just be extra
+## bookkeeping for no benefit. Pass an empty array to clear (e.g. nothing
+## selected, or the selected piece has no legal moves).
+func set_reachable_regions(region_ids: Array) -> void:
+	for mesh in _reachable_meshes.values():
+		if is_instance_valid(mesh):
+			mesh.queue_free()
+	_reachable_meshes.clear()
+
+	for region_id in region_ids:
+		var mesh := _build_region_overlay_mesh(region_id)
+		if mesh == null:
+			continue
+		var collider := _find_collider_for_region(region_id)
+		if collider == null:
+			continue
+
+		var overlay := MeshInstance3D.new()
+		overlay.mesh = mesh
+		overlay.material_override = _reachable_material
+		overlay.position = Vector3(0, 0.03, 0)  # small lift, belt-and-braces against z-fighting with terrain
+		collider.add_child(overlay)
+		_reachable_meshes[region_id] = overlay
+
+
+## region_id's actual click/highlight collider (land_<region_id> /
+## sea_<region_id>, a StaticBody3D + ConcavePolygonShape3D pair already
+## present in saga_map.glb for hit-testing).
+func _find_collider_for_region(region_id: String) -> StaticBody3D:
+	var node: Node = _board_root.find_child("land_" + region_id, true, false)
+	if node == null:
+		node = _board_root.find_child("sea_" + region_id, true, false)
+	return node as StaticBody3D
+
+
+## Reconstructs a renderable mesh from region_id's own collision shape
+## data — the region has no ready-made visual mesh of its own to overlay
+## (see map_preview.gd's original header for why: `-colonly` regions have
+## none), so this rebuilds one from the exact same geometry already
+## trusted for hit-testing. Returns null if region_id doesn't resolve to a
+## real, shaped collider.
+func _build_region_overlay_mesh(region_id: String) -> ArrayMesh:
+	var collider := _find_collider_for_region(region_id)
+	if collider == null:
+		return null
+
+	var shape_node := collider.get_node_or_null("CollisionShape3D") as CollisionShape3D
+	if shape_node == null or shape_node.shape == null:
+		return null
+
+	var concave := shape_node.shape as ConcavePolygonShape3D
+	if concave == null:
+		return null
+
+	var faces: PackedVector3Array = concave.get_faces()
+	if faces.is_empty():
+		return null
+
+	var arrays: Array = []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = faces
+	var mesh := ArrayMesh.new()
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	return mesh
+
+#endregion
 
 
 # ---------------------------------------------------------------------------
@@ -303,6 +401,7 @@ func _on_marker_left_clicked() -> void:
 	var entity_id := _hovered_entity_id
 	if _selected_entity_ids.has(entity_id):
 		_selected_entity_ids.erase(entity_id)
+		marker_deselected.emit(entity_id)
 	else:
 		_selected_entity_ids[entity_id] = true
 		marker_selected.emit(entity_id)
