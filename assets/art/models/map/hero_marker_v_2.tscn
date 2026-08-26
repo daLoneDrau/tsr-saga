@@ -103,14 +103,13 @@ mesh = SubResource("TorusMesh_ktqjr")
 surface_material_override/0 = SubResource("StandardMaterial3D_ktqjr")
 
 [node name="MoveSelectedHighlight" type="Node3D" parent="." unique_id=2072855155]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
 visible = false
 
 [node name="MoveSelectedRing1" type="MeshInstance3D" parent="MoveSelectedHighlight" unique_id=847333958]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0)
 mesh = SubResource("TorusMesh_gsfy4")
 surface_material_override/0 = SubResource("StandardMaterial3D_gsfy4")
 
 [node name="MoveSelectedRing2" type="MeshInstance3D" parent="MoveSelectedHighlight" unique_id=777378600]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0)
 mesh = SubResource("TorusMesh_ewsnx")
 surface_material_override/0 = SubResource("StandardMaterial3D_gsfy4")

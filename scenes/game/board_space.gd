@@ -27,6 +27,12 @@
 class_name BoardSpace
 extends SubViewportContainer
 
+## Emitted when a piece is newly selected (not on deselect) — BoardSpace
+## itself never touches game systems (see class header), so it can't
+## resolve what this piece can actually do next; it just reports the
+## selection and lets GameScene decide what that means.
+signal marker_selected(entity_id: String)
+
 const VIEWPORT_SIZE := Vector2(640.0, 480.0)
 const RIG_BACK_DISTANCE := 200.0  # orthographic — ortho ignores distance for scale, just needs to clear the board
 
@@ -299,6 +305,7 @@ func _on_marker_left_clicked() -> void:
 		_selected_entity_ids.erase(entity_id)
 	else:
 		_selected_entity_ids[entity_id] = true
+		marker_selected.emit(entity_id)
 
 	_refresh_marker_highlights(entity_id)
 
