@@ -48,9 +48,57 @@ shader_parameter/outline_color = Color(0.18, 0.13, 0.1, 1)
 next_pass = SubResource("ShaderMaterial_u5q12")
 albedo_color = Color(0.22352941, 0.8039216, 0.38431373, 1)
 
+[sub_resource type="TorusMesh" id="TorusMesh_84pp7"]
+inner_radius = 0.575
+outer_radius = 0.725
+rings = 12
+ring_segments = 6
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0grm2"]
+shading_mode = 0
+albedo_color = Color(0.8784314, 0.72156864, 0.30980393, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1fr2d"]
+shading_mode = 0
+albedo_color = Color(0.9490196, 0.8627451, 0.5137255, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l1mk1"]
+shading_mode = 0
+albedo_color = Color(0.9529412, 0.9411765, 0.76862746, 1)
+
+[sub_resource type="TorusMesh" id="TorusMesh_lqseh"]
+inner_radius = 0.85
+rings = 12
+ring_segments = 6
+
 [node name="hero_marker_v2" type="Node3D" unique_id=165804957]
 transform = Transform3D(0.605, 0, 0, 0, 0.605, 0, 0, 0, 0.605, 0, 0, 0)
 
 [node name="hero_emission_001" type="MeshInstance3D" parent="." unique_id=1980938448]
 mesh = SubResource("ArrayMesh_fojas")
 surface_material_override/0 = SubResource("StandardMaterial3D_76nru")
+
+[node name="MoveAvailableHighlight" type="MeshInstance3D" parent="." unique_id=483705208]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 1, 0, 0.02, 0)
+visible = false
+mesh = SubResource("TorusMesh_84pp7")
+surface_material_override/0 = SubResource("StandardMaterial3D_0grm2")
+
+[node name="MoveHoveredHighlight" type="MeshInstance3D" parent="." unique_id=1243486950]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 1, 0, 0.02, 0)
+visible = false
+mesh = SubResource("TorusMesh_84pp7")
+surface_material_override/0 = SubResource("StandardMaterial3D_1fr2d")
+
+[node name="MoveSelectedHighlight" type="Node3D" parent="." unique_id=289495858]
+visible = false
+
+[node name="MoveSelectedRing1" type="MeshInstance3D" parent="MoveSelectedHighlight" unique_id=882723386]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 1, 0, 0.02, 0)
+mesh = SubResource("TorusMesh_84pp7")
+surface_material_override/0 = SubResource("StandardMaterial3D_l1mk1")
+
+[node name="MoveSelectedRing2" type="MeshInstance3D" parent="MoveSelectedHighlight" unique_id=1701439234]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 1, 0, 0.02, 0)
+mesh = SubResource("TorusMesh_lqseh")
+surface_material_override/0 = SubResource("StandardMaterial3D_l1mk1")

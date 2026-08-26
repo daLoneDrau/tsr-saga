@@ -26,13 +26,16 @@
 #   - Resolve every hero/jarl/monster's starting region and place their
 #     markers on the board (BoardSpace.place_entity_markers()), all
 #     together in one call.
-#   - Once the sword reveal is dismissed: pause on the board, then reveal
-#     TopBanner's turn side, pause, then reveal its hero side. The banner
-#     itself is a persistent fixture — only its content stages in.
+#   - Once the sword reveal is dismissed: pause on the board, then fade in
+#     TopBanner's turn side, pause, fade in its hero side, pause, then run
+#     the movement phase intro on BottomBanner (phase label fades in/out,
+#     then helper text + Finish Movement button appear instantly).
 # Deliberately NOT yet doing (comes back in later steps):
 #   - Any other HUD/UI — mover card, Hero Info, Close-Up modal.
 #   - Region click handling / move selection.
 #   - Regional Focus reframing.
+#   - Actually handling Finish Movement — the button exists and its press
+#     is wired to a signal, but nothing consumes it yet.
 
 class_name GameScene
 extends Scene
@@ -41,16 +44,21 @@ extends Scene
 @onready var _board_space: BoardSpace = %BoardSpace
 @onready var _sword_reveal_overlay: SwordRevealOverlay = %SwordRevealOverlay
 @onready var _top_banner: TopBanner = %TopBanner
+@onready var _bottom_banner: BottomBanner = %BottomBanner
 
 # How long to pause on the fully-revealed board before showing anything,
 # how long to pause after the banner appears before revealing the turn
-# side, and how long to pause between revealing the turn side and the
-# hero side — all "a beat," not precisely specified, so treat these as
+# side, how long to pause between revealing the turn side and the hero
+# side, how long to pause after the hero is revealed before the bottom
+# banner appears, and how long to leave the phase label up before fading
+# it out — all "a beat," not precisely specified, so treat these as
 # first-guess timing to adjust once seen in motion rather than exact
 # values.
 const REVIEW_BOARD_BEAT_SECONDS := 1.0
 const AFTER_BANNER_APPEARS_BEAT_SECONDS := 0.5
 const BETWEEN_TURN_AND_HERO_BEAT_SECONDS := 1.0
+const AFTER_HERO_REVEAL_BEAT_SECONDS := 1.0
+const READ_PHASE_LABEL_BEAT_SECONDS := 1.5
 
 
 # ---------------------------------------------------------------------------
@@ -75,12 +83,15 @@ func _ready() -> void:
 	_register_systems()
 	_start_movement_phase()
 	_sword_reveal_overlay.acknowledged.connect(_on_sword_reveal_acknowledged)
+	_bottom_banner.finish_movement_pressed.connect(_on_finish_movement_pressed)
 	_place_all_entity_markers()
 
 
 func on_exit() -> void:
 	if is_instance_valid(_sword_reveal_overlay) and _sword_reveal_overlay.acknowledged.is_connected(_on_sword_reveal_acknowledged):
 		_sword_reveal_overlay.acknowledged.disconnect(_on_sword_reveal_acknowledged)
+	if is_instance_valid(_bottom_banner) and _bottom_banner.finish_movement_pressed.is_connected(_on_finish_movement_pressed):
+		_bottom_banner.finish_movement_pressed.disconnect(_on_finish_movement_pressed)
 
 
 func do_action(_action: GameAction) -> void:
@@ -113,9 +124,11 @@ func _on_sword_reveal_acknowledged() -> void:
 ## (it stays hidden entirely until this pause completes — see
 ## TopBanner.tscn's visible=false default; it was previously rendering its
 ## frame on top of the sword reveal overlay, since it's the last child in
-## the tree) -> pause -> reveal the turn side -> pause -> reveal the hero
-## side. Only makes sense once the board is actually visible, so this runs
-## from the sword reveal's dismissal, not from _ready() directly.
+## the tree) -> pause -> fade in the turn side -> pause -> fade in the
+## hero side -> pause -> movement phase intro (see
+## _play_movement_phase_intro()). Only makes sense once the board is
+## actually visible, so this runs from the sword reveal's dismissal, not
+## from _ready() directly.
 func _play_turn_intro_sequence() -> void:
 	await get_tree().create_timer(REVIEW_BOARD_BEAT_SECONDS).timeout
 
@@ -129,11 +142,14 @@ func _play_turn_intro_sequence() -> void:
 		return
 
 	_top_banner.set_turn(turn_sys.get_current_turn(), SagaTurnSystem.MAX_TURNS)
-	_top_banner.reveal_turn()
+	await _top_banner.reveal_turn()
 
 	await get_tree().create_timer(BETWEEN_TURN_AND_HERO_BEAT_SECONDS).timeout
 
-	_announce_current_hero()
+	await _announce_current_hero()
+
+	await get_tree().create_timer(AFTER_HERO_REVEAL_BEAT_SECONDS).timeout
+	_play_movement_phase_intro()
 
 
 ## Turn order (highest glory first, ties re-shuffled randomly, every turn)
@@ -164,9 +180,43 @@ func _announce_current_hero() -> void:
 		return
 
 	_top_banner.set_hero(hero_comp.kind_id)
-	_top_banner.reveal_hero()
+	await _top_banner.reveal_hero()
 
 #endregion
+
+
+# ---------------------------------------------------------------------------
+#region Movement phase intro
+# ---------------------------------------------------------------------------
+
+## BottomBanner appears, its phase label fades in with the current phase
+## name, holds long enough to read, fades back out — then the persistent
+## controls (helper text + Finish Movement button) appear instantly, per
+## spec ("instantly reveal" is a deliberate contrast with the phase
+## label's fade). Movement is currently the only phase this scene drives
+## (see _start_movement_phase()), so the text is hardcoded here rather
+## than derived from SagaTurnSystem.Phase — revisit once other phases are
+## wired in.
+func _play_movement_phase_intro() -> void:
+	_bottom_banner.visible = true
+	_bottom_banner.set_phase_text("MOVEMENT PHASE")
+	await _bottom_banner.fade_in_phase()
+
+	await get_tree().create_timer(READ_PHASE_LABEL_BEAT_SECONDS).timeout
+
+	await _bottom_banner.fade_out_phase()
+
+	_bottom_banner.set_helper_text("Select one or more pieces to move. All movement is optional")
+	_bottom_banner.reveal_controls()
+
+#endregion
+
+
+## Not implemented yet — no move selection exists, so there's nothing real
+## for this to do. Exists so the button's press goes somewhere explicit
+## rather than silently nowhere.
+func _on_finish_movement_pressed() -> void:
+	push_warning("GameScene: Finish Movement pressed — not yet implemented.")
 
 
 # ---------------------------------------------------------------------------
@@ -273,4 +323,4 @@ func _start_movement_phase() -> void:
 	var movement_sys := get_registered_system(&"SagaMovementSystem") as SagaMovementSystem
 	movement_sys.start_movement_phase()
 
-	#endregion
+#endregion

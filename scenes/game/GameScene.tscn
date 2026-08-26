@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://dgnjc4c06byuv" path="res://scenes/game/BoardSpace.tscn" id="2_dsxmn"]
 [ext_resource type="PackedScene" uid="uid://bv0byhqpeub5f" path="res://scenes/game/SwordRevealOverlay.tscn" id="3_ldxrm"]
 [ext_resource type="PackedScene" uid="uid://xv0xwmubfdsp" path="res://scenes/game/TopBanner.tscn" id="4_vaave"]
+[ext_resource type="PackedScene" uid="uid://ddobir2atocae" path="res://scenes/game/BottomBanner.tscn" id="5_gs0nk"]
 
 [node name="GameScene" type="Control" unique_id=1797217881]
 layout_mode = 3
@@ -23,5 +24,9 @@ unique_name_in_owner = true
 layout_mode = 1
 
 [node name="TopBanner" parent="." unique_id=365625066 instance=ExtResource("4_vaave")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[node name="BottomBanner" parent="." unique_id=1420967098 instance=ExtResource("5_gs0nk")]
 unique_name_in_owner = true
 layout_mode = 1

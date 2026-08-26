@@ -3,7 +3,7 @@
 # separate toast widgets (TurnWidget, HeroPlaqueWidget) into one fixture:
 # turn info on the right, current hero (rune + name) on the left. The
 # banner frame itself is a constant, persistent HUD element — it does NOT
-# fade in or out. Only its two content halves stage in independently
+# fade in or out. Only its two content halves fade in independently
 # (reveal_turn() then, after a pause, reveal_hero()), via each side's own
 # modulate.a rather than the whole banner's visibility.
 #
@@ -26,7 +26,7 @@ const HERO_RUNES: Dictionary = {
 	HeroKindTable.RAGNAR:    "ᚱ",
 	HeroKindTable.SIEGFRIED: "ᛋ",
 	HeroKindTable.STARKAD:   "ᛏ",
-}
+	}
 
 @onready var _hero_side: Control = %HeroSide
 @onready var _turn_label: Label = %TurnLabel
@@ -51,9 +51,15 @@ func set_hero(kind_id: int) -> void:
 	_rune_label.text = HERO_RUNES.get(kind_id, "?")
 
 
-func reveal_turn() -> void:
-	_turn_label.modulate.a = 1.0
+func reveal_turn(duration: float = 0.6) -> void:
+	var tween := create_tween()
+	tween.tween_property(_turn_label, "modulate:a", 1.0, duration) \
+			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	await tween.finished
 
 
-func reveal_hero() -> void:
-	_hero_side.modulate.a = 1.0
+func reveal_hero(duration: float = 0.6) -> void:
+	var tween := create_tween()
+	tween.tween_property(_hero_side, "modulate:a", 1.0, duration) \
+			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	await tween.finished

@@ -1,0 +1,167 @@
+[gd_scene format=3 uid="uid://ddobir2atocae"]
+
+[ext_resource type="Script" uid="uid://b40lvxm8ws52d" path="res://scenes/game/bottom_banner.gd" id="1_4yw0d"]
+[ext_resource type="Texture2D" uid="uid://4npxh6ac2lks" path="res://assets/modeling/ui/frame_80_pixelated.png" id="2_kbpto"]
+[ext_resource type="Texture2D" uid="uid://bcdrp4ghn8ojp" path="res://assets/modeling/ui/parchment_frame.png" id="3_ii88e"]
+[ext_resource type="FontFile" uid="uid://qe33fb4bklxf" path="res://assets/fonts/NorseBold-2Kge.otf" id="4_s56hv"]
+[ext_resource type="FontFile" uid="uid://dgwtsq67ho0cr" path="res://assets/fonts/IMFellEnglish-Regular.ttf" id="5_7ktvj"]
+[ext_resource type="Texture2D" uid="uid://ct5psr5fheqjs" path="res://assets/art/ui/medieval_button_32.png" id="6_ii88e"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_r6s1u"]
+texture = ExtResource("2_kbpto")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_rs1t2"]
+content_margin_left = 18.0
+content_margin_top = 12.0
+content_margin_right = 18.0
+content_margin_bottom = 12.0
+texture = ExtResource("3_ii88e")
+texture_margin_left = 16.0
+texture_margin_top = 16.0
+texture_margin_right = 16.0
+texture_margin_bottom = 16.0
+expand_margin_left = 8.0
+expand_margin_top = 6.0
+expand_margin_right = 9.0
+expand_margin_bottom = 4.0
+modulate_color = Color(0.34901962, 0.26666668, 0.1764706, 1)
+draw_center = false
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_s56hv"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+texture = ExtResource("6_ii88e")
+texture_margin_left = 10.0
+texture_margin_top = 5.0
+texture_margin_right = 10.0
+texture_margin_bottom = 5.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_7ktvj"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+texture = ExtResource("6_ii88e")
+texture_margin_left = 10.0
+texture_margin_top = 5.0
+texture_margin_right = 10.0
+texture_margin_bottom = 5.0
+modulate_color = Color(0.72, 0.72, 0.72, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_sr5og"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+texture = ExtResource("6_ii88e")
+texture_margin_left = 10.0
+texture_margin_top = 5.0
+texture_margin_right = 10.0
+texture_margin_bottom = 5.0
+modulate_color = Color(1.15, 1.1, 0.9, 1)
+
+[node name="BottomBanner" type="Control" unique_id=1420967098]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_4yw0d")
+
+[node name="BannerBG" type="PanelContainer" parent="." unique_id=1164343893]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_r6s1u")
+
+[node name="BannerFrame" type="PanelContainer" parent="BannerBG" unique_id=24074899]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxTexture_rs1t2")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="BannerBG/BannerFrame" unique_id=1199946725]
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="BannerBG/BannerFrame/VBoxContainer" unique_id=1749528009]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="ContentStack" type="Control" parent="BannerBG/BannerFrame/VBoxContainer" unique_id=1473453475]
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="PhaseLabel" type="Label" parent="BannerBG/BannerFrame/VBoxContainer/ContentStack" unique_id=88333746]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.12941177, 0.11372549, 0.09411765, 1)
+theme_override_fonts/font = ExtResource("4_s56hv")
+theme_override_font_sizes/font_size = 16
+text = "MOVEMENT PHASE"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ContentRow" type="HBoxContainer" parent="BannerBG/BannerFrame/VBoxContainer/ContentStack" unique_id=361302077]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 12
+
+[node name="HelperLabel" type="Label" parent="BannerBG/BannerFrame/VBoxContainer/ContentStack/ContentRow" unique_id=26671675]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.12941177, 0.11372549, 0.09411765, 1)
+theme_override_fonts/font = ExtResource("5_7ktvj")
+theme_override_font_sizes/font_size = 13
+text = "Select one or more pieces to move. All movement is optional"
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="FinishMovementButton" type="Button" parent="BannerBG/BannerFrame/VBoxContainer/ContentStack/ContentRow" unique_id=1014480929]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_override_colors/font_color = Color(0.9411765, 0.8862745, 0.7372549, 1)
+theme_override_colors/font_pressed_color = Color(0.9411765, 0.8862745, 0.7372549, 1)
+theme_override_colors/font_hover_color = Color(0.9411765, 0.8862745, 0.7372549, 1)
+theme_override_fonts/font = ExtResource("5_7ktvj")
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxTexture_s56hv")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_7ktvj")
+theme_override_styles/hover = SubResource("StyleBoxTexture_sr5og")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_s56hv")
+theme_override_styles/focus = SubResource("StyleBoxTexture_s56hv")
+text = "FINISH MOVEMENT"
+
+[node name="Spacer2" type="Control" parent="BannerBG/BannerFrame/VBoxContainer" unique_id=1126497161]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
