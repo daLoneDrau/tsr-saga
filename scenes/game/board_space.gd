@@ -55,6 +55,11 @@ const MARKER_SCENE_PATHS: Dictionary = {
 # a region has too few cells to satisfy that for everyone placed there.
 const MIN_MARKER_CELL_SPACING := 2
 
+# Name of the child MeshInstance3D each marker scene already includes,
+# hidden by default — shown while that piece is eligible to move this
+# phase (owned by the current mover, not yet moved).
+const MOVE_AVAILABLE_HIGHLIGHT_NODE_NAME := "MoveAvailableHighlight"
+
 # 5.2.30 — Piece Entry: "New pieces descend into their final anchor and
 # settle." Straight vertical descend from above the anchor (accelerating,
 # like a dropped object — not a linear glide), then a brief squash-and-
@@ -170,6 +175,24 @@ func _apply_overview_framing() -> void:
 ## resolves entity_id -> region_id itself — the caller (GameScene) already
 ## did that via SagaBoardSystem/SagaMapSystem, matching the same
 ## "rendering widget doesn't touch game systems" split map_preview.gd uses.
+## Shows/hides each tracked entity marker's MoveAvailableHighlight child —
+## visible only for entity_ids present in `available_entity_ids`, hidden
+## for every other tracked marker (monsters included, since they're never
+## in that list). Safe to call repeatedly as availability changes (a piece
+## moves, the active hero changes) — it doesn't only turn highlights on,
+## it also turns off whatever shouldn't be on anymore, so callers don't
+## need to separately track/clear previous state themselves.
+func update_move_availability(available_entity_ids: Array) -> void:
+	for entity_id: String in _entity_markers.keys():
+		var marker: Node3D = _entity_markers[entity_id]
+		if not is_instance_valid(marker):
+			continue
+		var highlight := marker.find_child(MOVE_AVAILABLE_HIGHLIGHT_NODE_NAME, true, false)
+		if highlight == null or not (highlight is MeshInstance3D):
+			continue
+		(highlight as MeshInstance3D).visible = entity_id in available_entity_ids
+
+
 func place_entity_markers(entities: Array, animate: bool = true) -> void:
 	var by_region: Dictionary = {}  # region_id -> Array[Dictionary] (entity entries)
 	for entry: Dictionary in entities:
@@ -183,6 +206,16 @@ func place_entity_markers(entities: Array, animate: bool = true) -> void:
 
 	for region_id: String in by_region.keys():
 		_place_region_markers(region_id, by_region[region_id], animate)
+
+
+## Shows the MoveAvailableHighlight child on every currently-tracked
+## marker whose entity_id is in `entity_ids`, and hides it on every other
+## marker. Callable repeatedly — GameScene owns deciding WHICH entities are
+## currently movable (hero + recruited jarls, minus whoever's already
+## moved this phase); this just makes the board reflect that set each time
+## it's told to. A marker with no MoveAvailableHighlight child (unexpected
+## for any of the three current marker scenes, but not fatal) is silently
+## skipped rather than erroring.
 
 
 func _place_region_markers(region_id: String, region_entities: Array, animate: bool) -> void:
