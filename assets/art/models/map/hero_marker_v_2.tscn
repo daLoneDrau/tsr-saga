@@ -68,6 +68,12 @@ ring_segments = 6
 shading_mode = 0
 albedo_color = Color(0.9490196, 0.8627451, 0.5137255, 1)
 
+[sub_resource type="TorusMesh" id="TorusMesh_gsfy4"]
+inner_radius = 0.575
+outer_radius = 0.725
+rings = 12
+ring_segments = 6
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gsfy4"]
 shading_mode = 0
 albedo_color = Color(0.9529412, 0.9411765, 0.76862746, 1)
@@ -100,11 +106,11 @@ surface_material_override/0 = SubResource("StandardMaterial3D_ktqjr")
 visible = false
 
 [node name="MoveSelectedRing1" type="MeshInstance3D" parent="MoveSelectedHighlight" unique_id=847333958]
-transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 1, 0, 0.02, 0)
-mesh = SubResource("TorusMesh_wy0tn")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0)
+mesh = SubResource("TorusMesh_gsfy4")
 surface_material_override/0 = SubResource("StandardMaterial3D_gsfy4")
 
 [node name="MoveSelectedRing2" type="MeshInstance3D" parent="MoveSelectedHighlight" unique_id=777378600]
-transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 1, 0, 0.02, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0)
 mesh = SubResource("TorusMesh_ewsnx")
 surface_material_override/0 = SubResource("StandardMaterial3D_gsfy4")
