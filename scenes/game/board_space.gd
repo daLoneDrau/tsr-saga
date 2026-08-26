@@ -338,8 +338,8 @@ func _refresh_marker_highlights(entity_id: String) -> void:
 		(hovered_highlight as MeshInstance3D).visible = is_hovered and is_available and not is_selected
 
 	var selected_highlight := marker.find_child(MOVE_SELECTED_HIGHLIGHT_NODE_NAME, true, false)
-	if selected_highlight != null and selected_highlight is MeshInstance3D:
-		(selected_highlight as MeshInstance3D).visible = is_selected
+	if selected_highlight != null and selected_highlight is Node3D:
+		(selected_highlight as Node3D).visible = is_selected
 
 #endregion
 
