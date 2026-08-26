@@ -85,6 +85,7 @@ func _ready() -> void:
 	_sword_reveal_overlay.acknowledged.connect(_on_sword_reveal_acknowledged)
 	_bottom_banner.finish_movement_pressed.connect(_on_finish_movement_pressed)
 	_board_space.marker_selected.connect(_on_marker_selected)
+	_board_space.marker_deselected.connect(_on_marker_deselected)
 	_place_all_entity_markers()
 
 
@@ -95,6 +96,8 @@ func on_exit() -> void:
 		_bottom_banner.finish_movement_pressed.disconnect(_on_finish_movement_pressed)
 	if is_instance_valid(_board_space) and _board_space.marker_selected.is_connected(_on_marker_selected):
 		_board_space.marker_selected.disconnect(_on_marker_selected)
+	if is_instance_valid(_board_space) and _board_space.marker_deselected.is_connected(_on_marker_deselected):
+		_board_space.marker_deselected.disconnect(_on_marker_deselected)
 
 
 func do_action(_action: GameAction) -> void:
@@ -229,16 +232,18 @@ func _on_finish_movement_pressed() -> void:
 # ---------------------------------------------------------------------------
 
 ## A piece BoardSpace just reported as newly selected can be moved — this
-## debug-prints every region it could legally move to this turn, ahead of
-## an actual destination-picking UI. SagaMovementSystem.get_reachable_regions()
-## is written/typed as hero-only (parameter name hero_entity_id), but its
-## body only touches SagaBoardSystem.get_location_of() and a generic
-## StatsComponent lookup — nothing hero-specific — so it works for a jarl
-## entity_id too, PROVIDED jarls actually carry a StatsComponent with
-## MOVEMENT_SPEED set from JarlKindTable's movement_speed field the same
-## way create_hero() does. That's assumed here, not independently
-## verified — if a jarl ever gets selected and this comes back empty
-## when it shouldn't, that assumption is the first thing to check.
+## highlights every region it could legally move to this turn on the
+## board (BoardSpace.set_reachable_regions()) and debug-prints the same
+## set, ahead of an actual destination-picking UI.
+## SagaMovementSystem.get_reachable_regions() is written/typed as
+## hero-only (parameter name hero_entity_id), but its body only touches
+## SagaBoardSystem.get_location_of() and a generic StatsComponent lookup —
+## nothing hero-specific — so it works for a jarl entity_id too, PROVIDED
+## jarls actually carry a StatsComponent with MOVEMENT_SPEED set from
+## JarlKindTable's movement_speed field the same way create_hero() does.
+## That's assumed here, not independently verified — if a jarl ever gets
+## selected and this comes back empty when it shouldn't, that assumption
+## is the first thing to check.
 func _on_marker_selected(entity_id: String) -> void:
 	var movement_sys := get_registered_system(&"SagaMovementSystem") as SagaMovementSystem
 	var map_sys := get_registered_system(&"SagaMapSystem") as SagaMapSystem
@@ -247,6 +252,7 @@ func _on_marker_selected(entity_id: String) -> void:
 		return
 
 	var reachable: Array = movement_sys.get_reachable_regions(entity_id)
+	var reachable_region_ids: Array = []
 
 	print("--- Possible movement regions for %s ---" % _entity_display_name(entity_id))
 	if reachable.is_empty():
@@ -254,7 +260,21 @@ func _on_marker_selected(entity_id: String) -> void:
 	for loc_entity_id: String in reachable:
 		var region_id: String = map_sys.get_region_id_for_entity(loc_entity_id) if map_sys else ""
 		print("  %s — region_id=%s" % [_entity_display_name(loc_entity_id), region_id])
+		if region_id != "":
+			reachable_region_ids.append(region_id)
 	print("--- end possible movement regions ---")
+
+	_board_space.set_reachable_regions(reachable_region_ids)
+
+
+## Deselecting clears whatever reachable-region highlight was shown for
+## that piece — a multi-select doesn't currently combine reachable sets
+## from more than one selected piece (only ever one piece's set is shown
+## at a time, whichever was selected/deselected most recently), so simply
+## clearing on deselect is correct for now rather than needing to
+## recompute a union.
+func _on_marker_deselected(_entity_id: String) -> void:
+	_board_space.set_reachable_regions([])
 
 
 func _entity_display_name(entity_id: String) -> String:
