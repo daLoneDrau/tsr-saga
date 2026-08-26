@@ -121,6 +121,13 @@ var _selected_entity_ids: Dictionary = {}      # entity_id -> true; multiple pie
 var _reachable_meshes: Dictionary = {}         # region_id -> MeshInstance3D overlay
 var _reachable_material: StandardMaterial3D
 
+var _camera_tween: Tween = null
+
+# 5.2.4 Regional Focus transition timing — not precisely specified,
+# matches the pacing validated in board_camera_test.gd's own Regional
+# Focus prototype.
+const REGIONAL_FOCUS_TRANSITION_DURATION := 0.8
+
 
 func _ready() -> void:
 	_camera.current = true
@@ -285,6 +292,108 @@ func set_reachable_regions(region_ids: Array) -> void:
 		overlay.position = Vector3(0, 0.03, 0)  # small lift, belt-and-braces against z-fighting with terrain
 		collider.add_child(overlay)
 		_reachable_meshes[region_id] = overlay
+
+
+## Reframes the camera to show exactly the reachable area for a just-
+## selected piece, per 5.2.4 Regional Focus — but built specifically from
+## the four extreme cells (min/max x, min/max y) already resolved by
+## get_corner_cells_for_regions(), not the full footprint geometry of
+## every reachable region. Deliberately ZERO margin: cells outside the
+## min/max x/y bounds should not be visible at all, unlike Board
+## Overview's small locked margin or the scratch scene's generous
+## Regional Focus margin — this is a tight crop to exactly the
+## traversable extent, not a "keep surrounding context visible" framing.
+## No-op if region_ids resolves to no cells (nothing to frame).
+func focus_on_reachable_cells(region_ids: Array) -> void:
+	var corners: Dictionary = get_corner_cells_for_regions(region_ids)
+	if corners.is_empty():
+		return
+
+	var target_aabb := _aabb_from_corner_cells(corners)
+	if target_aabb.size == Vector3.ZERO and target_aabb.position == Vector3.ZERO:
+		return
+
+	_reframe_camera_to_aabb(target_aabb, 0.0, REGIONAL_FOCUS_TRANSITION_DURATION)
+
+
+## Returns the camera to the locked Board Overview framing — same
+## transition mechanism as focus_on_reachable_cells(), just fed the whole
+## board's AABB and the locked 1% margin instead of a tight zero-margin
+## crop.
+func return_to_overview() -> void:
+	_reframe_camera_to_aabb(_board_aabb, MARGIN_FRACTION, REGIONAL_FOCUS_TRANSITION_DURATION)
+
+
+## Builds an AABB from the world positions of the four corner cells
+## returned by get_corner_cells_for_regions() — resolving each cell's
+## `name` to its matching Node3D marker point in the glb, the same lookup
+## _place_single_marker() uses for entity placement. Not a full region
+## footprint (see focus_on_reachable_cells()'s header) — just the
+## bounding box of these four specific points, which is exactly the
+## "min/max X/Y values determined in the previous step" this framing is
+## defined by.
+func _aabb_from_corner_cells(corners: Dictionary) -> AABB:
+	var result := AABB()
+	var first := true
+	for key in ["min_x", "max_x", "min_y", "max_y"]:
+		var cell: Dictionary = corners.get(key, {})
+		var cell_name: String = cell.get("name", "")
+		if cell_name == "":
+			continue
+		var node := _board_root.find_child(cell_name, true, false)
+		if node == null or not (node is Node3D):
+			continue
+		var world_pos: Vector3 = (node as Node3D).global_position
+		if first:
+			result = AABB(world_pos, Vector3.ZERO)
+			first = false
+		else:
+			result = result.expand(world_pos)
+	return result
+
+
+## Animates the camera rig to pan AND zoom (Camera3D.size) to fit
+## target_aabb, with margin_fraction of extra room, over duration seconds.
+## Camera angle (yaw/pitch) is never touched — only where the rig sits and
+## how tight its ortho size is. Shares its fitting math with
+## _apply_overview_framing() (project AABB corners onto the camera's own
+## right/up axes — needed because the view is angled, not top-down), just
+## parameterized by whatever AABB/margin the caller passes in. Ported from
+## board_camera_test.gd's validated prototype.
+func _reframe_camera_to_aabb(target_aabb: AABB, margin_fraction: float, duration: float) -> void:
+	var rig_basis: Basis = _pitch_pivot.global_transform.basis  # rotation only — stable regardless of rig position
+	var right: Vector3 = rig_basis.x.normalized()
+	var up: Vector3 = rig_basis.y.normalized()
+	var aspect: float = VIEWPORT_SIZE.x / VIEWPORT_SIZE.y
+
+	var new_center: Vector3 = target_aabb.position + target_aabb.size / 2.0
+
+	var min_r := INF
+	var max_r := -INF
+	var min_u := INF
+	var max_u := -INF
+	for corner in _aabb_corners(target_aabb):
+		var rel: Vector3 = corner - new_center
+		var r: float = rel.dot(right)
+		var u: float = rel.dot(up)
+		min_r = minf(min_r, r)
+		max_r = maxf(max_r, r)
+		min_u = minf(min_u, u)
+		max_u = maxf(max_u, u)
+
+	var extent_w: float = max_r - min_r
+	var extent_h: float = max_u - min_u
+	var size_from_height := extent_h
+	var size_from_width := extent_w / aspect
+	var fitted_size: float = maxf(size_from_height, size_from_width) * (1.0 + margin_fraction)
+
+	if _camera_tween != null and _camera_tween.is_valid():
+		_camera_tween.kill()
+	_camera_tween = create_tween()
+	_camera_tween.set_parallel(true)
+	_camera_tween.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_camera_tween.tween_property(_yaw_pivot, "global_position", new_center, duration)
+	_camera_tween.tween_property(_camera, "size", fitted_size, duration)
 
 
 ## region_id's actual click/highlight collider (land_<region_id> /
