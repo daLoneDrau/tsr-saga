@@ -65,6 +65,11 @@ const MOVE_AVAILABLE_HIGHLIGHT_NODE_NAME := "MoveAvailableHighlight"
 # available piece is directly hovered.
 const MOVE_HOVERED_HIGHLIGHT_NODE_NAME := "MoveHoveredHighlight"
 
+# Name of the child MeshInstance3D each marker scene already includes,
+# hidden by default — shown instead of both MoveAvailableHighlight and
+# MoveHoveredHighlight once a piece has been clicked/selected for a move.
+const MOVE_SELECTED_HIGHLIGHT_NODE_NAME := "MoveSelectedHighlight"
+
 # How close the mouse needs to be (in screen pixels) to a marker's
 # unprojected position to count as hovering it. A fixed pixel radius is
 # reliable here specifically because the camera is a LOCKED, fixed
@@ -97,6 +102,7 @@ var _entity_markers: Dictionary = {}           # entity_id -> Node3D, so future 
 
 var _available_entity_ids: Array = []          # last set passed to update_move_availability()
 var _hovered_entity_id: String = ""            # "" when nothing is hovered
+var _selected_entity_ids: Dictionary = {}      # entity_id -> true; multiple pieces can be selected together (5.2.26)
 
 
 func _ready() -> void:
@@ -194,7 +200,7 @@ func _apply_overview_framing() -> void:
 ## resolves entity_id -> region_id itself — the caller (GameScene) already
 ## did that via SagaBoardSystem/SagaMapSystem, matching the same
 ## "rendering widget doesn't touch game systems" split map_preview.gd uses.
-## Shows/hides each tracked entity marker's MoveAvailableHighlight child —
+## Shows/hides each tracked entity marker's move-related highlights —
 ## visible only for entity_ids present in `available_entity_ids`, hidden
 ## for every other tracked marker (monsters included, since they're never
 ## in that list). Safe to call repeatedly as availability changes (a piece
@@ -202,39 +208,38 @@ func _apply_overview_framing() -> void:
 ## it also turns off whatever shouldn't be on anymore, so callers don't
 ## need to separately track/clear previous state themselves.
 ##
-## Deliberately doesn't show MoveAvailableHighlight on whichever entity is
-## currently hovered — MoveHoveredHighlight takes over that marker's
-## highlight slot while hovered (see _set_marker_hover_state()), so the
-## two would otherwise show simultaneously. If the currently hovered piece
-## drops out of the new available set entirely, hover is cleared too.
+## If the currently hovered or selected piece drops out of the new
+## available set entirely, both are cleared for it too — a piece that's
+## no longer available shouldn't stay hovered/selected.
 func update_move_availability(available_entity_ids: Array) -> void:
 	_available_entity_ids = available_entity_ids.duplicate()
-
-	for entity_id: String in _entity_markers.keys():
-		var marker: Node3D = _entity_markers[entity_id]
-		if not is_instance_valid(marker):
-			continue
-		var highlight := marker.find_child(MOVE_AVAILABLE_HIGHLIGHT_NODE_NAME, true, false)
-		if highlight == null or not (highlight is MeshInstance3D):
-			continue
-		var is_available: bool = entity_id in _available_entity_ids
-		(highlight as MeshInstance3D).visible = is_available and entity_id != _hovered_entity_id
 
 	if _hovered_entity_id != "" and not (_hovered_entity_id in _available_entity_ids):
 		_set_hovered_entity("")
 
+	for entity_id: String in _selected_entity_ids.keys().duplicate():
+		if not (entity_id in _available_entity_ids):
+			_selected_entity_ids.erase(entity_id)
+
+	for entity_id: String in _entity_markers.keys():
+		_refresh_marker_highlights(entity_id)
+
 
 # ---------------------------------------------------------------------------
-#region Marker hover
+#region Marker hover & selection
 # ---------------------------------------------------------------------------
 
 ## Only available (highlighted) markers are interactable — this is checked
 ## by only ever testing against _available_entity_ids, never the full
 ## _entity_markers set, so a monster or an already-moved piece never
-## responds to hover regardless of where the mouse is.
+## responds to hover or clicks regardless of where the mouse is.
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		_update_hover((event as InputEventMouseMotion).position)
+	elif event is InputEventMouseButton:
+		var mb := event as InputEventMouseButton
+		if mb.button_index == MOUSE_BUTTON_LEFT and mb.pressed:
+			_on_marker_left_clicked()
 
 
 func _on_mouse_exited() -> void:
@@ -267,33 +272,67 @@ func _set_hovered_entity(entity_id: String) -> void:
 	if entity_id == _hovered_entity_id:
 		return
 
-	if _hovered_entity_id != "":
-		_set_marker_hover_state(_hovered_entity_id, false)
-
+	var previous_id := _hovered_entity_id
 	_hovered_entity_id = entity_id
 
+	if previous_id != "":
+		_refresh_marker_highlights(previous_id)
 	if _hovered_entity_id != "":
-		_set_marker_hover_state(_hovered_entity_id, true)
+		_refresh_marker_highlights(_hovered_entity_id)
 
 	Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND if _hovered_entity_id != "" else Input.CURSOR_ARROW)
 
 
-## Swaps MoveAvailableHighlight <-> MoveHoveredHighlight on entity_id's
-## marker. Only ever called for entities already known to be in
-## _available_entity_ids (see _update_hover()), so there's no separate
-## "is this even movable" check needed here.
-func _set_marker_hover_state(entity_id: String, hovered: bool) -> void:
+## Clicking whatever's currently hovered toggles its selection — clicking
+## an unselected available piece selects it; clicking it again deselects
+## it. Toggle-off isn't explicitly asked for yet, but 5.2.27 describes
+## selection as "uncommitted" until a destination is clicked, which implies
+## the player can change their mind about which pieces are selected before
+## then — flag if strict select-only (no deselect) turns out to be what's
+## actually wanted instead.
+func _on_marker_left_clicked() -> void:
+	if _hovered_entity_id == "":
+		return
+
+	var entity_id := _hovered_entity_id
+	if _selected_entity_ids.has(entity_id):
+		_selected_entity_ids.erase(entity_id)
+	else:
+		_selected_entity_ids[entity_id] = true
+
+	_refresh_marker_highlights(entity_id)
+
+
+## Single source of truth for a marker's three move-related highlights.
+## Priority is selected > hovered > available — each state fully owns the
+## highlight slot beneath it (a selected piece shows neither available nor
+## hovered, a hovered-but-unselected piece shows neither available nor
+## selected), so this always sets all three explicitly rather than only
+## turning one on/off and hoping the others were already correct. Called
+## from every place any of the three states can change — availability
+## updates, hover changes, and clicks — so there's exactly one place that
+## decides what a marker's highlights should look like, not three
+## independently-maintained ones that could drift out of sync.
+func _refresh_marker_highlights(entity_id: String) -> void:
 	var marker: Node3D = _entity_markers.get(entity_id)
 	if marker == null or not is_instance_valid(marker):
 		return
 
+	var is_selected: bool = _selected_entity_ids.has(entity_id)
+	var is_hovered: bool = entity_id == _hovered_entity_id
+	var is_available: bool = entity_id in _available_entity_ids
+
 	var available_highlight := marker.find_child(MOVE_AVAILABLE_HIGHLIGHT_NODE_NAME, true, false)
 	if available_highlight != null and available_highlight is MeshInstance3D:
-		(available_highlight as MeshInstance3D).visible = not hovered
+		(available_highlight as MeshInstance3D).visible = is_available and not is_hovered and not is_selected
 
 	var hovered_highlight := marker.find_child(MOVE_HOVERED_HIGHLIGHT_NODE_NAME, true, false)
 	if hovered_highlight != null and hovered_highlight is MeshInstance3D:
-		(hovered_highlight as MeshInstance3D).visible = hovered
+		(hovered_highlight as MeshInstance3D).visible = is_hovered and is_available and not is_selected
+
+	var selected_highlight := marker.find_child(MOVE_SELECTED_HIGHLIGHT_NODE_NAME, true, false)
+	if selected_highlight != null and selected_highlight is MeshInstance3D:
+		(selected_highlight as MeshInstance3D).visible = is_selected
 
 #endregion
 
