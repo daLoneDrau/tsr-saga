@@ -209,6 +209,8 @@ func _play_movement_phase_intro() -> void:
 	_bottom_banner.set_helper_text("Select one or more pieces to move. All movement is optional")
 	_bottom_banner.reveal_controls()
 
+	_update_move_availability()
+
 #endregion
 
 
@@ -217,6 +219,35 @@ func _play_movement_phase_intro() -> void:
 ## rather than silently nowhere.
 func _on_finish_movement_pressed() -> void:
 	push_warning("GameScene: Finish Movement pressed — not yet implemented.")
+
+
+# ---------------------------------------------------------------------------
+#region Move availability
+# ---------------------------------------------------------------------------
+
+## Highlights (via BoardSpace's MoveAvailableHighlight child on each
+## marker) every piece the current mover can still act with this phase.
+## SagaMovementSystem owns the actual tracking (has_moved()/mark_moved(),
+## and jarl ownership via SagaJarlComponent.owner_hero_id) — this just
+## queries it and hands the result to BoardSpace. Call again any time
+## availability could have changed (a move resolves, the active hero
+## changes) — there's no such trigger yet since move selection isn't
+## built, so for now this only runs once, right when the movement controls
+## first appear.
+func _update_move_availability() -> void:
+	var movement_sys := get_registered_system(&"SagaMovementSystem") as SagaMovementSystem
+	if movement_sys == null:
+		push_warning("GameScene: SagaMovementSystem not available — skipping move availability highlight.")
+		return
+
+	var current_mover: String = movement_sys.get_current_mover()
+	if current_mover == "":
+		_board_space.update_move_availability([])
+		return
+
+	_board_space.update_move_availability(movement_sys.get_available_pieces(current_mover))
+
+#endregion
 
 
 # ---------------------------------------------------------------------------
