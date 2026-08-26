@@ -264,7 +264,34 @@ func _on_marker_selected(entity_id: String) -> void:
 			reachable_region_ids.append(region_id)
 	print("--- end possible movement regions ---")
 
+	_print_region_corner_cells(reachable_region_ids)
+
 	_board_space.set_reachable_regions(reachable_region_ids)
+
+
+## Across every traversable region combined (not per-region), prints the
+## four extreme cells — min/max x, min/max y — and which specific cell
+## (in whichever region actually holds that extreme) sits at each.
+## BoardSpace.get_corner_cells_for_regions() does the actual lookup, since
+## cell_markers.json is loaded there, not here.
+func _print_region_corner_cells(region_ids: Array) -> void:
+	print("--- Combined corner cells across traversable regions ---")
+	var corners: Dictionary = _board_space.get_corner_cells_for_regions(region_ids)
+	if corners.is_empty():
+		print("  (no cells found)")
+		print("--- end combined corner cells ---")
+		return
+
+	var min_x: Dictionary = corners["min_x"]
+	var max_x: Dictionary = corners["max_x"]
+	var min_y: Dictionary = corners["min_y"]
+	var max_y: Dictionary = corners["max_y"]
+
+	print("  min x=%s at %s" % [min_x.get("x", "?"), min_x.get("name", "?")])
+	print("  max x=%s at %s" % [max_x.get("x", "?"), max_x.get("name", "?")])
+	print("  min y=%s at %s" % [min_y.get("y", "?"), min_y.get("name", "?")])
+	print("  max y=%s at %s" % [max_y.get("y", "?"), max_y.get("name", "?")])
+	print("--- end combined corner cells ---")
 
 
 ## Deselecting clears whatever reachable-region highlight was shown for
