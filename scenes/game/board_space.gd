@@ -322,7 +322,7 @@ func focus_on_reachable_cells(region_ids: Array, top_margin_px: float = 0.0) -> 
 	if target_aabb.size == Vector3.ZERO and target_aabb.position == Vector3.ZERO:
 		return
 
-	_reframe_camera_to_aabb(target_aabb, 0.0, REGIONAL_FOCUS_TRANSITION_DURATION, top_margin_px)
+	_reframe_camera_to_aabb(target_aabb, 0.0, REGIONAL_FOCUS_TRANSITION_DURATION, top_margin_px, true)
 
 
 ## Returns the camera to the locked Board Overview framing — same
@@ -351,6 +351,17 @@ func _aabb_from_corner_cells(corners: Dictionary) -> AABB:
 			continue
 		var node := _board_root.find_child(cell_name, true, false)
 		if node == null or not (node is Node3D):
+			# DIAGNOSTIC: if this fires for a sea-region cell (e.g.
+			# cell_24_...), it strongly suggests sea cells never got
+			# Node3D marker points authored in the glb at all — only land
+			# cells have ever needed one before now (piece placement is
+			# land-only). That would mean this corner is silently missing
+			# from the AABB, so the frame's edge on that side ends up
+			# based on some less-extreme cell instead — visible as that
+			# side going off-screen while the opposite, correctly-
+			# resolved side sits flush. Confirm/deny with this warning
+			# before assuming anything else is wrong.
+			push_warning("BoardSpace: corner cell '%s' (%s) has no matching Node3D under BoardRoot — dropped from Regional Focus framing. If this is a sea-region cell, sea cells likely lack marker points entirely." % [cell_name, key])
 			continue
 		var world_pos: Vector3 = (node as Node3D).global_position
 		if first:
@@ -387,7 +398,22 @@ func _aabb_from_corner_cells(corners: Dictionary) -> AABB:
 ##      moving the reference point up in world space is what makes
 ##      lower content appear at that center instead — moving the camera
 ##      up pushes the picture down.)
-func _reframe_camera_to_aabb(target_aabb: AABB, margin_fraction: float, duration: float, top_margin_px: float = 0.0) -> void:
+##
+## crop_to_fill: false (default) = "contain" — pick whichever axis needs
+## MORE zoom-out (the larger required size), guaranteeing every part of
+## target_aabb stays visible, at the cost of a possible gap on the OTHER
+## axis if its aspect ratio doesn't match the viewport's. true = "cover" —
+## pick whichever axis needs LESS zoom-out (the smaller required size),
+## guaranteeing zero gap on every edge, at the cost of possibly cropping
+## the OTHER axis's content slightly beyond the frame. These are mutually
+## exclusive in the general case — a single uniform zoom can't guarantee
+## both "nothing is ever hidden" and "no edge ever has a gap" unless
+## target_aabb's aspect ratio happens to exactly match the viewport's.
+## Board Overview / return_to_overview() stay on "contain" (false) since
+## the whole board should never be partially hidden; Regional Focus uses
+## "cover" (true) since the explicit requirement there is zero empty
+## space around the edges.
+func _reframe_camera_to_aabb(target_aabb: AABB, margin_fraction: float, duration: float, top_margin_px: float = 0.0, crop_to_fill: bool = false) -> void:
 	var rig_basis: Basis = _pitch_pivot.global_transform.basis  # rotation only — stable regardless of rig position
 	var right: Vector3 = rig_basis.x.normalized()
 	var up: Vector3 = rig_basis.y.normalized()
@@ -414,7 +440,11 @@ func _reframe_camera_to_aabb(target_aabb: AABB, margin_fraction: float, duration
 	var usable_height_px: float = maxf(VIEWPORT_SIZE.y - top_margin_px, 1.0)
 	var size_from_height: float = extent_h * VIEWPORT_SIZE.y / usable_height_px
 	var size_from_width: float = extent_w / aspect
-	var fitted_size: float = maxf(size_from_height, size_from_width) * (1.0 + margin_fraction)
+	var fitted_size: float
+	if crop_to_fill:
+		fitted_size = minf(size_from_height, size_from_width) * (1.0 + margin_fraction)
+	else:
+		fitted_size = maxf(size_from_height, size_from_width) * (1.0 + margin_fraction)
 
 	var shift_px: float = top_margin_px / 2.0
 	var world_units_per_px: float = fitted_size / VIEWPORT_SIZE.y
